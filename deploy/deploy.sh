@@ -11,7 +11,8 @@ rsync \
 --exclude .travis.yml \
 -vaz ./* ./svn/trunk/
 
-cp -r ./assets_svn ./svn/assets/
+mkdir ./svn/assets/
+cp -r ./assets_svn/. ./svn/assets/
 
 cd svn
 
