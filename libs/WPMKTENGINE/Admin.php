@@ -115,10 +115,12 @@ class Admin
         Filter::add('admin_body_class', array($this, 'adminBodyClass'), 20, 1);
         // Update option api
         Action::add('wp_ajax_update_option_api', function(){
-            if((isset($_POST['option']) && !empty($_POST['option'])) && (isset($_POST['value']) && !empty($_POST['value']))){
-                $option = $_POST['option'] == 'apikey' ? 'apiKey' : 'apiExternalTrackingCode';
+            $option = sanitize_text_field($_POST['option']);
+            $value = sanitize_text_field($_POST['value']);
+            if((isset($option) && !empty($option)) && (isset($value) && !empty($value))){
+                $option = $option == 'apikey' ? 'apiKey' : 'apiExternalTrackingCode';
                 $repo = new \WPME\RepositorySettingsFactory();
-                $repo->injectSingle($option, $_POST['value'], 'WPMKTENGINEApiSettings');
+                $repo->injectSingle($option, $value, 'WPMKTENGINEApiSettings');
                 echo json_encode(array(
                     'status' => 'ok',
                 ));
@@ -177,12 +179,14 @@ class Admin
         });
         // Check if url exists
         Action::add('wp_ajax_check_url', function(){
-            $exists = get_page_by_path(ltrim($_POST['url'], '/'));
+            $url = esc_url($_POST['url']);
+            $exists = get_page_by_path(ltrim($url, '/'));
             echo is_null($exists) ? 'FALSE' : 'TRUE';
             die;
         });
         // Post edit and Preview Modal
         Filter::add('redirect_post_location', function($location, $post){
+            // No need to sanatize, not saving
             if(isset($_POST['previewModal'])){
                 $location = Utils::addQueryParam($location, 'previewModal', 'true');
             }
