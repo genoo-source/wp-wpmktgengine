@@ -113,20 +113,6 @@ class Admin
         Action::add('wp_print_scripts', array($this, 'removeDequeue'), 10000); // remove hooks colliding
         // we need this for dashicons fallback
         Filter::add('admin_body_class', array($this, 'adminBodyClass'), 20, 1);
-        // Update option simple inject
-        Action::add('wp_ajax_update_option', function(){
-            if((isset($_POST['option']) && !empty($_POST['option'])) && (isset($_POST['value']) && !empty($_POST['value']))){
-                update_option($_POST['option'], $_POST['value']);
-                echo json_encode(array(
-                    'status' => 'ok',
-                ));
-                die;
-            }
-            echo json_encode(array(
-                'status' => 'fail',
-            ));
-            die;
-        });
         // Update option api
         Action::add('wp_ajax_update_option_api', function(){
             if((isset($_POST['option']) && !empty($_POST['option'])) && (isset($_POST['value']) && !empty($_POST['value']))){
