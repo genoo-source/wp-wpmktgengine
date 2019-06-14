@@ -99,7 +99,7 @@ class WPMKTENGINE
         define('WPMKTENGINE_DEV', apply_filters('wpmktengine_dev', FALSE));
         // Set APIs
         if(WPMKTENGINE_DEV === FALSE){
-            define('WPMKTENGINE_DOMAIN', '//wpmeapp.genoo.com');
+            define('WPMKTENGINE_DOMAIN', '//api.genoo.com');
         } elseif(WPMKTENGINE_DEV === TRUE){
             define('WPMKTENGINE_DOMAIN', '//wpmedev.odportals.com');
         }
