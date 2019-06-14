@@ -266,7 +266,7 @@ class Admin
                     'WPMKTENGINE_SETUP' => WPMKTENGINE_SETUP,
                     'WPMKTENGINE_LUMENS' => WPMKTENGINE_LUMENS
                 ),
-                'DOMAIN' => WPMKTENGINE_DOMAIN,
+                'DOMAIN' => WPMKTENGINE_API_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(

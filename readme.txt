@@ -5,7 +5,7 @@ Requires at least: 4.6.0
 Tested up to: 5.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 3.7.11
+Stable tag: 3.7.12
 
 
 WPMktgEngine turns your WordPress site into a marketing engine for your business.  A comprehensive online marketing platform.
@@ -64,19 +64,19 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
-= 3.7.4 = 
+= 3.7.4 =
 * Fix CSS bug introduced because of another CSS bug
 
-= 3.7.3 = 
+= 3.7.3 =
 * Parse CSS to avoid non-valid-css error
 
-= 3.7.2 = 
+= 3.7.2 =
 * WP_Error as response is a no no
 
-= 3.7.1 = 
+= 3.7.1 =
 * Fix count notice
 
-= 3.7.0 = 
+= 3.7.0 =
 * Fix image position
 
 = 3.6.9 =
