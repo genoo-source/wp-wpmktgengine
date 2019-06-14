@@ -678,9 +678,11 @@ class Frontend
      */
     public function renderLandingPage(\WP_Post $landingPost, $id = NULL, $header = '', $footer = '')
     {
+        // Please wp.org reviewers although nothing runs after this method
+        $restoreReporting = error_reporting();
         // Turn off errors
-	    error_reporting(0);
-	    ini_set('error_reporting', 0);
+        @error_reporting(0);
+        @ini_set('error_reporting', 0);
         // This might hold output buffer
         $headerAdditional = $header;
         // Set title so we can manipulate it later on
@@ -763,6 +765,9 @@ class Frontend
         } catch (\Exception $e){
             echo $e->getMessage();
         }
+        // Yup, makes no sense :)
+        error_reporting($restoreReporting);
+        ini_restore('error_reporting');
         exit();
     }
 
