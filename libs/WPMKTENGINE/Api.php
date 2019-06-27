@@ -1228,7 +1228,7 @@ class Api implements \WPME\ApiInterface
             // prep action and lastQuery
             $prepAction = $action;
             // Filter domain (for debug purposes)
-            $url = 'https:' . apply_filters('genoo_wpme_api_domain', WPMKTENGINE_DOMAIN) . self::URL;
+            $url = 'https:' . apply_filters('genoo_wpme_api_domain', WPMKTENGINE_API_DOMAIN) . self::URL;
             $prepUrl = ($url) . str_replace(array('[A]','[S]', '[P]', '[D]'), '', $action);
             // build query arguments
             if(Strings::endsWith($prepAction, "[S]") || Strings::endsWith($prepAction, "[D]") || Strings::endsWith($prepAction, "[P]")){

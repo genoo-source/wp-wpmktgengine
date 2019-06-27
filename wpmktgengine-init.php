@@ -100,8 +100,10 @@ class WPMKTENGINE
         // Set APIs
         if(WPMKTENGINE_DEV === FALSE){
             define('WPMKTENGINE_DOMAIN', '//wpmeapp.genoo.com');
+            define('WPMKTENGINE_API_DOMAIN', '//api.genoo.com');
         } elseif(WPMKTENGINE_DEV === TRUE){
             define('WPMKTENGINE_DOMAIN', '//wpmedev.odportals.com');
+            define('WPMKTENGINE_API_DOMAIN', '//wpmedev.odportals.com');
         }
         if(WPMKTENGINE_SETUP){
             define('WPMKTENGINE_BUILDER_NEW', WPMKTENGINE_BUILDER . 'index-login.php?api='. $this->repositarySettings->getApiKey() .'&domain=' . WPMKTENGINE_HOME_URL);
@@ -242,7 +244,7 @@ class WPMKTENGINE
             // Ok, we do have an issue
             $WPME_API->settingsRepo->addSavedNotice(
                 'error',
-                'Your WPMKTENGINE installation was reset because your API key was invalid. 
+                'Your WPMKTENGINE installation was reset because your API key was invalid.
                 Please login in again into the engine.'
             );
             //$this->repositarySettings->resetInstallation();
