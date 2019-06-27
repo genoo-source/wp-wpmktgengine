@@ -95,7 +95,7 @@ class Admin
             try {
                 $WPME_CACHE->remove('leadtypes', 'settings');
             } catch (\Exception $e){
-                // File doesn't exist, googd
+                // File doesn't exist, good
             }
         }
         // initialise settings and users
@@ -115,6 +115,10 @@ class Admin
         Filter::add('admin_body_class', array($this, 'adminBodyClass'), 20, 1);
         // Update option api
         Action::add('wp_ajax_update_option_api', function(){
+            // Check
+            if (!current_user_can('edit_post', $post_id)) return;
+            check_ajax_referer('Genoo');
+            // Code
             $option = sanitize_text_field($_POST['option']);
             $value = sanitize_text_field($_POST['value']);
             if((isset($option) && !empty($option)) && (isset($value) && !empty($value))){
@@ -133,6 +137,10 @@ class Admin
         });
         // Update option api
         Action::add('wp_ajax_update_leads', function(){
+            // Check
+            if (!current_user_can('edit_post', $post_id)) return;
+            check_ajax_referer('Genoo');
+            // Code
             try {
                 $settingsRepo = new \WPME\RepositorySettingsFactory();
                 $settingsApi = new \WPME\ApiFactory($settingsRepo);
@@ -149,6 +157,10 @@ class Admin
         });
         // Update option api
         Action::add('wp_ajax_refresh_forms', function(){
+            // Check
+            if (!current_user_can('edit_post', $post_id)) return;
+            check_ajax_referer('Genoo');
+            // Code
             try {
                 $cache = new \WPMKTENGINE\Cache(WPMKTENGINE_CACHE);
                 $cache->flush(\WPMKTENGINE\RepositoryForms::REPO_NAMESPACE);
@@ -164,6 +176,10 @@ class Admin
         });
         // Update option api
         Action::add('wp_ajax_refresh_surveys', function(){
+            // Check
+            if (!current_user_can('edit_post', $post_id)) return;
+            check_ajax_referer('Genoo');
+            // Code
             try {
                 $cache = new \WPMKTENGINE\Cache(WPMKTENGINE_CACHE);
                 $cache->flush(\WPME\Extensions\RepositorySurveys::REPO_NAMESPACE);
@@ -179,6 +195,10 @@ class Admin
         });
         // Check if url exists
         Action::add('wp_ajax_check_url', function(){
+            // Check
+            if (!current_user_can('edit_post', $post_id)) return;
+            check_ajax_referer('Genoo');
+            // Code
             $url = esc_url($_POST['url']);
             $exists = get_page_by_path(ltrim($url, '/'));
             echo is_null($exists) ? 'FALSE' : 'TRUE';
@@ -258,6 +278,7 @@ class Admin
                 ),
                 'DOMAIN' => WPMKTENGINE_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
+                'AJAX_NONCE' => wp_create_nonce('Genoo'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),
@@ -281,6 +302,7 @@ class Admin
                 ),
                 'DOMAIN' => WPMKTENGINE_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
+                'AJAX_NONCE' => wp_create_nonce('Genoo'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),

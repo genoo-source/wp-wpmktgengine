@@ -678,7 +678,7 @@ class Frontend
      */
     public function renderLandingPage(\WP_Post $landingPost, $id = NULL, $header = '', $footer = '')
     {
-        // Please wp.org reviewers although nothing runs after this method
+        // Please wp.org reviewers although nothing runs after this method, as it exits
         $restoreReporting = error_reporting();
         // Turn off errors
         @error_reporting(0);
