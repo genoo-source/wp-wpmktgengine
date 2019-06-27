@@ -11,7 +11,7 @@
             _wpCustomizeSettings.activePanels.nav_menus = false;
         }
     </script>
-    <style>=
+    <style>
         #wp-a11y-speak-assertive,
         #wp-a11y-speak-polite { display: none !important; }
     </style>

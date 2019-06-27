@@ -137,13 +137,11 @@ class Import
 
     public function importSubscribers($subscribers, $leadType)
     {
-        // don't break us down lad
         @error_reporting(0);
         @ini_set('display_errors', 0);
         // return array
         $arr = array();
         // leads to post
-
         $leads = array();
         // leadtype check / fill
         $importLeadType = (isset($leadType) && is_numeric($leadType)) ? $leadType : $this->leadType;

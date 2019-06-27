@@ -116,7 +116,7 @@ class Admin
         // Update option api
         Action::add('wp_ajax_update_option_api', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             $option = sanitize_text_field($_POST['option']);
@@ -138,7 +138,7 @@ class Admin
         // Update option api
         Action::add('wp_ajax_update_leads', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             try {
@@ -158,7 +158,7 @@ class Admin
         // Update option api
         Action::add('wp_ajax_refresh_forms', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             try {
@@ -177,7 +177,7 @@ class Admin
         // Update option api
         Action::add('wp_ajax_refresh_surveys', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             try {
@@ -196,7 +196,7 @@ class Admin
         // Check if url exists
         Action::add('wp_ajax_check_url', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             $url = esc_url($_POST['url']);

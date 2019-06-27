@@ -440,7 +440,7 @@ class CTAs
          */
         add_action('wp_ajax_wpme_import_cta_count', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             $count = \WPME\Extensions\CTAs::getCTAsNotInWordPress();
@@ -455,7 +455,7 @@ class CTAs
          */
         add_action('wp_ajax_wpme_import_ctas', function(){
             // Check
-            if (!current_user_can('edit_post', $post_id)) return;
+            if (!current_user_can('edit_posts')) return;
             check_ajax_referer('Genoo');
             // Code
             // Things

@@ -897,7 +897,10 @@ Genoo.startImport = function (e) {
   Genoo.setLog();
 
   // call for comments info
-  var data = { action: 'genooImportStart' };
+  var data = {
+    action: 'genooImportStart',
+    _ajax_nonce: GenooVars.AJAX_NONCE,
+  };
 
   jQuery.post(ajaxurl, data, function (response) {
 
@@ -939,6 +942,7 @@ Genoo.startImport = function (e) {
 
         var temp = {
           action: 'genooImportComments',
+          _ajax_nonce: GenooVars.AJAX_NONCE,
           offset: msgOffset,
           per: msgPer,
         };
@@ -995,7 +999,10 @@ Genoo.startSubscriberImport = function (e) {
   Genoo.setLog();
 
   // call for comments info
-  var data = { action: 'genooImportSubscribersStart' };
+  var data = {
+    action: 'genooImportSubscribersStart',
+    _ajax_nonce: GenooVars.AJAX_NONCE,
+  };
 
   jQuery.post(ajaxurl, data, function (response) {
 
@@ -1038,6 +1045,7 @@ Genoo.startSubscriberImport = function (e) {
 
         var temp = {
           action: 'genooImportSubscribers',
+          _ajax_nonce: GenooVars.AJAX_NONCE,
           offset: msgOffset,
           leadType: leadType,
           per: msgPer
