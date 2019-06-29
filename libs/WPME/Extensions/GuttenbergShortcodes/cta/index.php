@@ -34,7 +34,8 @@ add_action('enqueue_block_editor_assets', function(){
             'wp-i18n',
             'wp-element',
         ),
-        filemtime( "$dir/$block_js" )
+        filemtime( "$dir/$block_js" ),
+        true
     );
     wp_enqueue_style(
         'wpme-'. $block .'-block',
@@ -42,9 +43,9 @@ add_action('enqueue_block_editor_assets', function(){
         array(
             'wp-blocks',
         ),
-        filemtime( "$dir/$editor_css" )
+        filemtime( "$dir/$editor_css" ) 
     );
-}, 10, 1);
+}, 100, 1);
 
 // Register our block, and explicitly define the attributes we accept.
 register_block_type( 'wpme/wpme-cta-block', array(

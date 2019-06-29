@@ -62,7 +62,7 @@ class Frontend
         // wp
         Action::add('wp',    array($this, 'wp'), 999, 1);
         // Enqueue scripts
-        Action::add('wp_enqueue_scripts', array($this, 'enqueue'), 1, 1);
+        Action::add('wp_enqueue_scripts', array($this, 'enqueue'), 0, 1);
         Action::add('wp_head', array($this, 'enqueueFirst'), 1, 1);
         // Footer
         Action::add('wp_footer', array($this, 'footerFirst'), 1);

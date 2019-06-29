@@ -1,8 +1,8 @@
-( function( wp ) {
+(function (wp) {
   var el = wp.element.createElement;
   var __ = wp.i18n.__;
-  var InspectorControls = wp.editor.InspectorControls;
-  var Components = wp.components;
+  var InspectorControls = wp.editor ? wp.editor.InspectorControls : wp.blocks.InspectorControls;
+  var Components = wp.components ? wp.components : wp.blocks;
   var ServerSideRender = Components.ServerSideRender;
   var Disabled = Components.Disabled;
   var PanelBody = Components.PanelBody;
@@ -10,9 +10,9 @@
   var SelectControl = Components.SelectControl;
   var TextareaControl = Components.TextareaControl;
   // Visit https://wordpress.org/gutenberg/handbook/block-api/ to learn about Block API
-  wp.blocks.registerBlockType( 'wpme/wpme-form-block', {
-    title: __( 'Form' ),
-    description: __( 'Attach your Form' ),
+  wp.blocks.registerBlockType('wpme/wpme-form-block', {
+    title: __('Form'),
+    description: __('Attach your Form'),
     category: 'widgets',
     icon: 'feedback',
     supportHTML: false,
@@ -44,35 +44,35 @@
       from: [
         {
           type: 'shortcode',
-          tag: GenooVars.SHORTCODE.SURVEY,
+          tag: GenooVars.SHORTCODE.FORM,
           attributes: {
             id: {
               type: 'integer',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.id ? named.id : '';
               },
             },
             theme: {
               type: 'string',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.theme ? named.theme : '';
               },
             },
             confirmation: {
               type: 'bool',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.confirmation ? named.confirmation : 'false';
               },
             },
             msgSuccess: {
               type: 'string',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.msgSuccess ? named.msgSuccess : '';
               },
             },
             msgFail: {
               type: 'string',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.msgFail ? named.msgFail : '';
               },
             },
@@ -85,8 +85,8 @@
      *
      * @param props
      */
-    edit: function(props) {
-      if(!GenooVars || !GenooVars.EDITOR){
+    edit: function (props) {
+      if (!GenooVars || !GenooVars.EDITOR) {
         return;
       }
       var messagesWrapper = !props.attributes.confirmation ? Disabled : 'div';
@@ -103,7 +103,7 @@
                 value: props.attributes.id,
                 options: GenooVars.EDITOR.Form,
                 onChange: function (id) {
-                  props.setAttributes( { id: id } );
+                  props.setAttributes({ id: id });
                 },
               }
             ),
@@ -114,7 +114,7 @@
                 value: props.attributes.theme,
                 options: GenooVars.EDITOR.Themes,
                 onChange: function (theme) {
-                  props.setAttributes( { theme: theme } );
+                  props.setAttributes({ theme: theme });
                 },
               }
             ),
@@ -167,11 +167,11 @@
     /**
      * @returns {*}
      */
-    save: function() {
+    save: function () {
       return null
     }
 
-  } );
-} )(
+  });
+})(
   window.wp
 );

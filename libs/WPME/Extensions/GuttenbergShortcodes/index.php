@@ -25,6 +25,7 @@ if (
 ) {
     $blocks[] = 'lumens';
 }
+
 foreach($blocks as $block){
     // Register CTA
     require_once $block . DIRECTORY_SEPARATOR . 'index.php';

@@ -283,6 +283,12 @@ class Admin
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),
                 ),
+                'SHORTCODE' => array(
+                    'CTA' => apply_filters('genoo_wpme_cta_shortcode', 'WPMKTENGINECTA'),
+                    'FORM' => apply_filters('genoo_wpme_form_shortcode', 'WPMKTENGINEForm'),
+                    'SURVEY' => apply_filters('genoo_wpme_survey_shortcode', 'WPMKTENGINESurvey'),
+                    'LUMENS' => 'genooLumens',
+                ),
                 'EDITOR' => array(
                     'CTA' => $this->repositaryCTAs->getArrayTinyMCE(),
                     'Form' => $this->repositaryForms->getFormsArrayTinyMCE(),
