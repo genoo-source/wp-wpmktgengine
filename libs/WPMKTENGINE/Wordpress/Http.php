@@ -275,9 +275,9 @@ class Http
     public function checkUnathorizedApiCall()
     {
         if(
-            ($this->response['response']['code'] === 401 && Strings::contains($this->url, WPMKTENGINE_DOMAIN))
+            ($this->response['response']['code'] === 401 && Strings::contains($this->url, WPMKTENGINE_API_DOMAIN))
             ||
-            ($this->response['response']['code'] === 400 && Strings::contains($this->url, WPMKTENGINE_DOMAIN) && strtolower($this->response['response']['body']) == 'not authenticated')
+            ($this->response['response']['code'] === 400 && Strings::contains($this->url, WPMKTENGINE_API_DOMAIN) && strtolower($this->response['response']['body']) == 'not authenticated')
         ){
             //\WPMKTENGINE::unauthorized();
             return false;

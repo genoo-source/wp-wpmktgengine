@@ -5,7 +5,11 @@
     Author:  Genoo, LLC
     Author URI: http://www.genoo.com/
     Author Email: info@genoo.com
+<<<<<<< HEAD
     Version: 3.8.0
+=======
+    Version: 3.7.14
+>>>>>>> 5c2d1d85fa97a08852dfb60521e0178a33207532
     License: GPLv2
     Text Domain: wpmktgengine
 */
