@@ -1,15 +1,15 @@
-( function( wp ) {
+(function (wp) {
   var el = wp.element.createElement;
   var __ = wp.i18n.__;
-  var InspectorControls = wp.editor.InspectorControls;
-  var Components = wp.components;
+  var InspectorControls = wp.editor ? wp.editor.InspectorControls : wp.blocks.InspectorControls;
+  var Components = wp.components ? wp.components : wp.blocks;
   var ServerSideRender = Components.ServerSideRender;
   var PanelBody = Components.PanelBody;
   var SelectControl = Components.SelectControl;
   // Visit https://wordpress.org/gutenberg/handbook/block-api/ to learn about Block API
-  wp.blocks.registerBlockType( 'wpme/wpme-lumens-block', {
-    title: __( 'Lumens' ),
-    description: __( 'Attach your Lumens' ),
+  wp.blocks.registerBlockType('wpme/wpme-lumens-block', {
+    title: __('Lumens'),
+    description: __('Attach your Lumens'),
     category: 'widgets',
     icon: 'media-spreadsheet',
     supportHTML: false,
@@ -33,7 +33,7 @@
           attributes: {
             id: {
               type: 'integer',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.id ? named.id : '';
               },
             },
@@ -46,8 +46,8 @@
      *
      * @param props
      */
-    edit: function(props) {
-      if(!GenooVars || !GenooVars.EDITOR){
+    edit: function (props) {
+      if (!GenooVars || !GenooVars.EDITOR) {
         return;
       }
       return [
@@ -63,7 +63,7 @@
                 value: props.attributes.id,
                 options: GenooVars.EDITOR.Survey,
                 onChange: function (id) {
-                  props.setAttributes( { id: id } );
+                  props.setAttributes({ id: id });
                 },
               }
             )
@@ -81,11 +81,11 @@
     /**
      * @returns {*}
      */
-    save: function() {
+    save: function () {
       return null
     }
 
-  } );
-} )(
+  });
+})(
   window.wp
 );

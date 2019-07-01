@@ -55,6 +55,7 @@ class Import
 
     public function importComments($comments)
     {
+        $restoreReporting = error_reporting();
         // don't break us down lad
         @error_reporting(0);
         @ini_set('display_errors', 0);
@@ -121,6 +122,8 @@ class Import
                 return array(__('Error while importing lead, no lead type set. Your account <a href="'. admin_url('admin.php?page=WPMKTENGINELogin&reset=true') .'">may need resetting.</a>', 'wpmktengine'));
             }
         }
+        error_reporting($restoreReporting);
+        ini_restore('display_errors');
         return array(__('No comments provided.', 'wpmktengine'));
     }
 
@@ -134,13 +137,11 @@ class Import
 
     public function importSubscribers($subscribers, $leadType)
     {
-        // don't break us down lad
         @error_reporting(0);
         @ini_set('display_errors', 0);
         // return array
         $arr = array();
         // leads to post
-
         $leads = array();
         // leadtype check / fill
         $importLeadType = (isset($leadType) && is_numeric($leadType)) ? $leadType : $this->leadType;

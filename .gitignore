@@ -1,0 +1,10 @@
+cache/forms/*
+!cache/forms/.gitkeep
+cache/lumens/*
+!cache/lumens/.gitkeep
+cache/pages/*
+!cache/pages/.gitkeep
+cache/settings/*
+!cache/settings/.gitkeep
+cache/surveys/*
+!cache/surveys/.gitkeep

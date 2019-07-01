@@ -95,7 +95,7 @@ class Admin
             try {
                 $WPME_CACHE->remove('leadtypes', 'settings');
             } catch (\Exception $e){
-                // File doesn't exist, googd
+                // File doesn't exist, good
             }
         }
         // initialise settings and users
@@ -113,26 +113,18 @@ class Admin
         Action::add('wp_print_scripts', array($this, 'removeDequeue'), 10000); // remove hooks colliding
         // we need this for dashicons fallback
         Filter::add('admin_body_class', array($this, 'adminBodyClass'), 20, 1);
-        // Update option simple inject
-        Action::add('wp_ajax_update_option', function(){
-            if((isset($_POST['option']) && !empty($_POST['option'])) && (isset($_POST['value']) && !empty($_POST['value']))){
-                update_option($_POST['option'], $_POST['value']);
-                echo json_encode(array(
-                    'status' => 'ok',
-                ));
-                die;
-            }
-            echo json_encode(array(
-                'status' => 'fail',
-            ));
-            die;
-        });
         // Update option api
         Action::add('wp_ajax_update_option_api', function(){
-            if((isset($_POST['option']) && !empty($_POST['option'])) && (isset($_POST['value']) && !empty($_POST['value']))){
-                $option = $_POST['option'] == 'apikey' ? 'apiKey' : 'apiExternalTrackingCode';
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
+            $option = sanitize_text_field($_POST['option']);
+            $value = sanitize_text_field($_POST['value']);
+            if((isset($option) && !empty($option)) && (isset($value) && !empty($value))){
+                $option = $option == 'apikey' ? 'apiKey' : 'apiExternalTrackingCode';
                 $repo = new \WPME\RepositorySettingsFactory();
-                $repo->injectSingle($option, $_POST['value'], 'WPMKTENGINEApiSettings');
+                $repo->injectSingle($option, $value, 'WPMKTENGINEApiSettings');
                 echo json_encode(array(
                     'status' => 'ok',
                 ));
@@ -145,6 +137,10 @@ class Admin
         });
         // Update option api
         Action::add('wp_ajax_update_leads', function(){
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
             try {
                 $settingsRepo = new \WPME\RepositorySettingsFactory();
                 $settingsApi = new \WPME\ApiFactory($settingsRepo);
@@ -161,6 +157,10 @@ class Admin
         });
         // Update option api
         Action::add('wp_ajax_refresh_forms', function(){
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
             try {
                 $cache = new \WPMKTENGINE\Cache(WPMKTENGINE_CACHE);
                 $cache->flush(\WPMKTENGINE\RepositoryForms::REPO_NAMESPACE);
@@ -176,6 +176,10 @@ class Admin
         });
         // Update option api
         Action::add('wp_ajax_refresh_surveys', function(){
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
             try {
                 $cache = new \WPMKTENGINE\Cache(WPMKTENGINE_CACHE);
                 $cache->flush(\WPME\Extensions\RepositorySurveys::REPO_NAMESPACE);
@@ -191,12 +195,18 @@ class Admin
         });
         // Check if url exists
         Action::add('wp_ajax_check_url', function(){
-            $exists = get_page_by_path(ltrim($_POST['url'], '/'));
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
+            $url = esc_url($_POST['url']);
+            $exists = get_page_by_path(ltrim($url, '/'));
             echo is_null($exists) ? 'FALSE' : 'TRUE';
             die;
         });
         // Post edit and Preview Modal
         Filter::add('redirect_post_location', function($location, $post){
+            // No need to sanatize, not saving
             if(isset($_POST['previewModal'])){
                 $location = Utils::addQueryParam($location, 'previewModal', 'true');
             }
@@ -268,9 +278,16 @@ class Admin
                 ),
                 'DOMAIN' => WPMKTENGINE_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
+                'AJAX_NONCE' => wp_create_nonce('Genoo'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),
+                ),
+                'SHORTCODE' => array(
+                    'CTA' => apply_filters('genoo_wpme_cta_shortcode', 'WPMKTENGINECTA'),
+                    'FORM' => apply_filters('genoo_wpme_form_shortcode', 'WPMKTENGINEForm'),
+                    'SURVEY' => apply_filters('genoo_wpme_survey_shortcode', 'WPMKTENGINESurvey'),
+                    'LUMENS' => 'genooLumens',
                 ),
                 'EDITOR' => array(
                     'CTA' => $this->repositaryCTAs->getArrayTinyMCE(),
@@ -291,6 +308,7 @@ class Admin
                 ),
                 'DOMAIN' => WPMKTENGINE_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
+                'AJAX_NONCE' => wp_create_nonce('Genoo'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),

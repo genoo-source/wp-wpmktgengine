@@ -1,8 +1,8 @@
-( function( wp ) {
+(function (wp) {
   var el = wp.element.createElement;
   var __ = wp.i18n.__;
-  var InspectorControls = wp.editor.InspectorControls;
-  var Components = wp.components;
+  var InspectorControls = wp.editor ? wp.editor.InspectorControls : wp.blocks.InspectorControls;
+  var Components = wp.components ? wp.components : wp.blocks;
   var ServerSideRender = Components.ServerSideRender;
   var Disabled = Components.Disabled;
   var PanelBody = Components.PanelBody;
@@ -10,9 +10,9 @@
   var SelectControl = Components.SelectControl;
   var TextControl = Components.TextControl;
   // Visit https://wordpress.org/gutenberg/handbook/block-api/ to learn about Block API
-  wp.blocks.registerBlockType( 'wpme/wpme-cta-block', {
-    title: __( 'CTA' ),
-    description: __( 'Attach your CTA' ),
+  wp.blocks.registerBlockType('wpme/wpme-cta-block', {
+    title: __('CTA'),
+    description: __('Attach your CTA'),
     category: 'widgets',
     icon: 'migrate',
     supportHTML: false,
@@ -45,25 +45,25 @@
           attributes: {
             id: {
               type: 'string',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.id ? named.id : '';
               },
             },
             align: {
               type: 'string',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.align ? named.align : 'none';
               },
             },
             hasTime: {
               type: 'bool',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.hasTime ? named.hasTime : 'false';
               },
             },
             time: {
               type: 'integer',
-              shortcode: function( named ) {
+              shortcode: function (named) {
                 return named.time ? named.time : '';
               },
             },
@@ -76,8 +76,8 @@
      *
      * @param props
      */
-    edit: function(props) {
-      if(!GenooVars || !GenooVars.EDITOR){
+    edit: function (props) {
+      if (!GenooVars || !GenooVars.EDITOR) {
         return;
       }
       var timeWrapper = !props.attributes.hasTime ? Disabled : 'div';
@@ -94,7 +94,7 @@
                 value: props.attributes.id,
                 options: GenooVars.EDITOR.CTA,
                 onChange: function (id) {
-                  props.setAttributes( { id: id } );
+                  props.setAttributes({ id: id });
                 },
               }
             ),
@@ -137,11 +137,11 @@
     /**
      * @returns {*}
      */
-    save: function() {
+    save: function () {
       return null
     }
 
-  } );
-} )(
+  });
+})(
   window.wp
 );

@@ -439,6 +439,10 @@ class CTAs
          * AJAX: Start products import
          */
         add_action('wp_ajax_wpme_import_cta_count', function(){
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
             $count = \WPME\Extensions\CTAs::getCTAsNotInWordPress();
             if(count($count) > 0){
                 genoo_wpme_on_return(array('found' => count($count)));
@@ -450,6 +454,10 @@ class CTAs
          * AJAX: Import of the products
          */
         add_action('wp_ajax_wpme_import_ctas', function(){
+            // Check
+            if (!current_user_can('edit_posts')) return;
+            check_ajax_referer('Genoo');
+            // Code
             // Things
             global $WPME_API;
             $offest = $_REQUEST['offest'];
