@@ -732,9 +732,6 @@ class Frontend
         header('Content-Type: text/html; charset=utf-8');
         // Lets see
         try {
-            // Error reporting
-            error_reporting(0);
-            ini_set('error_reporting', 0);
             $pages = new RepositoryPages($this->cache, $this->api);
             $page = $pages->getPage($id);
             // Affialites
