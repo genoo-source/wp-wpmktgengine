@@ -60,8 +60,6 @@ class TablePages extends Table
         return array(
             'name' => __('Template name', 'wpmktengine'),
             'landing' => 'Used by Landing Pages',
-            'id' => 'ID',
-            'date' => __('Published', 'wpmktengine'),
         );
     }
 
@@ -75,36 +73,79 @@ class TablePages extends Table
     function get_sortable_columns(){ return array('name' => array('name', false)); }
 
 
-    /**
-     * @param $item
-     * @return string
-     */
-    function column_id($item)
-    {
-        return $item['id'];
-    }
-
-
     public function column_landing($item)
     {
         if(!empty($item['landing'])){
             $id = "hidden-list-" . $item['id'];
-            $r = "<ol id=\"$id\">";
+            $r = "<table class=\"wp-list-table widefat\" id=\"$id\">";
+            $r .= "<thead><tr>";
+                $r .= "<th class=\"manage-column column-title\" scope=\"col\">Title</th>";
+                $r .= "<th class=\"manage-column column-url\" scope=\"col\">Url</th>";
+                $r .= "<th class=\"manage-column column-setup\" scope=\"col\">Setup</th>";
+                $r .= "<th class=\"manage-column column-active\" scope=\"col\">Active</th>";
+                $r .= "<th class=\"manage-column column-home\" scope=\"col\">Homepage</th>";
+                $r .= "<th class=\"manage-column column-redirect\" scope=\"col\">Redirect</th>";
+            $r .= "</tr></thead>";
+            $r .= "<tbody>";
             $counterHide = false;
             $counterMax = 2;
             $counter = 1;
             $counterRemaing = count($item['landing']) > $counterMax ? (count($item['landing']) - $counterMax) : 0;
             $counterJS = "onclick='Api.prolognedList(this, event, \"$id\");'";
+            //PostType::columns('wpme-landing-pages', array('wpmktengine_landing_url' => 'Url', 'wpmktengine_landing_template' => 'Page ID', 'setup' => 'Correctly Setup', 'wpmktengine_landing_active' => 'Active', 'wpmktengine_landing_homepage' => 'Homepage', 'wpmktengine_landing_redirect_active' => 'Redirect'), __('Title', 'wpmktengine'));
+            // wpme-landing-pages
             foreach($item['landing'] as $post){
                 if($counter > $counterMax){
                     $counterHide = true;
                 }
                 $link = admin_url('post.php?post='. $post->ID .'&action=edit');
                 $class = $counter > $counterMax ? "class='next hidden'" : "\"class='next'";
-                $r .= "<li $class><a href=\"". $link ."\">". $post->post_title ."</a></li>";
+                $r .= "<tr $class>";
+                $r .= "<td><a href=\"". $link ."\">". $post->post_title ."</a></td>";
+
+                // URL
+                $metaURL = get_post_meta($post->ID, 'wpmktengine_landing_url', true);
+                $r .= "<td>". RepositoryLandingPages::base() . $metaURL .  "</td>";
+
+                // SETUP
+                $metaTemplate = get_post_meta($post->ID, 'wpmktengine_landing_template', true);
+                $metaUrl = get_post_meta($post->ID, 'wpmktengine_landing_url', true);
+                $validTemplate = !empty($metaTemplate) ? true : false;
+                $validUrl = !empty($metaUrl) && filter_var(RepositoryLandingPages::base() . $metaUrl, FILTER_VALIDATE_URL) === false ? false : true;
+                if ($validUrl && $validTemplate) {
+                    $metaSETUP = '<span class="genooTick active">&nbsp;</span>';
+                } else {
+                    $metaSETUP = '<span class="genooCross">&times;</span>';
+                }
+                $r .= "<td>$metaSETUP</td>";
+
+                // ACTIVE
+                $metaActive = get_post_meta($post->ID, 'wpmktengine_landing_active', true);
+                if ($metaActive == 'true') {
+                    $metaActive = '<spain class="genooTick active">&nbsp;</spain>';
+                } else {
+                    $metaActive = '<span class="genooCross">&times;</span>';
+                }
+                $r .= "<td>". $metaActive ."</td>";
+
+                // HOMEPAGE
+                $r .= "<td><span class=\"genooCross\">&times;</span></td>";
+
+                // REDIRECT
+                $metaUrlActive = get_post_meta($post->ID, 'wpmktengine_landing_redirect_active', true);
+                $metaUrl = get_post_meta($post->ID, 'wpmktengine_landing_redirect_url', true);
+                if ($metaUrlActive == 'true') {
+                    $metaREDIRECT = '<span class="genooTick active">&nbsp;</span>';
+                    $metaREDIRECT .= '<br />Redirects to: <strong>'. $metaUrl  .'</strong>';
+                } else {
+                    $metaREDIRECT = '<span class="genooCross">&times;</span>';
+                }
+                $r .= "<td>$metaREDIRECT</td>";
+                $r .= "</tr>";
                 $counter++;
             }
-            $r .= '</ol>';
+            $r .= '</tbody>';
+            $r .= '</table>';
             if($counterHide){
                 $r .= "<a class='button' $counterJS href=\"#\"><span>Show</span> Remaining ($counterRemaing)</a>";
             }
@@ -127,7 +168,10 @@ class TablePages extends Table
             'rename' => $this->getLink('rename', $item['id']),
             'trash' => $this->getLink('trash', $item['id'])
         ));
-        return (isset($item['name']) && !empty($item['name']) ? $item['name'] : __('No title.', 'wpmktengine') ) . $actions;
+        $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
+        $actionsBublished = $this->row_actions(array('published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created']))));
+        $name = isset($item['name']) && !empty($item['name']) && $item['name'] !== 'undefined' ? $item['name'] : __('No title.', 'wpmktengine');
+        return $name . $actionsId . $actionsBublished . $actions;
     }
 
 
@@ -190,20 +234,6 @@ class TablePages extends Table
     }
 
 
-
-    /**
-     * Name column
-     *
-     * @param $item
-     * @return string
-     */
-
-    function column_date($item)
-    {
-        return __('Published', 'wpmktengine') . '<br>' . date('Y/m/d', strtotime($item['created']));
-    }
-
-
     /**
      * Remove cached forms
      *
@@ -245,7 +275,7 @@ class TablePages extends Table
         }
         if(isset($_GET['genooPagesDelete'])){
             // Template id
-            $template_id = sanitize_text_field($_GET['genooPagesDelete']);
+            $template_id = $_GET['genooPagesDelete'];
             // Prepare
             $this->prepare_items();
             // Go through this
@@ -283,8 +313,8 @@ class TablePages extends Table
         if(isset($_GET) && array_key_exists('genooPagesRename', $_GET) && array_key_exists('genooPagesRenameTitle', $_GET)){
             // If all parameters present
             if(!empty($_GET['genooPagesRename']) && !empty($_GET['genooPagesRenameTitle'])){
-                $id = sanitize_text_field($_GET['genooPagesRename']);
-                $name = sanitize_text_field($_GET['genooPagesRenameTitle']);
+                $id = $_GET['genooPagesRename'];
+                $name = $_GET['genooPagesRenameTitle'];
                 try {
                     $this->repositoryPages->renamePage($id, $name);
                     $this->repositoryPages->flush();
