@@ -484,6 +484,8 @@ class Admin
                 \WPMKTENGINE\Utils\ArrayObject::moveFromPositionToPosition($submenu['WPMKTENGINELogin'], 4, 3);
                 \WPMKTENGINE\Utils\ArrayObject::moveFromPositionToPosition($submenu['WPMKTENGINELogin'], 5, 4);
                 \WPMKTENGINE\Utils\ArrayObject::moveFromPositionToPosition($submenu['WPMKTENGINELogin'], 6, 5);
+                // Remove Landing pages
+                unset($submenu['WPMKTENGINELogin'][6]);
             }
         }
     }
