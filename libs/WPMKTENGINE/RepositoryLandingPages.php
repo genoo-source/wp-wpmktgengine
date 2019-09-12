@@ -294,6 +294,25 @@ class RepositoryLandingPages
         return $r;
     }
 
+    public static function findDrafts(){
+      return  get_posts(array(
+        'post_type' => 'wpme-landing-pages',
+        'numberposts' => -1,
+        'meta_query' => array(
+          'relation' => 'OR',
+          array(
+            'key' => 'wpmktengine_landing_template',
+            'value' => '',
+            'compare' => '='
+          ),
+          array(
+            'key' => 'wpmktengine_landing_template',
+            'compare' => 'NOT EXISTS'
+          ),
+        )
+      ));
+    }
+
 
     /**
      * Dependencies for each template

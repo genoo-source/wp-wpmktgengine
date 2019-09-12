@@ -22,6 +22,7 @@ namespace WPMKTENGINE;
 use WPMKTENGINE\Wordpress\Utils;
 use WPMKTENGINE\Wordpress\Notice;
 use WPMKTENGINE\Tools;
+use WPMKTENGINE\RepositoryLandingPages;
 
 class TablePages extends Table
 {
@@ -92,7 +93,6 @@ class TablePages extends Table
             $counter = 1;
             $counterRemaing = count($item['landing']) > $counterMax ? (count($item['landing']) - $counterMax) : 0;
             $counterJS = "onclick='Api.prolognedList(this, event, \"$id\");'";
-            //PostType::columns('wpme-landing-pages', array('wpmktengine_landing_url' => 'Url', 'wpmktengine_landing_template' => 'Page ID', 'setup' => 'Correctly Setup', 'wpmktengine_landing_active' => 'Active', 'wpmktengine_landing_homepage' => 'Homepage', 'wpmktengine_landing_redirect_active' => 'Redirect'), __('Title', 'wpmktengine'));
             // wpme-landing-pages
             foreach($item['landing'] as $post){
                 if($counter > $counterMax){
@@ -161,6 +161,10 @@ class TablePages extends Table
      */
     public function column_name($item)
     {
+        $name = isset($item['name']) && !empty($item['name']) && $item['name'] !== 'undefined' ? $item['name'] : __('No title.', 'wpmktengine');
+        if($this->isDrafts($item)){
+          return $name;
+        }
         $actions = $this->row_actions(array(
             'edit' => $this->getLink('edit', $item['id']),
             'create' => $this->getLink('create', $item['id']),
@@ -170,10 +174,31 @@ class TablePages extends Table
         ));
         $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
         $actionsBublished = $this->row_actions(array('published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created']))));
-        $name = isset($item['name']) && !empty($item['name']) && $item['name'] !== 'undefined' ? $item['name'] : __('No title.', 'wpmktengine');
         return $name . $actionsId . $actionsBublished . $actions;
     }
 
+    public function getNewLandingPageLink($id = false){
+      $realUrlEmptyAdmin = rtrim(admin_url(), '/') . '/';
+      return Utils::addQueryParams($realUrlEmptyAdmin . 'post-new.php', array(
+        'post_type' => 'wpme-landing-pages',
+        'wpmktengine_landing_template' => $id,
+      ));
+    }
+
+    public function isDrafts($item){
+      return isset($item['isDrafts']);
+    }
+
+    public function getFirstItem(){
+      return array(
+        'isDrafts' => true,
+        'className' => 'highlight',
+        'id' => null,
+        'name' => 'Drafts',
+        'craeted' => null,
+        'landing' => RepositoryLandingPages::findDrafts(),
+      );
+    }
 
     /**
      * Get Link
@@ -187,7 +212,6 @@ class TablePages extends Table
         $r = new \stdClass();
         // Get url without params
         $realUrlEmpty = strtok(Utils::getRealUrl(), "?");
-        $realUrlEmptyAdmin = rtrim(admin_url(), '/') . '/';
         $realUrl = $realUrlEmpty . "?page=WPMKTENGINEPages";
         $r->href = '';
         $r->other = '';
@@ -201,10 +225,7 @@ class TablePages extends Table
                 $r->other = 'target="_blank"';
                 break;
             case 'create':
-                $r->href = Utils::addQueryParams($realUrlEmptyAdmin . 'post-new.php', array(
-                    'post_type' => 'wpme-landing-pages',
-                    'wpmktengine_landing_template' => $id,
-                ));
+                $r->href = $this->getNewLandingPageLink($id);
                 $r->title = 'Create a Landing Page';
                 break;
             case 'prev':
@@ -243,11 +264,17 @@ class TablePages extends Table
     function extra_tablenav($which)
     {
         $where = strtok(Utils::getRealUrl(), "&");
+        $whereNewLandingPage = $this->getNewLandingPageLink();
         if($which == 'top'){
-            echo '<div class="alignleft actions"><form style="display: inline; margin: 0" method="POST" action="'. $where .'">
-                    <input type="submit" name="genooPagesFlushCache" id="submit" class="button alignCenter genooExtraNav" value="'. __('Sync Templates', 'wpmktengine') .'">
-                    <a target="_blank" class="button button-primary genooExtraNav" href="'. WPMKTENGINE_BUILDER_NEW .'">'. __('Add new Template', 'wpmktengine') .'</a>
-                </form></div>';
+            echo '
+              <div class="alignleft actions">
+                <form style="display: inline; margin: 0" method="POST" action="'. $where .'">
+                  <input type="submit" name="genooPagesFlushCache" id="submit" class="button alignCenter genooExtraNav" value="'. __('Sync Templates', 'wpmktengine') .'">
+                  <a target="_blank" class="button button-primary genooExtraNav" href="'. WPMKTENGINE_BUILDER_NEW .'">'. __('Add new Page Template', 'wpmktengine') .'</a>
+                  <a href="'. $whereNewLandingPage .'" class="button button-primary genooExtraNav">'. __('Add new Landing Page', 'wpmktengine') .'</a>
+                </form>
+              </div>
+            ';
         }
     }
 
@@ -329,7 +356,6 @@ class TablePages extends Table
     /**
      *  Prepares, sorts, delets, all that stuff :)
      */
-
     public function prepare_items()
     {
         if($this->set == TRUE){ return; }
@@ -343,6 +369,8 @@ class TablePages extends Table
             usort($allLogs, array(&$this, 'usort_reorder'));
             $this->found_data = array_slice($allLogs,(($this->get_pagenum()-1)* $perPage), $perPage);
             $this->set_pagination_args(array('total_items' => count($allLogs), 'per_page' => $perPage));
+            // Append drafts row
+            array_unshift($this->found_data, $this->getFirstItem());
             $this->items = $this->found_data;
             $this->set = TRUE;
         } catch (\WPMKTENGINE\ApiException $e){
