@@ -169,7 +169,7 @@ class TablePages extends Table
             'edit' => $this->getLink('edit', $item['id']),
             'create' => $this->getLink('create', $item['id']),
             'prev' => $this->getLink('prev', $item['id']),
-            'rename' => $this->getLink('rename', $item['id']),
+            'rename' => $this->getLink('rename', $item['id'], $name),
             'trash' => $this->getLink('trash', $item['id'])
         ));
         $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
@@ -205,9 +205,10 @@ class TablePages extends Table
      *
      * @param $which
      * @param null $id
+     * @param null $name
      * @return string
      */
-    function getLink($which, $id = NULL)
+    function getLink($which, $id = NULL, $name = NULL)
     {
         $r = new \stdClass();
         // Get url without params
@@ -236,12 +237,16 @@ class TablePages extends Table
             case 'rename':
                 $r->href = '#';
                 $r->title = 'Rename';
-                $name = __('How would you like rename this Page Template?.', 'wpmktengine');
+                $title = __('How would you like rename this Page Template?.', 'wpmktengine');
                 $url = Utils::addQueryParams($realUrl, array(
                     'genooPagesRename' => $id,
                     'genooPagesRenameTitle' => ''
                 ));
-                $r->other = 'onclick="Tool.promptGo(\''. $name .'\', \''. $url .'=\');"';
+                // Convert the value and remove first and last characters
+                $value = json_encode($name);
+                $value = substr($value, 1);
+                $value = substr_replace($value , '', -1);
+                $r->other = 'onclick="Tool.promptGo(\''. $title .'\', \''. $url .'=\', \''. $value .'\');"';
                 break;
             case 'trash':
                 $r->href = Utils::addQueryParams($realUrl, array(
