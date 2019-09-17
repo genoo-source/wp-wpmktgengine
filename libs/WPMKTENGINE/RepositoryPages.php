@@ -207,7 +207,7 @@ class RepositoryPages extends Repository
       $pages = array();
       $pagesFromDatabase = $this->getPages();
       $pagesDependencies = RepositoryLandingPages::findDependenciesForTemplateWithPosts();
-      $comon = $this->explodeTree(
+      return $this->explodeTree(
         $pagesFromDatabase,
         function($leafPart, $returnedValue) use ($pagesDependencies) {
           return array(
@@ -222,8 +222,6 @@ class RepositoryPages extends Repository
           );
         } 
       );
-      // \Tracy\Debugger::barDump($comon);
-      return $comon;
     }
 
     /**

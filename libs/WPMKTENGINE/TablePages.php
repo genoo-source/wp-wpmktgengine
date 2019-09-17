@@ -20,6 +20,7 @@
 namespace WPMKTENGINE;
 
 use WPMKTENGINE\Wordpress\Utils;
+use WPMKTENGINE\Utils\Strings;
 use WPMKTENGINE\Wordpress\Notice;
 use WPMKTENGINE\Tools;
 use WPMKTENGINE\RepositoryLandingPages;
@@ -77,7 +78,6 @@ class TablePages extends Table
     public function column_landing($item)
     {
         if($this->isFolder($item)){
-          \Tracy\Debugger::barDump($item);
           return '';
         }
         if(!empty($item['landing'])){
@@ -158,18 +158,21 @@ class TablePages extends Table
         return __('No Landing Pages are using this template.', 'wpmktengine');
     }
 
+    public function get_column_name($item){
+      return isset($item[$this->repositoryPages::REPO_SORT_NAME]) 
+        && !empty($item[$this->repositoryPages::REPO_SORT_NAME]) 
+        && $item[$this->repositoryPages::REPO_SORT_NAME] !== 'undefined' 
+          ? $item[$this->repositoryPages::REPO_SORT_NAME] 
+          : __('No title.', 'wpmktengine');      
+    }
 
     /**
      * @param $item
      * @return string
      */
-    public function column_name($item)
+    public function column_name($item, $nesting = null)
     {
-        $name = isset($item[$this->repositoryPages::REPO_SORT_NAME]) 
-          && !empty($item[$this->repositoryPages::REPO_SORT_NAME]) 
-          && $item[$this->repositoryPages::REPO_SORT_NAME] !== 'undefined' 
-            ? $item[$this->repositoryPages::REPO_SORT_NAME] 
-            : __('No title.', 'wpmktengine');
+        $name = $this->get_column_name($item);
         if($this->isDrafts($item) || $this->isFolder($item)){
            return "<span class=\"dashicons dashicons-portfolio\"></span> $name";
         }
@@ -182,7 +185,43 @@ class TablePages extends Table
         ));
         $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
         $actionsBublished = $this->row_actions(array('published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created']))));
-        return $name . $actionsId . $actionsBublished . $actions;
+        $actionDiv = $nesting === null ? "<div>" : "<div class=\"nested level-$nesting\">";
+        $actionDivClosing = "</div>";
+        return $actionDiv . $name . $actionsId . $actionsBublished . $actions . $actionDivClosing;
+    }
+
+    public function single_row($item) {
+      // Keep the alternating class
+      static $level = 0;
+      // Extract original classname
+      $className = array_key_exists('className', $item) ? $item['className'] : '';
+      // Add className
+      $item['className'] = $level !== 0 ? $className . ' nested ' . 'nested-level-' . (int)$level : $className;
+      $item['className'] = str_replace('--', '-', $item['className']);
+      ++$level;
+      // Normal rows follow previous logic
+      if(!$this->isFolder($item) || $this->isDrafts($item)){
+        // Render old way
+        parent::single_row($item);
+        // Reset leveling
+        $level = 0;
+        return;
+      }
+      // First level folder
+      parent::single_row($item);
+      // Create a sub-loop of internal items
+      foreach($item as $innerName => $innerValue){
+        if($innerName === $this->repositoryPages::REPO_SORT_NAME){
+          continue;
+        }
+        if($innerName === 'className'){
+          continue;
+        }
+        $goingDeeper = $this->isFolder($innerValue);
+        $level = $goingDeeper ? $level + 1 : $level - 1;
+        $this->single_row($innerValue);
+      }
+
     }
 
     public function getNewLandingPageLink($id = false){
@@ -202,13 +241,13 @@ class TablePages extends Table
     }
 
     public function getFirstItem(){
+      $drafts = __('Drafts (Landing Pages)', 'wpmktengine');
       return array(
-        $this->repositoryPages::REPO_SORT_NAME => 'Drafts',
-        'name' => 'Drafts',
+        $this->repositoryPages::REPO_SORT_NAME => $drafts,
+        'name' => $drafts,
         'isDrafts' => true,
         'className' => 'highlight',
         'id' => null,
-        'name' => 'Drafts',
         'craeted' => null,
         'landing' => RepositoryLandingPages::findDrafts(),
       );

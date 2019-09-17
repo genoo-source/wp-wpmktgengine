@@ -965,11 +965,9 @@ class TableLite {
         foreach ( $columns as $column_name => $column_display_name ) {
             $className = isset($item['className']) ? $item['className'] : '';
             $class = "class='$column_name $className column-$column_name'";
-
             $style = '';
             if ( in_array( $column_name, $hidden ) )
                 $style = ' style="display:none;"';
-
             $attributes = "$class$style";
 
             if ( 'cb' == $column_name ) {
