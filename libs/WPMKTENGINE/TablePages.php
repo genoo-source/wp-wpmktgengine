@@ -76,6 +76,10 @@ class TablePages extends Table
 
     public function column_landing($item)
     {
+        if($this->isFolder($item)){
+          \Tracy\Debugger::barDump($item);
+          return '';
+        }
         if(!empty($item['landing'])){
             $id = "hidden-list-" . $item['id'];
             $r = "<table class=\"wp-list-table widefat\" id=\"$id\">";
@@ -161,9 +165,13 @@ class TablePages extends Table
      */
     public function column_name($item)
     {
-        $name = isset($item['name']) && !empty($item['name']) && $item['name'] !== 'undefined' ? $item['name'] : __('No title.', 'wpmktengine');
-        if($this->isDrafts($item)){
-          return $name;
+        $name = isset($item[$this->repositoryPages::REPO_SORT_NAME]) 
+          && !empty($item[$this->repositoryPages::REPO_SORT_NAME]) 
+          && $item[$this->repositoryPages::REPO_SORT_NAME] !== 'undefined' 
+            ? $item[$this->repositoryPages::REPO_SORT_NAME] 
+            : __('No title.', 'wpmktengine');
+        if($this->isDrafts($item) || $this->isFolder($item)){
+           return "<span class=\"dashicons dashicons-portfolio\"></span> $name";
         }
         $actions = $this->row_actions(array(
             'edit' => $this->getLink('edit', $item['id']),
@@ -189,8 +197,14 @@ class TablePages extends Table
       return isset($item['isDrafts']);
     }
 
+    public function isFolder($item){
+      return !array_key_exists('id', $item);
+    }
+
     public function getFirstItem(){
       return array(
+        $this->repositoryPages::REPO_SORT_NAME => 'Drafts',
+        'name' => 'Drafts',
         'isDrafts' => true,
         'className' => 'highlight',
         'id' => null,
@@ -220,7 +234,7 @@ class TablePages extends Table
         switch($which){
             case 'edit':
                 $r->href =  Utils::addQueryParams(WPMKTENGINE_BUILDER_NEW, array(
-                    'id' => $id,
+                  'id' => $id,
                 ));
                 $r->title = 'Edit';
                 $r->other = 'target="_blank"';
@@ -259,7 +273,6 @@ class TablePages extends Table
         return '<a href="'. $r->href .'" '. $r->other .'>'. $r->title .'</a>';
     }
 
-
     /**
      * Remove cached forms
      *
@@ -283,13 +296,10 @@ class TablePages extends Table
         }
     }
 
-
     /**
      * No Items notices
      */
-
     function no_items(){ echo __('There are no Pages created in your account.', 'wpmktengine'); }
-
 
     /**
      * Process it!
@@ -366,10 +376,10 @@ class TablePages extends Table
         if($this->set == TRUE){ return; }
         try {
             $perPage = 100;
-            $allLogs = $this->repositoryPages->getPagesTable();
+            $allLogs = $this->repositoryPages->getStructuredPagesTable();
             $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
             if(!isset($_GET['orderby'])){
-                $_GET['orderby'] = 'name';
+                $_GET['orderby'] = $this->repositoryPages::REPO_SORT_NAME;
             }
             usort($allLogs, array(&$this, 'usort_reorder'));
             $this->found_data = array_slice($allLogs,(($this->get_pagenum()-1)* $perPage), $perPage);

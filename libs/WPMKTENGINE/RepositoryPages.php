@@ -33,6 +33,7 @@ namespace WPMKTENGINE;
 
 use WPMKTENGINE\Wordpress\Utils;
 use WPMKTENGINE\RepositoryLandingPages;
+use WPMKTENGINE\Utils\Strings;
 
 /**
  * @category WPME
@@ -44,26 +45,37 @@ use WPMKTENGINE\RepositoryLandingPages;
 class RepositoryPages extends Repository
 {
     /**
-     *
-     *
      * @var \WPMKTENGINE\Cache
      */
     private $cache;
     /**
-     *
-     *
      * @var \WPMKTENGINE\Api
      */
     public $api;
+
     /**
- * 3600 seconds = hour
-*/
+     * Directory Key map
+     */
+    public $directoryTree;
+    /**
+     * 3600 seconds = hour
+     * 3600 seconds = hour
+    */
     const REPO_TIMER = '3600';
     /**
- * cache namespace
-*/
+     * cache namespace
+    */
     const REPO_NAMESPACE = 'pages';
 
+    /**
+     * Default folder
+     */
+    const REPO_DEFAULT_FOLDER = 'Uncategorised';
+
+    /**
+     * The depth of the tree
+     */
+    CONST REPO_SORT_NAME = '__sort_name';
 
     /**
      * @param Cache $cache
@@ -152,7 +164,7 @@ class RepositoryPages extends Repository
     public function getPagesArrayDropdown()
     {
         $arr = $this->getPagesArray();
-        $arr[0] = __('Select page template', 'wpmktengine');
+        array_unshift($arr, __('Select page template', 'wpmktengine'));
         return $arr;
     }
 
@@ -185,6 +197,71 @@ class RepositoryPages extends Repository
         return $forms;
     }
 
+    /**
+     * Get pages for listing table
+     *
+     * @return array
+     */
+    public function getStructuredPagesTable()
+    {
+      $pages = array();
+      $pagesFromDatabase = $this->getPages();
+      $pagesDependencies = RepositoryLandingPages::findDependenciesForTemplateWithPosts();
+      $comon = $this->explodeTree(
+        $pagesFromDatabase,
+        function($leafPart, $returnedValue) use ($pagesDependencies) {
+          return array(
+            self::REPO_SORT_NAME => $leafPart,
+            'id' => $returnedValue->id,
+            'name' => $returnedValue->name,
+            'created' => $returnedValue->create_date,
+            'landing' => 
+              array_key_exists($returnedValue->id, $pagesDependencies)
+                ? $pagesDependencies[$returnedValue->id]
+                : array(),
+          );
+        } 
+      );
+      // \Tracy\Debugger::barDump($comon);
+      return $comon;
+    }
+
+    /**
+     * Explode Tree
+     * - This does iterate one more time through all
+     * but it is the fastest way this time. 
+     */
+    public function explodeTree($array, $valueGenerator = false)
+    {
+      $delimiter = '/';
+      if(!is_array($array)) return false;
+      $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
+      $returnArr = array();
+      foreach ($array as $key => $val) {
+        $val = (object)$val;
+        $parts	= preg_split($splitRE, $val->name, -1, PREG_SPLIT_NO_EMPTY);
+        $leafPart = Strings::trim(array_pop($parts));
+        $parentArr = &$returnArr;
+        foreach ($parts as $part) {
+          $part = Strings::trim($part);
+          $initArray = array(self::REPO_SORT_NAME => $part);
+          if (!isset($parentArr[$part])) {
+            $parentArr[$part] = $initArray;
+          } elseif (!is_array($parentArr[$part])) {
+            $parentArr[$part] = $initArray;
+          }
+          $parentArr = &$parentArr[$part];
+        }
+        if (empty($parentArr[$leafPart])) {
+          if(is_callable($valueGenerator)){
+            $parentArr[$leafPart] = $valueGenerator($leafPart, $val);
+          } else {
+            $parentArr[$leafPart] = $val;
+          }
+        }
+      }
+      return $returnArr;
+    }
 
     /**
      * Delete Page
