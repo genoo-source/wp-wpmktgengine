@@ -180,7 +180,7 @@ class TablePages extends Table
             'edit' => $this->getLink('edit', $item['id']),
             'create' => $this->getLink('create', $item['id']),
             'prev' => $this->getLink('prev', $item['id']),
-            'rename' => $this->getLink('rename', $item['id'], $name),
+            'rename' => $this->getLink('rename', $item['id'], $item['name']),
             'trash' => $this->getLink('trash', $item['id'])
         ));
         $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
