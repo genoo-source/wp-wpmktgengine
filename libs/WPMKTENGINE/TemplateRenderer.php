@@ -554,7 +554,7 @@ class TemplateRenderer
                                     if ( gettype( $current_col[1] ) == 'string' || gettype( $current_col[1] ) == 'undefined') {
                                         $partition_to_generate = array(
                                             0 => array(
-                                                width => "1_1"
+                                                'width' => "1_1"
                                             ),
                                         );
                                         for ( $lonely_item = 1; $lonely_item < count( $current_col ); $lonely_item++ ) {
@@ -569,7 +569,7 @@ class TemplateRenderer
 
                                     for ( $partition_column = 1; $partition_column < count( $current_col ); $partition_column++ ) {
                                         $partition_column_width =
-                                            $current_col[$partition_column][0] -> width;
+                                            $current_col[$partition_column][0]->width;
 
                                         $r .= '<div class="pane sortable-column ui-sortable partition-column__'.$partition_column_width.'">';
 
