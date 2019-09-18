@@ -186,7 +186,7 @@ class TablePages extends Table
         $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
         $actionsBublished = $this->row_actions(array('published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created']))));
         $actionDiv = $nesting === null ? "<div>" : "<div class=\"nested level-$nesting\">";
-        $actionDivClosing = "</div>";
+        $actionDivClosing = "</div>";  
         return $actionDiv . $name . $actionsId . $actionsBublished . $actions . $actionDivClosing;
     }
 

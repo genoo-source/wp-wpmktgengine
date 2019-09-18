@@ -83,14 +83,12 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
     /**
      * No Items notices
      */
-
     function no_items(){ __('We are sorry, but there are no items to be listed.', 'wpmktengine'); }
 
 
     /**
      * Prepare items
      */
-
     public function prepare_items(){}
 
 
@@ -101,7 +99,6 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
      * @param $b
      * @return int
      */
-
     function usort_reorder($a, $b)
     {
         $orderby = (!empty($_GET['orderby'])) ? $_GET['orderby'] : 'id';
@@ -118,7 +115,6 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
      * @param $column_name
      * @return mixed
      */
-
     function column_default($item, $column_name)
     {
         if(is_array($item) && array_key_exists($column_name, $item)){
@@ -133,7 +129,6 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
      *
      * @return mixed
      */
-
     public function getNotices(){ return $this->notices; }
 
 
