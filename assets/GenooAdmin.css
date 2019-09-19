@@ -973,3 +973,15 @@ table td.name.nested.nested-level-4 {
 table td.name.nested.nested-level-4:before {
   width: 70px;
 }
+table td.name.nested.nested-level-5 {
+  padding-left: 110px !important;
+}
+table td.name.nested.nested-level-5:before {
+  width: 90px;
+}
+table td.name.nested.nested-level-6 {
+  padding-left: 130px !important;
+}
+table td.name.nested.nested-level-6:before {
+  width: 110px;
+}

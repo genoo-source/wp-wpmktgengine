@@ -271,15 +271,18 @@ class TablePages extends Table
           . $this->get_folder_html($name, $item['id']);
     }
 
-    public function single_row($item) {
-      // Keep the alternating class
-      static $level = 0;
+    public function attach_class_name(&$item, $level){
       // Extract original classname
       $className = array_key_exists('className', $item) ? $item['className'] : '';
       // Add className
       $item['className'] = $level !== 0 ? $className . ' nested ' . 'nested-level-' . (int)$level : $className;
       $item['className'] = str_replace('--', '-', $item['className']);
-      ++$level;
+    }
+
+    public function single_row($item) {
+      // Keep the alternating class
+      static $level = 0;
+      $this->attach_class_name($item, $level);
       // Normal rows follow previous logic
       if(!$this->isFolder($item) || $this->isDrafts($item)){
         // Render old way
@@ -299,7 +302,8 @@ class TablePages extends Table
           continue;
         }
         $goingDeeper = $this->isFolder($innerValue);
-        $level = $goingDeeper ? $level + 1 : $level - 1;
+        $level = $goingDeeper ? $level + 1 : $level + 1;
+        $this->attach_class_name($innerValue, $level);
         $this->single_row($innerValue);
       }
 
