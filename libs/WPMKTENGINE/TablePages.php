@@ -257,14 +257,17 @@ class TablePages extends Table
             'move' => $this->getLink('move', $item['id'], $item['name']),
             'trash' => $this->getLink('trash', $item['id'])
         ));
-        $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
-        $actionsBublished = $this->row_actions(array('published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created']))));
+        $actionsBublished = $this->row_actions(
+          array(
+            'id' => 'ID: ' . $item['id'],
+            'published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created'])),
+          )
+        );
         // Nesting DIV
         $actionDiv = $nesting === null ? "<div>" : "<div class=\"nested level-$nesting\">";
         $actionDivClosing = "</div>";
         return $actionDiv 
-          . $name 
-          . $actionsId 
+          . $name
           . $actionsBublished 
           . $actions 
           . $actionDivClosing 
