@@ -200,7 +200,7 @@ class Cache
                     }
                 }
                 if (!@rmdir($directory)) {
-                    throw new CacheException('Can\'t remove dir (user permissions?)');
+                    throw new CacheException('Can\'t remove dir (user permissions?)', 1000);
                 }
                 return true;
             } else {

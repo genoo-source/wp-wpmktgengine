@@ -35,6 +35,10 @@ class TablePages extends Table
     var $activeForm;
     /** @var bool */
     var $set = FALSE;
+    /** @var string */
+    var $folderHtml = '';
+
+    const COMMAND_NEW_FOLDER = 'wpme_new_folder_to_create_command';
 
     /**
      * Constructor
@@ -167,6 +171,75 @@ class TablePages extends Table
     }
 
     /**
+     * This happens only once and then each row
+     * changes the id value with simple `str_replace`
+     */
+    private function make_folder_html(){
+      $folderStructure = $GLOBALS[$this->repositoryPages::FOLDER_STRUCTURE];
+      $realUrlEmpty = strtok(Utils::getRealUrl(), "?");
+      $realUrl = $realUrlEmpty . "?page=WPMKTENGINEPages";
+      $appendedUrl = Utils::addQueryParams($realUrl, array(
+        'genooPagesRename' => '%%ID%%',
+        'genooPagesRenameTitle' => '%%NEW_NAME%%'
+      ));
+      // Text values
+      $textNewFolder = __('Create a new folder &rarr;', 'wpmktengine');
+      $textNewPage = __('Move page to a folder:', 'wpmktengine');
+      $textSelect = __('Select a folder:', 'wpmktengine');
+      $textSelectNewFolder = __('Create a new folder:', 'wpmktengine');
+      $textSelectNewFolderPlaceholder = __('New folder name', 'wpmktengine');
+      $returnedHtml = '';          
+      // Generate HTML
+      $returnedHtml .= "<div class=\"wpme_page_select_form\">";
+      $returnedHtml .= "<form 
+        data-id=\"%%ID%%\"
+        data-name=\"%%NAME%%\"
+        data-url=\"$appendedUrl\"
+        onchange=\"Genoo.onPageMove(event);\" 
+        onsubmit=\"Genoo.onPageMove(event);\" 
+        style=\"display: inline; margin: 0\" 
+        method=\"POST\" 
+        action=\"$realUrl\">
+      ";
+      $returnedHtml .= "<input type=\"hidden\" style=\"display: none\" name=\"id\" value=\"%%ID%%\" />";
+      $returnedHtml .= "<h3>$textNewPage</h3>";
+      $returnedHtml .= "<h4>Page name: %%NAME%%</h4>";
+      $returnedHtml .= "<label>$textSelect <br /><select id=\"wpme_page_select_folder_%%ID%%\" name=\"wpme_page_select_folder\">";
+      foreach($folderStructure as $key => $value){
+        $returnedHtml .= "<option value=\"$key\">$value</option>";
+      }
+      // Form Guts
+      $returnedHtml .= "<option value=\"". self::COMMAND_NEW_FOLDER ."\">$textNewFolder</option>";
+      // End HTML
+      $returnedHtml .= "</select></label><br /><br />";
+      $returnedHtml .= "<div id=\"wpme_page_select_new_folder_%%ID%%\" class=\"hidden\">";
+        $returnedHtml .= "<label>$textSelectNewFolderPlaceholder: <br /><small>(only numbers and letters allowed)</small><br />";
+        $returnedHtml .= "
+      <input 
+          id=\"wpme_page_select_new_folder_input_%%ID%%\" 
+          type=\"text\" 
+          placeholder=\"$textSelectNewFolderPlaceholder\" 
+          name=\"wpme_page_select_new_folder\" 
+          pattern=\"[a-zA-Z0-9 ]+\"
+          />
+      </label>
+      ";
+      $returnedHtml .= "</div>";
+      $returnedHtml .= "<p><input type=\"submit\" id=\"submit\" class=\"button button-primary\" value=\"Change\"></p>";
+      $returnedHtml .= "</form></div>";
+      // Save generated HTML
+      $this->folderHtml = $returnedHtml;
+    }
+
+    public function get_folder_html($name, $id){
+      return "<div id=\"wpme_move_page_$id\" style=\"display:none\">" . str_replace(
+        array('%%ID%%', '%%NAME%%'),
+        array($id, $name),
+        $this->folderHtml
+      ) . "</div>";
+    }
+
+    /**
      * @param $item
      * @return string
      */
@@ -181,13 +254,21 @@ class TablePages extends Table
             'create' => $this->getLink('create', $item['id']),
             'prev' => $this->getLink('prev', $item['id']),
             'rename' => $this->getLink('rename', $item['id'], $item['name']),
+            'move' => $this->getLink('move', $item['id'], $item['name']),
             'trash' => $this->getLink('trash', $item['id'])
         ));
         $actionsId = $this->row_actions(array('id' => 'ID: ' . $item['id']));
         $actionsBublished = $this->row_actions(array('published' => __('Published: ', 'wpmktengine') . date('Y/m/d', strtotime($item['created']))));
+        // Nesting DIV
         $actionDiv = $nesting === null ? "<div>" : "<div class=\"nested level-$nesting\">";
-        $actionDivClosing = "</div>";  
-        return $actionDiv . $name . $actionsId . $actionsBublished . $actions . $actionDivClosing;
+        $actionDivClosing = "</div>";
+        return $actionDiv 
+          . $name 
+          . $actionsId 
+          . $actionsBublished 
+          . $actions 
+          . $actionDivClosing 
+          . $this->get_folder_html($name, $item['id']);
     }
 
     public function single_row($item) {
@@ -301,6 +382,12 @@ class TablePages extends Table
                 $value = substr_replace($value , '', -1);
                 $r->other = 'onclick="Tool.promptGo(\''. $title .'\', \''. $url .'=\', \''. $value .'\');"';
                 break;
+            case 'move':
+                $r->href = '#TB_inline?width=100%&height=100%&inlineId=wpme_move_page_' . $id;
+                $r->title = __('Move to a folder', 'wpmktengine');
+                // Convert the value and remove first and last characters
+                $r->other = 'class="thickbox"';
+                break;
             case 'trash':
                 $r->href = Utils::addQueryParams($realUrl, array(
                     'genooPagesDelete' => $id
@@ -332,6 +419,62 @@ class TablePages extends Table
                 </form>
               </div>
             ';
+            echo "
+              <script type=\"text/javascript\">
+                var Genoo = Genoo || {};
+                
+                /**
+                 * Rid the new page name of wrong characters
+                 */
+                Genoo.sanatizeFolderName = function(newFolder){
+                  return newFolder.trim();
+                };
+
+                /**
+                 * Rename a page using method already in
+                 */ 
+                Genoo.renamePageTo = function(name, url){
+                  window.location = url.replace('%%NEW_NAME%%', encodeURIComponent(name));
+                };
+
+                /**
+                 * On Page Move to a new / or existing folder 
+                 */
+                Genoo.onPageMove = function(event){
+                  try {
+                    // Get basic vars
+                    var eventType = event.type;
+                    var eventForm = eventType === 'change' ? event.target.parentNode.parentNode : event.target;
+                    var pageId = eventForm.getAttribute('data-id');
+                    var pageName = eventForm.getAttribute('data-name');
+                    var pageUrl = eventForm.getAttribute('data-url');
+                    var eventHiddenSpot = document.getElementById('wpme_page_select_new_folder_' + pageId);
+                    // Magic
+                    var valueForFolder = document.getElementById('wpme_page_select_folder_' + pageId).value;
+                    var valueForNewFolder = document.getElementById('wpme_page_select_new_folder_input_' + pageId).value;
+                    // If we are swapping pages and land on a new folder
+                    if(eventType === 'change'){
+                      if(event.target.value === '". self::COMMAND_NEW_FOLDER ."'){
+                        Tool.removeClass(eventHiddenSpot, 'hidden');
+                      } else {
+                        Tool.addClass(eventHiddenSpot, 'hidden');
+                      }
+                    } else {
+                      // Deciding factor, if we move to a new folder
+                      var movingToNewFolder = valueForFolder === '". self::COMMAND_NEW_FOLDER ."';
+                      var newPageName = movingToNewFolder
+                        ? Genoo.sanatizeFolderName(valueForNewFolder) + ' / ' + pageName
+                        : valueForFolder + pageName;
+                      event.preventDefault();
+                      // Cool lets rename this page
+                      Genoo.renamePageTo(newPageName, pageUrl);
+                    }
+                  } catch(errror){
+                    // Not really
+                  }
+                };
+              </script>
+            ";
         }
     }
 
@@ -364,7 +507,7 @@ class TablePages extends Table
             $template_checks_found = NULL;
             if(Utils::isIterable($template_checks)){
                 foreach($template_checks as $item){
-                    if($item['id'] == $template_id && !empty($item['landing'])){
+                    if(array_key_exists('id', $item) && $item['id'] == $template_id && !empty($item['landing'])){
                         $template_checks_found = $item['landing'];
                         break;
                     }
@@ -401,6 +544,10 @@ class TablePages extends Table
                     $this->repositoryPages->flush();
                     $this->addNotice('updated', __('Template successfully renamed.', 'wpmktengine'));
                 } catch (\Exception $e){
+                    if($e->getCode() === 1000){
+                      $this->addNotice('updated', __('Template successfully renamed.', 'wpmktengine'));
+                      return;
+                    }
                     $this->addNotice('error', $e->getMessage());
                 }
             }
@@ -414,8 +561,12 @@ class TablePages extends Table
     {
         if($this->set == TRUE){ return; }
         try {
+            // Get data
             $perPage = 100;
             $allLogs = $this->repositoryPages->getStructuredPagesTable();
+            // Generate move page to a folder html
+            $this->make_folder_html();
+            // Setup data
             $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
             if(!isset($_GET['orderby'])){
                 $_GET['orderby'] = $this->repositoryPages::REPO_SORT_NAME;

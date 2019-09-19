@@ -91,7 +91,6 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
      */
     public function prepare_items(){}
 
-
     /**
      * Reordering function.
      *

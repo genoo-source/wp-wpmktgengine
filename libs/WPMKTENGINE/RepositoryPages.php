@@ -78,6 +78,11 @@ class RepositoryPages extends Repository
     CONST REPO_SORT_NAME = '__sort_name';
 
     /**
+     * Globals variable name
+     */
+    CONST FOLDER_STRUCTURE = 'WPME_LANDING_PAGES_FOLDER_STRUCTURE';
+
+    /**
      * @param Cache $cache
      */
     public function __construct(\WPMKTENGINE\Cache $cache, \WPME\ApiFactory $api)
@@ -235,13 +240,22 @@ class RepositoryPages extends Repository
       if(!is_array($array)) return false;
       $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
       $returnArr = array();
+      $returnFolderStructure = array(
+        '' => __('No folder.', 'wpmktengine')
+      );
       foreach ($array as $key => $val) {
         $val = (object)$val;
         $parts	= preg_split($splitRE, $val->name, -1, PREG_SPLIT_NO_EMPTY);
+        $partsCount = count($parts);
         $leafPart = Strings::trim(array_pop($parts));
         $parentArr = &$returnArr;
+        $folderName = '';
         foreach ($parts as $part) {
           $part = Strings::trim($part);
+          if($partsCount > 1){
+            $folderName .= $part . ' / ';
+            $returnFolderStructure[$folderName] = $folderName;
+          }
           $initArray = array(self::REPO_SORT_NAME => $part);
           if (!isset($parentArr[$part])) {
             $parentArr[$part] = $initArray;
@@ -258,6 +272,7 @@ class RepositoryPages extends Repository
           }
         }
       }
+      $GLOBALS[self::FOLDER_STRUCTURE] = $returnFolderStructure;
       return $returnArr;
     }
 
