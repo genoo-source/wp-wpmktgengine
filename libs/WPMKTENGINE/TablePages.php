@@ -302,7 +302,7 @@ class TablePages extends Table
           continue;
         }
         $goingDeeper = $this->isFolder($innerValue);
-        $level = $goingDeeper ? $level + 1 : $level + 1;
+        $level++;
         $this->attach_class_name($innerValue, $level);
         $this->single_row($innerValue);
       }
