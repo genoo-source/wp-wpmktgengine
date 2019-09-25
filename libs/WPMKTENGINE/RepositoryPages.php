@@ -260,6 +260,7 @@ class RepositoryPages extends Repository
                 ? $pagesDependencies[$val->id]
                 : array();
         $val->landing = $landingPages;
+        $val->highlight = $highlight;
         // We will remove elements that don't match search if we search
         if($canHide){
           // 1. Post title

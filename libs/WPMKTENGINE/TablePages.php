@@ -80,6 +80,13 @@ class TablePages extends Table
       return array(); 
     }
 
+    public function get_delete_link($id){
+      $nonce = wp_nonce_url(
+        get_admin_url() .'post.php?post=' . $id . '&amp;action=delete', 
+        'delete-post_'.$id
+      );
+      return "<a href=\"$nonce\"><span class=\"dashicons dashicons-trash\"></span></a>";
+    }
 
     public function column_landing($item)
     {
@@ -92,7 +99,7 @@ class TablePages extends Table
             $r .= "<thead><tr>";
                 $r .= "<th class=\"manage-column column-title\" scope=\"col\">Title</th>";
                 $r .= "<th class=\"manage-column column-url\" scope=\"col\">Url</th>";
-                $r .= "<th class=\"manage-column column-setup\" scope=\"col\">Setup</th>";
+                $r .= "<th class=\"manage-column column-setup\" scope=\"col\">Delete</th>";
                 $r .= "<th class=\"manage-column column-active\" scope=\"col\">Active</th>";
                 $r .= "<th class=\"manage-column column-home\" scope=\"col\">Homepage</th>";
                 $r .= "<th class=\"manage-column column-redirect\" scope=\"col\">Redirect</th>";
@@ -118,16 +125,17 @@ class TablePages extends Table
                 $r .= "<td>". RepositoryLandingPages::base() . $metaURL .  "</td>";
 
                 // SETUP
-                $metaTemplate = get_post_meta($post->ID, 'wpmktengine_landing_template', true);
-                $metaUrl = get_post_meta($post->ID, 'wpmktengine_landing_url', true);
-                $validTemplate = !empty($metaTemplate) ? true : false;
-                $validUrl = !empty($metaUrl) && filter_var(RepositoryLandingPages::base() . $metaUrl, FILTER_VALIDATE_URL) === false ? false : true;
-                if ($validUrl && $validTemplate) {
-                    $metaSETUP = '<span class="genooTick active">&nbsp;</span>';
-                } else {
-                    $metaSETUP = '<span class="genooCross">&times;</span>';
-                }
-                $r .= "<td>$metaSETUP</td>";
+                // $metaTemplate = get_post_meta($post->ID, 'wpmktengine_landing_template', true);
+                // $metaUrl = get_post_meta($post->ID, 'wpmktengine_landing_url', true);
+                // $validTemplate = !empty($metaTemplate) ? true : false;
+                // $validUrl = !empty($metaUrl) && filter_var(RepositoryLandingPages::base() . $metaUrl, FILTER_VALIDATE_URL) === false ? false : true;
+                // if ($validUrl && $validTemplate) {
+                //     $metaSETUP = '<span class="genooTick active">&nbsp;</span>';
+                // } else {
+                //     $metaSETUP = '<span class="genooCross">&times;</span>';
+                // }
+                // $r .= "<td>$metaSETUP</td>";
+                $r .= "<td>" . $this->get_delete_link($post->ID) . "</td>";
 
                 // ACTIVE
                 $metaActive = get_post_meta($post->ID, 'wpmktengine_landing_active', true);
