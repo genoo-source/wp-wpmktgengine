@@ -976,12 +976,13 @@ class TableLite {
 
         foreach ( $columns as $column_name => $column_display_name ) {
             $className = isset($item['className']) ? $item['className'] : '';
+            $level = isset($item['level']) ? $item['level'] : 0;
             $class = "class='$column_name $className column-$column_name'";
             $style = '';
             if ( in_array( $column_name, $hidden ) )
                 $style = ' style="display:none;"';
             $attributes = "$class$style";
-
+            $attributes = "$attributes data-level=\"$level\"";
             if ( 'cb' == $column_name ) {
                 echo '<th scope="row" class="check-column">';
                 echo $this->column_cb( $item );

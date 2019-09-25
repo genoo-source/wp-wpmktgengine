@@ -988,9 +988,9 @@ table td.name.nested.nested-level-6:before {
 .wpme-folder-switch .dashicons-plus {
   display: none;
 }
-.wpme-folder-switch.collapsed .dashicons-plus {
+.collapsed .wpme-folder-switch .dashicons-plus {
   display: inherit;
 }
-.wpme-folder-switch.collapsed .dashicons-minus {
+.collapsed .wpme-folder-switch .dashicons-minus {
   display: none;
 }

@@ -258,7 +258,11 @@ class TablePages extends Table
         $name = $this->get_column_name($item);
         if($this->isDrafts($item) || $this->isFolder($item)){
            return "
-            <span class=\"dashicons dashicons-portfolio\"></span> $name
+            <a class=\"wpme-folder-switch\" href=\"#\" onclick=\"Genoo.onPageCollapse(event);\">
+              <span class=\"dashicons dashicons-plus\"></span>
+              <span class=\"dashicons dashicons-minus\"></span>
+              <span class=\"dashicons dashicons-portfolio\"></span> $name
+            </a>
            ";
         }
         $actions = $this->row_actions(array(
@@ -456,6 +460,42 @@ class TablePages extends Table
                   } catch(errror){
                     // Not really
                   }
+                };
+
+                Genoo.getElementLevel = function(element){
+                  return parseInt(element.getAttribute('data-level'), 10);
+                };
+
+                /**
+                 * On Page Move to a new / or existing folder 
+                 */
+                Genoo.onPageCollapse = function(event){
+                  event.preventDefault();
+                  // The row above
+                  var parentRow = event.target.parentNode.parentNode;
+                  // The siblings array
+                  var siblings = [];
+                  // We will iterate through all rows, until one that is not nested 
+                  // to get all siblings
+                  var elem = parentRow.nextSibling;
+                  var minimumLevel = Genoo.getElementLevel(event.target.parentNode);
+                  // As long as a sibling exists
+                  while (elem) {
+                    Tool.addClass(elem, 'hidden');
+                    Tool.addClass(parentRow, 'collapsed');
+                    // If not nested anymore, break
+                    if(
+                      !Tool.hasClass(elem.childNodes[0], 'nested') ||
+                      Genoo.getElementLevel(elem.childNodes[0]) < minimumLevel
+                    ){
+                      break;
+                    }
+                    // Add siblings
+                    siblings.push(elem);
+                    // Get the next sibling element
+                    elem = elem.nextSibling;
+                  }
+                  console.log(siblings);
                 };
               </script>
             ";

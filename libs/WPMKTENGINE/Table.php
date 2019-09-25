@@ -138,6 +138,7 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
       // Add className
       $item['className'] = $level !== 0 ? $className . ' nested ' . 'nested-level-' . (int)$level : $className;
       $item['className'] = str_replace('--', '-', $item['className']);
+      $item['level'] = $level;
     }
 
     public function single_row($item) {
@@ -159,7 +160,7 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
         if($innerName === $this->repositoryPages::REPO_SORT_NAME){
           continue;
         }
-        if($innerName === 'className'){
+        if($innerName === 'className' || $innerName === 'level'){
           continue;
         }
         $goingDeeper = $this->isFolder($innerValue);
