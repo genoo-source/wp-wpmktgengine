@@ -257,7 +257,9 @@ class TablePages extends Table
     {
         $name = $this->get_column_name($item);
         if($this->isDrafts($item) || $this->isFolder($item)){
-           return "<span class=\"dashicons dashicons-portfolio\"></span> $name";
+           return "
+            <span class=\"dashicons dashicons-portfolio\"></span> $name
+           ";
         }
         $actions = $this->row_actions(array(
             'edit' => $this->getLink('edit', $item['id']),
@@ -376,6 +378,10 @@ class TablePages extends Table
         return '<a href="'. $r->href .'" '. $r->other .'>'. $r->title .'</a>';
     }
 
+    public function get_table_id(){
+      return 'wpme-landing-pages';
+    }
+
     /**
      * Remove cached forms
      *
@@ -453,7 +459,24 @@ class TablePages extends Table
                 };
               </script>
             ";
-            $this->search_box($searchText, 'search-wpme-landing-pages');
+            $this->search_box(
+              $searchText, 
+              __('Page name, URL or ID', 'wpmktengine'), 
+              'search-wpme-landing-pages'
+            );
+        }
+        if($which == 'bottom'){
+          // window.localStorage.setItem('key', value);
+          // window.localStorage.getItem('key')
+          echo "
+            <script type=\"text/javascript\">
+              // Get all folders
+              var folders = document.querySelectorAll('#wpme-landing-pages .wpme-folder-switch');
+              // Remove Drafts from the array (first folder)
+              folders = [].slice.call(folders, 1);
+              // Hide, show and attach handlers
+            </script>
+          ";
         }
     }
 

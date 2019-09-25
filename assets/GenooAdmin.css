@@ -985,3 +985,12 @@ table td.name.nested.nested-level-6 {
 table td.name.nested.nested-level-6:before {
   width: 110px;
 }
+.wpme-folder-switch .dashicons-plus {
+  display: none;
+}
+.wpme-folder-switch.collapsed .dashicons-plus {
+  display: inherit;
+}
+.wpme-folder-switch.collapsed .dashicons-minus {
+  display: none;
+}

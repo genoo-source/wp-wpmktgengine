@@ -248,7 +248,8 @@ class RepositoryPages extends Repository
       $canHide = $searchQuery !== '';
       foreach ($array as $key => $val) {
         $val = (object)$val;
-        $name = $val->name;
+        $name = strtolower($val->name);
+        $id = strtolower($val->id);
         $parts	= preg_split($splitRE, $name, -1, PREG_SPLIT_NO_EMPTY);
         $partsCount = count($parts);
         $leafPart = Strings::trim(array_pop($parts));
@@ -264,7 +265,10 @@ class RepositoryPages extends Repository
         // We will remove elements that don't match search if we search
         if($canHide){
           // 1. Post title
-          if(Strings::contains(strtolower($name), strtolower($searchQuery))){
+          if(Strings::contains($name, strtolower($searchQuery))){
+            $highlight = true;
+          }
+          if(Strings::contains($id, strtolower($searchQuery)) || $id === $searchQuery){
             $highlight = true;
           }
           // 2. Landing pages title / URL

@@ -313,7 +313,7 @@ class TableLite {
      * @param string $text The search button text
      * @param string $input_id The search input id
      */
-    public function search_box( $text, $input_id ) {
+    public function search_box( $text, $placeholder = '', $input_id ) {
         $where = strtok(Utils::getRealUrl(), "&");
         if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
             return;
@@ -332,7 +332,7 @@ class TableLite {
         <form style="display: inline-block" method="POST" action="<?php echo $where; ?>">
           <p class="search-box">
               <label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
-              <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php echo $this->get_search_query() ?>" />
+              <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php echo $this->get_search_query() ?>" placeholder="<?php echo $placeholder ?>" />
               <?php submit_button( $text, 'button', false, false, array('id' => 'search-submit') ); ?>
           </p>
         </form>
@@ -835,6 +835,10 @@ class TableLite {
         }
     }
 
+    public function get_table_id(){
+      return '';
+    }
+
     /**
      * Display the table
      *
@@ -845,19 +849,17 @@ class TableLite {
         $singular = $this->_args['singular'];
         $this->display_tablenav( 'top' );
         ?>
-        <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
+        <table id="<?php echo $this->get_table_id(); ?>" class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
             <thead>
             <tr>
                 <?php $this->print_column_headers(); ?>
             </tr>
             </thead>
-
             <tfoot>
             <tr>
                 <?php $this->print_column_headers( false ); ?>
             </tr>
             </tfoot>
-
             <tbody id="the-list"<?php
             if ( $singular ) {
                 echo " data-wp-lists='list:$singular'";
