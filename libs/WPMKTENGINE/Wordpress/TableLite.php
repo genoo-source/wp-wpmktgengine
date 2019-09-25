@@ -329,7 +329,7 @@ class TableLite {
         if ( ! empty( $_REQUEST['detached'] ) )
             echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
         ?>
-        <form style="display: inline; margin: 0" method="POST" action="<?php echo $where; ?>">
+        <form style="display: inline-block" method="POST" action="<?php echo $where; ?>">
           <p class="search-box">
               <label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
               <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php echo $this->get_search_query() ?>" />

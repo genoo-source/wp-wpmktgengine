@@ -291,11 +291,12 @@ class TablePages extends Table
 
     public function getFirstItem(){
       $drafts = __('Landing Pages Without a Page Template', 'wpmktengine');
+      $isSearch = $this->searchQuery !== '';
       return array(
         $this->repositoryPages::REPO_SORT_NAME => $drafts,
         'name' => $drafts,
         'isDrafts' => true,
-        'className' => 'highlight',
+        'className' => $isSearch ? '' : 'highlight',
         'id' => null,
         'craeted' => null,
         'landing' => RepositoryLandingPages::findDrafts(),
@@ -533,6 +534,7 @@ class TablePages extends Table
         try {
             // Get data
             $perPage = 500;
+            // Get all pages
             $allLogs = $this->repositoryPages->getStructuredPagesTable($this->searchQuery);
             // Generate move page to a folder html
             $this->make_folder_html();

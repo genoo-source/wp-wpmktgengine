@@ -212,43 +212,23 @@ class RepositoryPages extends Repository
       $pages = array();
       $pagesFromDatabase = $this->getPages();
       $pagesDependencies = RepositoryLandingPages::findDependenciesForTemplateWithPosts();
-      return $this->explodeTree(
+      $pagesTree = $this->explodeTree(
         $pagesFromDatabase,
-        function($leafPart, $returnedValue) use ($pagesDependencies, $searchQuery) {
-          $landingPages = array_key_exists($returnedValue->id, $pagesDependencies)
-                ? $pagesDependencies[$returnedValue->id]
-                : array();
-          $canHide = $searchQuery !== '';
-          $highlight = false;
-          if($canHide){
-            // 1. Post title
-            if(Strings::contains(strtolower($returnedValue->name), $searchQuery)){
-              $highlight = true;
-            }
-            // 2. Landing pages title / URL
-            if(count($landingPages) > 0){
-              foreach($landingPages as $landingPage){
-                $title = strtolower($landingPage->post_title);
-                $url = strtolower(get_post_meta($landingPage->ID, 'wpmktengine_landing_url', true));
-                if(Strings::contains($title, $searchQuery) || Strings::contains($url, $searchQuery)){
-                  $highlight = true;
-                }
-              }
-            }
-          }
-          if($canHide && !$highlight){
-            return;
-          }
+        $pagesDependencies,
+        $searchQuery,
+        function($leafPart, $returnedValue) use ($pagesDependencies) {
           return array(
             self::REPO_SORT_NAME => $leafPart,
             'id' => $returnedValue->id,
             'name' => $returnedValue->name,
             'created' => $returnedValue->create_date,
-            'landing' => $landingPages,
-            'className' => $canHide && $highlight ? ' highlight ' : '',
+            'landing' => $returnedValue->landing,
+            // Turn on highlight if it's a searched item
+            'className' => $returnedValue->highlight ? ' highlight ' : '',
           );
         } 
       );
+      return $pagesTree;
     }
 
     /**
@@ -256,7 +236,7 @@ class RepositoryPages extends Repository
      * - This does iterate one more time through all
      * but it is the fastest way this time. 
      */
-    public function explodeTree($array, $valueGenerator = false)
+    public function explodeTree($array, $pagesDependencies, $searchQuery, $valueGenerator = false)
     {
       $delimiter = '/';
       if(!is_array($array)) return false;
@@ -265,13 +245,42 @@ class RepositoryPages extends Repository
       $returnFolderStructure = array(
         '' => __('No folder.', 'wpmktengine')
       );
+      $canHide = $searchQuery !== '';
       foreach ($array as $key => $val) {
         $val = (object)$val;
-        $parts	= preg_split($splitRE, $val->name, -1, PREG_SPLIT_NO_EMPTY);
+        $name = $val->name;
+        $parts	= preg_split($splitRE, $name, -1, PREG_SPLIT_NO_EMPTY);
         $partsCount = count($parts);
         $leafPart = Strings::trim(array_pop($parts));
         $parentArr = &$returnArr;
         $folderName = '';
+        $canHide = $searchQuery !== '';
+        $highlight = false;
+        $landingPages = array_key_exists($val->id, $pagesDependencies)
+                ? $pagesDependencies[$val->id]
+                : array();
+        $val->landing = $landingPages;
+        // We will remove elements that don't match search if we search
+        if($canHide){
+          // 1. Post title
+          if(Strings::contains(strtolower($name), strtolower($searchQuery))){
+            $highlight = true;
+          }
+          // 2. Landing pages title / URL
+          if(count($landingPages) > 0){
+            foreach($landingPages as $landingPage){
+              $title = strtolower($landingPage->post_title);
+              $url = strtolower(get_post_meta($landingPage->ID, 'wpmktengine_landing_url', true)); 
+              if(Strings::contains($title, $searchQuery) || Strings::contains($url, $searchQuery)){
+                $highlight = true;
+              }
+            }
+          }
+          $val->highlight = $highlight;
+          if(!$highlight){
+            continue;
+          }
+        }
         foreach ($parts as $part) {
           $part = Strings::trim($part);
           if($partsCount > 1){

@@ -60,7 +60,7 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
         $this->screenOptions = $this->screenId == 'Genoo' . $this->tableSingleName ? true : false;
         $this->userPerpage = $this->user->getOption('genoo_per_page');
         $this->perPage = $this->userPerpage ? $this->userPerpage : 50;
-        $this->searchQuery = $this->get_search_query();
+        $this->searchQuery = strtolower($this->get_search_query());
         // bam
         parent::__construct(array_merge(array('singular'=> 'log', 'plural' => 'logs', 'ajax' => false, 'screen' => $this->screen),$args));
     }
