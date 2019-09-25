@@ -207,23 +207,45 @@ class RepositoryPages extends Repository
      *
      * @return array
      */
-    public function getStructuredPagesTable()
+    public function getStructuredPagesTable($searchQuery = '')
     {
       $pages = array();
       $pagesFromDatabase = $this->getPages();
       $pagesDependencies = RepositoryLandingPages::findDependenciesForTemplateWithPosts();
       return $this->explodeTree(
         $pagesFromDatabase,
-        function($leafPart, $returnedValue) use ($pagesDependencies) {
+        function($leafPart, $returnedValue) use ($pagesDependencies, $searchQuery) {
+          $landingPages = array_key_exists($returnedValue->id, $pagesDependencies)
+                ? $pagesDependencies[$returnedValue->id]
+                : array();
+          $canHide = $searchQuery !== '';
+          $highlight = false;
+          if($canHide){
+            // 1. Post title
+            if(Strings::contains(strtolower($returnedValue->name), $searchQuery)){
+              $highlight = true;
+            }
+            // 2. Landing pages title / URL
+            if(count($landingPages) > 0){
+              foreach($landingPages as $landingPage){
+                $title = strtolower($landingPage->post_title);
+                $url = strtolower(get_post_meta($landingPage->ID, 'wpmktengine_landing_url', true));
+                if(Strings::contains($title, $searchQuery) || Strings::contains($url, $searchQuery)){
+                  $highlight = true;
+                }
+              }
+            }
+          }
+          if($canHide && !$highlight){
+            return;
+          }
           return array(
             self::REPO_SORT_NAME => $leafPart,
             'id' => $returnedValue->id,
             'name' => $returnedValue->name,
             'created' => $returnedValue->create_date,
-            'landing' => 
-              array_key_exists($returnedValue->id, $pagesDependencies)
-                ? $pagesDependencies[$returnedValue->id]
-                : array(),
+            'landing' => $landingPages,
+            'className' => $canHide && $highlight ? ' highlight ' : '',
           );
         } 
       );
@@ -266,7 +288,10 @@ class RepositoryPages extends Repository
         }
         if (empty($parentArr[$leafPart])) {
           if(is_callable($valueGenerator)){
-            $parentArr[$leafPart] = $valueGenerator($leafPart, $val);
+            $value = $valueGenerator($leafPart, $val);
+            if($value){
+              $parentArr[$leafPart] = $valueGenerator($leafPart, $val);
+            }
           } else {
             $parentArr[$leafPart] = $val;
           }

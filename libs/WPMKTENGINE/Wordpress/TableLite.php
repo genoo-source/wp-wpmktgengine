@@ -19,6 +19,8 @@
 
 namespace WPMKTENGINE\Wordpress;
 
+use WPMKTENGINE\Wordpress\Utils;
+
 /**
  * Base class for displaying a list of items in an ajaxified HTML table.
  *
@@ -312,6 +314,7 @@ class TableLite {
      * @param string $input_id The search input id
      */
     public function search_box( $text, $input_id ) {
+        $where = strtok(Utils::getRealUrl(), "&");
         if ( empty( $_REQUEST['s'] ) && !$this->has_items() )
             return;
 
@@ -326,11 +329,13 @@ class TableLite {
         if ( ! empty( $_REQUEST['detached'] ) )
             echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
         ?>
-        <p class="search-box">
-            <label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
-            <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>" />
-            <?php submit_button( $text, 'button', false, false, array('id' => 'search-submit') ); ?>
-        </p>
+        <form style="display: inline; margin: 0" method="POST" action="<?php echo $where; ?>">
+          <p class="search-box">
+              <label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
+              <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php echo $this->get_search_query() ?>" />
+              <?php submit_button( $text, 'button', false, false, array('id' => 'search-submit') ); ?>
+          </p>
+        </form>
     <?php
     }
 
@@ -345,6 +350,13 @@ class TableLite {
      */
     protected function get_views() {
         return array();
+    }
+
+    /**
+     * Get Search Query
+     */
+    public function get_search_query() {
+      return isset( $_REQUEST['s'] ) ? esc_attr( wp_unslash( $_REQUEST['s'] ) ) : '';
     }
 
     /**
@@ -831,9 +843,7 @@ class TableLite {
      */
     public function display() {
         $singular = $this->_args['singular'];
-
         $this->display_tablenav( 'top' );
-
         ?>
         <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
             <thead>

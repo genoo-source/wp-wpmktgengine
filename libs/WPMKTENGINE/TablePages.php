@@ -76,7 +76,9 @@ class TablePages extends Table
      * @return array
      */
 
-    function get_sortable_columns(){ return array('name' => array('name', false)); }
+    function get_sortable_columns(){ 
+      return array(); 
+    }
 
 
     public function column_landing($item)
@@ -274,43 +276,6 @@ class TablePages extends Table
           . $this->get_folder_html($name, $item['id']);
     }
 
-    public function attach_class_name(&$item, $level){
-      // Extract original classname
-      $className = array_key_exists('className', $item) ? $item['className'] : '';
-      // Add className
-      $item['className'] = $level !== 0 ? $className . ' nested ' . 'nested-level-' . (int)$level : $className;
-      $item['className'] = str_replace('--', '-', $item['className']);
-    }
-
-    public function single_row($item) {
-      // Keep the alternating class
-      static $level = 0;
-      $this->attach_class_name($item, $level);
-      // Normal rows follow previous logic
-      if(!$this->isFolder($item) || $this->isDrafts($item)){
-        // Render old way
-        parent::single_row($item);
-        // Reset leveling
-        $level = 0;
-        return;
-      }
-      // First level folder
-      parent::single_row($item);
-      // Create a sub-loop of internal items
-      foreach($item as $innerName => $innerValue){
-        if($innerName === $this->repositoryPages::REPO_SORT_NAME){
-          continue;
-        }
-        if($innerName === 'className'){
-          continue;
-        }
-        $goingDeeper = $this->isFolder($innerValue);
-        $level++;
-        $this->attach_class_name($innerValue, $level);
-        $this->single_row($innerValue);
-      }
-
-    }
 
     public function getNewLandingPageLink($id = false){
       $realUrlEmptyAdmin = rtrim(admin_url(), '/') . '/';
@@ -324,12 +289,8 @@ class TablePages extends Table
       return isset($item['isDrafts']);
     }
 
-    public function isFolder($item){
-      return !array_key_exists('id', $item);
-    }
-
     public function getFirstItem(){
-      $drafts = __('Drafts (Landing Pages)', 'wpmktengine');
+      $drafts = __('Landing Pages Without a Page Template', 'wpmktengine');
       return array(
         $this->repositoryPages::REPO_SORT_NAME => $drafts,
         'name' => $drafts,
@@ -416,6 +377,7 @@ class TablePages extends Table
     {
         $where = strtok(Utils::getRealUrl(), "&");
         $whereNewLandingPage = $this->getNewLandingPageLink();
+        $searchText =  __('Search Pages', 'wpmktengine');
         if($which == 'top'){
             echo '
               <div class="alignleft actions">
@@ -482,6 +444,7 @@ class TablePages extends Table
                 };
               </script>
             ";
+            $this->search_box($searchText, 'search-wpme-landing-pages');
         }
     }
 
@@ -569,16 +532,21 @@ class TablePages extends Table
         if($this->set == TRUE){ return; }
         try {
             // Get data
-            $perPage = 100;
-            $allLogs = $this->repositoryPages->getStructuredPagesTable();
+            $perPage = 500;
+            $allLogs = $this->repositoryPages->getStructuredPagesTable($this->searchQuery);
             // Generate move page to a folder html
             $this->make_folder_html();
             // Setup data
             $this->_column_headers = array($this->get_columns(), array(), $this->get_sortable_columns());
-            if(!isset($_GET['orderby'])){
-                $_GET['orderby'] = $this->repositoryPages::REPO_SORT_NAME;
-            }
-            usort($allLogs, array(&$this, 'usort_reorder'));
+            // Sort
+            $_GET['orderby'] = 'id';
+            usort($allLogs, function($a, $b){
+              if($this->isFolder($a)){
+                return -1;
+              }
+              return 1;
+            });
+            // Paginate
             $this->found_data = array_slice($allLogs,(($this->get_pagenum()-1)* $perPage), $perPage);
             $this->set_pagination_args(array('total_items' => count($allLogs), 'per_page' => $perPage));
             // Append drafts row
