@@ -34,6 +34,7 @@ namespace WPMKTENGINE;
 use WPMKTENGINE\Wordpress\Utils;
 use WPMKTENGINE\RepositoryLandingPages;
 use WPMKTENGINE\Utils\Strings;
+use WPMKTENGINE\TablePages;
 
 /**
  * @category WPME
@@ -81,6 +82,7 @@ class RepositoryPages extends Repository
      * Globals variable name
      */
     CONST FOLDER_STRUCTURE = 'WPME_LANDING_PAGES_FOLDER_STRUCTURE';
+    CONST FOLDER_JS_STRUCTURE = 'WPME_LANDING_PAGES_JS_FOLDER_STRUCTURE';
 
     /**
      * @param Cache $cache
@@ -311,8 +313,83 @@ class RepositoryPages extends Repository
           }
         }
       }
+      // Generate folder collapse structure
+      $generatedCollapseStructure = $this->generateCollapseFolder($returnArr);
+      // Save folder structure
       $GLOBALS[self::FOLDER_STRUCTURE] = $returnFolderStructure;
+      $GLOBALS[self::FOLDER_JS_STRUCTURE] = $generatedCollapseStructure;
       return $returnArr;
+    }
+
+
+    public function generateCollapseFolder($returnArr){
+      $iterator = new \RecursiveIteratorIterator(
+          new \RecursiveArrayIterator($returnArr),
+          \RecursiveIteratorIterator::SELF_FIRST
+      );
+      $filtered = array();
+      $filteredLastArrayHelper = array();
+      foreach ($iterator as $key => $item) {
+        // Get if we are deep down
+        $currentDepth = $iterator->getDepth();
+        $isNested = $currentDepth > 0;
+        // We only care about this field
+        if($key === '__sort_name'){
+          if(!isset($filtered[$item])) $filtered[$item] = array();
+          // Remember last level with key to match
+          $filteredLastArrayHelper[$currentDepth] = $item;
+          if($isNested){
+            for ($x = $currentDepth - 1; $x >= 0; $x--) {
+              $insertKey = $filteredLastArrayHelper[$x];
+              if($insertKey){
+                array_push($filtered[$insertKey], $item);
+              }
+            } 
+          } else {
+            // Reset the array
+            $filteredLastArrayHelper = array();
+          }
+        }
+      }
+      return $filtered;
+    }
+
+
+    public function generateCollapseFolderIterator(&$array, $iterate){
+
+      $lastId = null;
+
+      /**
+       * Map Function
+       */
+      $arrayMapFunc = function($element) use(&$arrayMapFunc, $array) {
+          // if(isset($element['__sort_name'])) unset($element['__sort_name']);
+          $isFolderInner = !isset($element['id']) && is_array($element);
+          $elementName = $element['__sort_name'];
+          $array[$lastId] = $isFolderInner 
+            ? array_map($arrayMapFunc, $element)
+            : $element['__sort_name'];
+          // return $isFolderInner 
+          //   ? array_map($arrayMapFunc, $element)
+          //   : $element['__sort_name'];
+      };
+
+      foreach($iterate as $key => $value){
+        $id = $key;
+        $lastId = $id;
+        // Remove invalid elements
+        if(isset($value['__sort_name'])) unset($value['__sort_name']);
+        $isFolder = !isset($value['id']);
+        // If not present already, make an array
+        if(!isset($array[$id])){
+          $array[$id] = array();
+        }
+        // Only folders have some dependencies
+        if($isFolder){
+          // $array[$id] = array_values(array_column($value, '__sort_name', '__sort_name'));
+          $array[$id] = array_map($arrayMapFunc, $value);
+        }
+      }
     }
 
     /**

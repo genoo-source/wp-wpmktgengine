@@ -515,6 +515,7 @@ class TablePages extends Table
               // Remove Drafts from the array (first folder)
               folders = [].slice.call(folders, 1);
               // Hide, show and attach handlers
+
             </script>
           ";
         }
