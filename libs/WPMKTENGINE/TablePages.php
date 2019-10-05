@@ -249,6 +249,10 @@ class TablePages extends Table
       ) . "</div>";
     }
 
+    public static function get_row_id($name){
+      return 'row-' . md5($name);
+    }
+
     /**
      * @param $item
      * @return string
@@ -256,13 +260,21 @@ class TablePages extends Table
     public function column_name($item, $nesting = null)
     {
         $name = $this->get_column_name($item);
-        if($this->isDrafts($item) || $this->isFolder($item)){
+        $rowId = self::get_row_id($name);
+        if($this->isFolder($item)){
            return "
+            <span id=\"$rowId\"></span>
             <a class=\"wpme-folder-switch\" href=\"#\" onclick=\"Genoo.onPageCollapse(event);\">
               <span class=\"dashicons dashicons-plus\"></span>
               <span class=\"dashicons dashicons-minus\"></span>
-              <span class=\"dashicons dashicons-portfolio\"></span> $name
+              <span class=\"dashicons dashicons-category\"></span> $name
             </a>
+           ";
+        }
+        if($this->isDrafts($item)){
+           return "
+            <span id=\"$rowId\"></span>
+            <span class=\"dashicons dashicons-category\"></span> $name
            ";
         }
         $actions = $this->row_actions(array(
@@ -282,7 +294,9 @@ class TablePages extends Table
         // Nesting DIV
         $actionDiv = $nesting === null ? "<div>" : "<div class=\"nested level-$nesting\">";
         $actionDivClosing = "</div>";
-        return $actionDiv 
+        return
+          "<span id=\"$rowId\"></span>"
+          .  $actionDiv 
           . $name
           . $actionsBublished 
           . $actions 
@@ -387,6 +401,18 @@ class TablePages extends Table
     }
 
     /**
+     * Get a list of CSS classes for the list table table tag.
+     *
+     * @since 3.1.0
+     * @access protected
+     *
+     * @return array List of CSS classes for the table tag.
+     */
+    protected function get_table_classes() {
+        return array( 'widefat', $this->_args['plural'] );
+    }
+
+    /**
      * Remove cached forms
      *
      * @param $which
@@ -463,7 +489,13 @@ class TablePages extends Table
                 };
 
                 Genoo.getElementLevel = function(element){
-                  return parseInt(element.getAttribute('data-level'), 10);
+                  return element ? parseInt(element.getAttribute('data-level'), 10) : 0;
+                };
+
+                Genoo.isCollapsed = function(element){
+                  var lower = Tool.hasClass(element, 'collapsed');
+                  var lowerUpper = Tool.hasClass(element.parentNode, 'collapsed');
+                  return lower || lowerUpper;
                 };
 
                 /**
@@ -472,30 +504,30 @@ class TablePages extends Table
                 Genoo.onPageCollapse = function(event){
                   event.preventDefault();
                   // The row above
-                  var parentRow = event.target.parentNode.parentNode;
-                  // The siblings array
-                  var siblings = [];
-                  // We will iterate through all rows, until one that is not nested 
-                  // to get all siblings
-                  var elem = parentRow.nextSibling;
-                  var minimumLevel = Genoo.getElementLevel(event.target.parentNode);
-                  // As long as a sibling exists
-                  while (elem) {
-                    Tool.addClass(elem, 'hidden');
+                  var spanId = event.currentTarget.previousSibling.previousSibling.getAttribute('id');
+                  var spanIdMapped = spanId;
+                  var closeDownArray = folderDependencies[spanIdMapped];
+                  var parentRow = event.currentTarget.parentNode.parentNode;
+                  var isCollapsed = Genoo.isCollapsed(event.currentTarget.parentNode);
+                  if(isCollapsed){
+                    Tool.removeClass(parentRow, 'collapsed');
+                  } else {
                     Tool.addClass(parentRow, 'collapsed');
-                    // If not nested anymore, break
-                    if(
-                      !Tool.hasClass(elem.childNodes[0], 'nested') ||
-                      Genoo.getElementLevel(elem.childNodes[0]) < minimumLevel
-                    ){
-                      break;
-                    }
-                    // Add siblings
-                    siblings.push(elem);
-                    // Get the next sibling element
-                    elem = elem.nextSibling;
                   }
-                  console.log(siblings);
+                  // Collapse
+                  // Iterate over array and close or open
+                  var i = 0;
+                  while (closeDownArray[i]) {
+                    var almostRowId = closeDownArray[i];
+                    var element = document.getElementById(almostRowId);
+                    var closableTr = element.parentNode.parentNode;
+                    if(isCollapsed){
+                      Tool.removeClass(closableTr, 'hidden');
+                    } else {
+                      Tool.addClass(closableTr, 'hidden');
+                    }
+                    i++;
+                  }
                 };
               </script>
             ";
@@ -515,7 +547,7 @@ class TablePages extends Table
               // Remove Drafts from the array (first folder)
               folders = [].slice.call(folders, 1);
               // Hide, show and attach handlers
-
+              var folderDependencies = JSON.parse('" . json_encode($GLOBALS[$this->repositoryPages::FOLDER_JS_STRUCTURE]) . "');
             </script>
           ";
         }

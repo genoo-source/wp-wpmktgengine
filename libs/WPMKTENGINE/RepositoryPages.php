@@ -244,6 +244,7 @@ class RepositoryPages extends Repository
       if(!is_array($array)) return false;
       $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
       $returnArr = array();
+      $generatedCollapseStructure = array();
       $returnFolderStructure = array(
         '' => __('No folder.', 'wpmktengine')
       );
@@ -256,6 +257,7 @@ class RepositoryPages extends Repository
         $partsCount = count($parts);
         $leafPart = Strings::trim(array_pop($parts));
         $parentArr = &$returnArr;
+        $parentArrGen = &$generatedCollapseStructure;
         $folderName = '';
         $canHide = $searchQuery !== '';
         $highlight = false;
@@ -290,6 +292,7 @@ class RepositoryPages extends Repository
         }
         foreach ($parts as $part) {
           $part = Strings::trim($part);
+          $id = $part;
           if($partsCount > 1){
             $folderName .= $part . ' / ';
             $returnFolderStructure[$folderName] = $folderName;
@@ -297,10 +300,13 @@ class RepositoryPages extends Repository
           $initArray = array(self::REPO_SORT_NAME => $part);
           if (!isset($parentArr[$part])) {
             $parentArr[$part] = $initArray;
+            $parentArrGen[$id] = array();
           } elseif (!is_array($parentArr[$part])) {
             $parentArr[$part] = $initArray;
+            $parentArrGen[$id] = array();
           }
           $parentArr = &$parentArr[$part];
+          $parentArrGen = &$parentArrGen[$id];
         }
         if (empty($parentArr[$leafPart])) {
           if(is_callable($valueGenerator)){
@@ -313,7 +319,7 @@ class RepositoryPages extends Repository
           }
         }
       }
-      // Generate folder collapse structure
+      // Generate
       $generatedCollapseStructure = $this->generateCollapseFolder($returnArr);
       // Save folder structure
       $GLOBALS[self::FOLDER_STRUCTURE] = $returnFolderStructure;
@@ -335,14 +341,15 @@ class RepositoryPages extends Repository
         $isNested = $currentDepth > 0;
         // We only care about this field
         if($key === '__sort_name'){
-          if(!isset($filtered[$item])) $filtered[$item] = array();
+          $itemId = TablePages::get_row_id($item);
+          if(!isset($filtered[$itemId])) $filtered[$itemId] = array();
           // Remember last level with key to match
-          $filteredLastArrayHelper[$currentDepth] = $item;
+          $filteredLastArrayHelper[$currentDepth] = $itemId;
           if($isNested){
             for ($x = $currentDepth - 1; $x >= 0; $x--) {
-              $insertKey = $filteredLastArrayHelper[$x];
-              if($insertKey){
-                array_push($filtered[$insertKey], $item);
+              if(array_key_exists($x, $filteredLastArrayHelper)){
+                $insertKey = $filteredLastArrayHelper[$x];
+                array_push($filtered[$insertKey], $itemId);
               }
             } 
           } else {
@@ -352,44 +359,6 @@ class RepositoryPages extends Repository
         }
       }
       return $filtered;
-    }
-
-
-    public function generateCollapseFolderIterator(&$array, $iterate){
-
-      $lastId = null;
-
-      /**
-       * Map Function
-       */
-      $arrayMapFunc = function($element) use(&$arrayMapFunc, $array) {
-          // if(isset($element['__sort_name'])) unset($element['__sort_name']);
-          $isFolderInner = !isset($element['id']) && is_array($element);
-          $elementName = $element['__sort_name'];
-          $array[$lastId] = $isFolderInner 
-            ? array_map($arrayMapFunc, $element)
-            : $element['__sort_name'];
-          // return $isFolderInner 
-          //   ? array_map($arrayMapFunc, $element)
-          //   : $element['__sort_name'];
-      };
-
-      foreach($iterate as $key => $value){
-        $id = $key;
-        $lastId = $id;
-        // Remove invalid elements
-        if(isset($value['__sort_name'])) unset($value['__sort_name']);
-        $isFolder = !isset($value['id']);
-        // If not present already, make an array
-        if(!isset($array[$id])){
-          $array[$id] = array();
-        }
-        // Only folders have some dependencies
-        if($isFolder){
-          // $array[$id] = array_values(array_column($value, '__sort_name', '__sort_name'));
-          $array[$id] = array_map($arrayMapFunc, $value);
-        }
-      }
     }
 
     /**
