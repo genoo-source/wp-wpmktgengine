@@ -204,6 +204,22 @@ class RepositoryPages extends Repository
         return $forms;
     }
 
+    public function pureSearchQuery($searchQuery = ''){
+      if($searchQuery === '') return $searchQuery;
+      $ret = str_replace(
+        array(
+          WPMKTENGINE_HOME_URL . '/',
+          WPMKTENGINE_HOME_URL,
+        ),
+        array(
+          '',
+          '',
+        ),
+        $searchQuery
+      );
+      return $ret;
+    }
+
     /**
      * Get pages for listing table
      *
@@ -211,6 +227,7 @@ class RepositoryPages extends Repository
      */
     public function getStructuredPagesTable($searchQuery = '')
     {
+      $searchQuery = $this->pureSearchQuery($searchQuery);
       $pages = array();
       $pagesFromDatabase = $this->getPages();
       $pagesDependencies = RepositoryLandingPages::findDependenciesForTemplateWithPosts();

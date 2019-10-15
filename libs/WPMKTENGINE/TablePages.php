@@ -106,7 +106,7 @@ class TablePages extends Table
             $r .= "</tr></thead>";
             $r .= "<tbody>";
             $counterHide = false;
-            $counterMax = 2;
+            $counterMax = 5;
             $counter = 1;
             $counterRemaing = count($item['landing']) > $counterMax ? (count($item['landing']) - $counterMax) : 0;
             $counterJS = "onclick='Api.prolognedList(this, event, \"$id\");'";
@@ -124,17 +124,7 @@ class TablePages extends Table
                 $metaURL = get_post_meta($post->ID, 'wpmktengine_landing_url', true);
                 $r .= "<td>". RepositoryLandingPages::base() . $metaURL .  "</td>";
 
-                // SETUP
-                // $metaTemplate = get_post_meta($post->ID, 'wpmktengine_landing_template', true);
-                // $metaUrl = get_post_meta($post->ID, 'wpmktengine_landing_url', true);
-                // $validTemplate = !empty($metaTemplate) ? true : false;
-                // $validUrl = !empty($metaUrl) && filter_var(RepositoryLandingPages::base() . $metaUrl, FILTER_VALIDATE_URL) === false ? false : true;
-                // if ($validUrl && $validTemplate) {
-                //     $metaSETUP = '<span class="genooTick active">&nbsp;</span>';
-                // } else {
-                //     $metaSETUP = '<span class="genooCross">&times;</span>';
-                // }
-                // $r .= "<td>$metaSETUP</td>";
+                // DELETE
                 $r .= "<td>" . $this->get_delete_link($post->ID) . "</td>";
 
                 // ACTIVE
@@ -253,6 +243,17 @@ class TablePages extends Table
       return 'row-' . md5($name);
     }
 
+    // public function get_row_js($rowId){
+    //   if(!$rowId){
+    //     return '';
+    //   }
+    //   return "
+    //     <script type=\"text/javascript\">
+    //       Genoo.rowCollapseMePlease('$rowId');
+    //     </script>
+    //   ";
+    // }
+
     /**
      * @param $item
      * @return string
@@ -261,6 +262,7 @@ class TablePages extends Table
     {
         $name = $this->get_column_name($item);
         $rowId = self::get_row_id($name);
+
         if($this->isFolder($item)){
            return "
             <span id=\"$rowId\"></span>
@@ -498,10 +500,15 @@ class TablePages extends Table
                   return lower || lowerUpper;
                 };
 
+                Genoo.rowCollapsing = function(element, className){
+                  // Is collapsed?
+                  window.localStorage.setItem(element, className);
+                };
+
                 /**
                  * On Page Move to a new / or existing folder 
                  */
-                Genoo.onPageCollapse = function(event){
+                Genoo.onPageCollapse = function(event, eventId){
                   event.preventDefault();
                   // The row above
                   var spanId = event.currentTarget.previousSibling.previousSibling.getAttribute('id');
@@ -509,10 +516,13 @@ class TablePages extends Table
                   var closeDownArray = folderDependencies[spanIdMapped];
                   var parentRow = event.currentTarget.parentNode.parentNode;
                   var isCollapsed = Genoo.isCollapsed(event.currentTarget.parentNode);
+                  // Collapse
                   if(isCollapsed){
                     Tool.removeClass(parentRow, 'collapsed');
+                    Genoo.rowCollapsing(spanIdMapped, '');
                   } else {
                     Tool.addClass(parentRow, 'collapsed');
+                    Genoo.rowCollapsing(spanIdMapped, 'collapsed');
                   }
                   // Collapse
                   // Iterate over array and close or open
@@ -523,8 +533,10 @@ class TablePages extends Table
                     var closableTr = element.parentNode.parentNode;
                     if(isCollapsed){
                       Tool.removeClass(closableTr, 'hidden');
+                      Genoo.rowCollapsing(almostRowId, '');
                     } else {
                       Tool.addClass(closableTr, 'hidden');
+                      Genoo.rowCollapsing(almostRowId, 'hidden');
                     }
                     i++;
                   }
@@ -548,6 +560,23 @@ class TablePages extends Table
               folders = [].slice.call(folders, 1);
               // Hide, show and attach handlers
               var folderDependencies = JSON.parse('" . json_encode($GLOBALS[$this->repositoryPages::FOLDER_JS_STRUCTURE]) . "');
+              // Figure out if open or close, close on default
+              for (var folderId in folderDependencies) {
+                if (folderDependencies.hasOwnProperty(folderId)) {
+                  // Get value from local storage
+                  var isCollapsedString = window.localStorage.getItem(folderId);
+                  var isFirstTime = isCollapsedString === null;
+                  // First time values are always collapsed
+                  var className = isFirstTime ? '' : isCollapsedString;
+                  // Collapse
+                  var collapseElement = document.getElementById(folderId);
+                  if(collapseElement && collapseElement.parentNode && collapseElement.parentNode.parentNode){
+                    // console.log(className);
+                    // Tool.addClass(collapseElement.parentNode.parentNode, '');
+                  }
+                }
+              }
+              // console.log(folders, folderDependencies);
             </script>
           ";
         }
