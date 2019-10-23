@@ -372,7 +372,7 @@ class TablePages extends Table
                 $value = json_encode($name);
                 $value = substr($value, 1);
                 $value = substr_replace($value , '', -1);
-                $r->other = 'onclick="Tool.promptGo(\''. $title .'\', \''. $url .'=\', \''. $value .'\');"';
+                $r->other = 'onclick="Tool.promptToRename(\''. $title .'\', \''. $url .'=\', \''. $value .'\');"';
                 break;
             case 'move':
                 $r->href = '#TB_inline?width=100%&height=100%&inlineId=wpme_move_page_' . $id;

@@ -347,6 +347,25 @@ Tool.promptGo = function(question, url, value) {
 };
 
 /**
+ * Prompt that goes to URL
+ *
+ * @param question
+ * @param url
+ */
+Tool.promptToRename = function(question, url, value) {
+  // Get values
+  var values = value ? value.split(" / ") : [];
+  // Get last one
+  var valuesName = values.pop();
+  var name = prompt(question, valuesName || "");
+  if (name) {
+    values.push(name);
+    var finalName = values.join(" / ");
+    window.location = url + encodeURIComponent(finalName);
+  }
+};
+
+/**
  * Prompt before going to url
  *
  * @param event
