@@ -190,7 +190,7 @@ class RepositoryPages extends Repository
             foreach ($prepForms as $form) {
                 $form = (object)$form;
                 $dependency = array();
-                if (array_key_exists($form->id, $prepDependencies)) {
+                if (is_array($prepDependencies) && @array_key_exists($form->id, $prepDependencies)) {
                     $dependency = $prepDependencies[$form->id];
                 }
                 $forms[] = array(
@@ -255,9 +255,9 @@ class RepositoryPages extends Repository
      * - This does iterate one more time through all
      * but it is the fastest way this time. 
      */
-    public function explodeTree($array, $pagesDependencies, $searchQuery, $valueGenerator = false)
+    public function explodeTree($array, $pagesDependencies = array(), $searchQuery, $valueGenerator = false)
     {
-      $delimiter = '/';
+      $delimiter = ' / ';
       if(!is_array($array)) return false;
       $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
       $returnArr = array();
@@ -278,7 +278,7 @@ class RepositoryPages extends Repository
         $folderName = '';
         $canHide = $searchQuery !== '';
         $highlight = false;
-        $landingPages = array_key_exists($val->id, $pagesDependencies)
+        $landingPages = is_array($pagesDependencies) && array_key_exists($val->id, $pagesDependencies)
                 ? $pagesDependencies[$val->id]
                 : array();
         $val->landing = $landingPages;
@@ -364,7 +364,7 @@ class RepositoryPages extends Repository
           $filteredLastArrayHelper[$currentDepth] = $itemId;
           if($isNested){
             for ($x = $currentDepth - 1; $x >= 0; $x--) {
-              if(array_key_exists($x, $filteredLastArrayHelper)){
+              if(is_array($filteredLastArrayHelper) && array_key_exists($x, $filteredLastArrayHelper)){
                 $insertKey = $filteredLastArrayHelper[$x];
                 array_push($filtered[$insertKey], $itemId);
               }

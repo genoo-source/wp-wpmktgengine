@@ -243,17 +243,6 @@ class TablePages extends Table
       return 'row-' . md5($name);
     }
 
-    // public function get_row_js($rowId){
-    //   if(!$rowId){
-    //     return '';
-    //   }
-    //   return "
-    //     <script type=\"text/javascript\">
-    //       Genoo.rowCollapseMePlease('$rowId');
-    //     </script>
-    //   ";
-    // }
-
     /**
      * @param $item
      * @return string
@@ -322,6 +311,10 @@ class TablePages extends Table
     public function getFirstItem(){
       $drafts = __('Landing Pages Without a Page Template', 'wpmktengine');
       $isSearch = $this->searchQuery !== '';
+      $draftsData = RepositoryLandingPages::findDrafts();
+      if(empty($draftsData)){
+        return null;
+      }
       return array(
         $this->repositoryPages::REPO_SORT_NAME => $drafts,
         'name' => $drafts,
@@ -329,7 +322,7 @@ class TablePages extends Table
         'className' => $isSearch ? '' : 'highlight',
         'id' => null,
         'craeted' => null,
-        'landing' => RepositoryLandingPages::findDrafts(),
+        'landing' => $draftsData,
       );
     }
 
@@ -550,33 +543,27 @@ class TablePages extends Table
             );
         }
         if($which == 'bottom'){
-          // window.localStorage.setItem('key', value);
-          // window.localStorage.getItem('key')
           echo "
             <script type=\"text/javascript\">
               // Get all folders
               var folders = document.querySelectorAll('#wpme-landing-pages .wpme-folder-switch');
-              // Remove Drafts from the array (first folder)
-              folders = [].slice.call(folders, 1);
               // Hide, show and attach handlers
               var folderDependencies = JSON.parse('" . json_encode($GLOBALS[$this->repositoryPages::FOLDER_JS_STRUCTURE]) . "');
               // Figure out if open or close, close on default
-              for (var folderId in folderDependencies) {
-                if (folderDependencies.hasOwnProperty(folderId)) {
-                  // Get value from local storage
-                  var isCollapsedString = window.localStorage.getItem(folderId);
-                  var isFirstTime = isCollapsedString === null;
-                  // First time values are always collapsed
-                  var className = isFirstTime ? '' : isCollapsedString;
-                  // Collapse
-                  var collapseElement = document.getElementById(folderId);
-                  if(collapseElement && collapseElement.parentNode && collapseElement.parentNode.parentNode){
-                    // console.log(className);
-                    // Tool.addClass(collapseElement.parentNode.parentNode, '');
-                  }
+              var foldersToCollapse = document.querySelectorAll('#wpme-landing-pages .nested');
+              for (i = 0; i < foldersToCollapse.length; ++i) {
+                var folderToCollapse = foldersToCollapse[i].parentNode;
+                if(!Tool.hasClass(folderToCollapse, 'hidden')){
+                  Tool.addClass(folderToCollapse, 'hidden');
                 }
               }
-              // console.log(folders, folderDependencies);
+              for (i = 0; i < folders.length; ++i) {
+                var level = parseInt(folders[i].parentNode.getAttribute('data-level'), 10);
+                var folderToCollapse = folders[i].parentNode.parentNode;
+                if(!Tool.hasClass(folderToCollapse, 'collapsed') && level === 0){
+                  Tool.addClass(folderToCollapse, 'collapsed');
+                }
+              }
             </script>
           ";
         }
@@ -611,6 +598,9 @@ class TablePages extends Table
             $template_checks_found = NULL;
             if(Utils::isIterable($template_checks)){
                 foreach($template_checks as $item){
+                    if(!is_array($item)){
+                      continue;
+                    }
                     if(array_key_exists('id', $item) && $item['id'] == $template_id && !empty($item['landing'])){
                         $template_checks_found = $item['landing'];
                         break;
@@ -685,7 +675,10 @@ class TablePages extends Table
             $this->found_data = array_slice($allLogs,(($this->get_pagenum()-1)* $perPage), $perPage);
             $this->set_pagination_args(array('total_items' => count($allLogs), 'per_page' => $perPage));
             // Append drafts row
-            array_unshift($this->found_data, $this->getFirstItem());
+            $firstItem = $this->getFirstItem();
+            if($firstItem){
+              array_unshift($this->found_data, $firstItem);
+            }
             $this->items = $this->found_data;
             $this->set = TRUE;
         } catch (\WPMKTENGINE\ApiException $e){

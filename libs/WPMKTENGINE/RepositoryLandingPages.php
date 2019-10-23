@@ -281,7 +281,10 @@ class RepositoryLandingPages
         global $wpdb;
         $r = array();
         if (isset($wpdb)) {
-            $results = $wpdb->get_results('SELECT * FROM '. $wpdb->prefix .'postmeta WHERE meta_key = "wpmktengine_landing_template"', OBJECT);
+            $results = $wpdb->get_results(
+              'SELECT 
+                *
+              FROM '. $wpdb->prefix .'postmeta pm JOIN '. $wpdb->prefix .'posts p ON pm.post_id = p.ID WHERE pm.meta_key = "wpmktengine_landing_template" ORDER BY p.post_title ASC', OBJECT);
             if (is_array($results)) {
                 // Iterate through
                 foreach ($results as $result) {
@@ -298,6 +301,8 @@ class RepositoryLandingPages
       return  get_posts(array(
         'post_type' => 'wpme-landing-pages',
         'numberposts' => -1,
+        'orderby'=> 'title',
+        'order' => 'ASC',
         'meta_query' => array(
           'relation' => 'OR',
           array(
