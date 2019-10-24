@@ -43,26 +43,16 @@ use WPMKTENGINE\Wordpress\Utils;
 class RepositoryLumens extends Repository
 {
     /**
-     *
-     *
      * @var \WPMKTENGINE\Cache
      */
     private $cache;
     /**
-     *
-     *
      * @var \WPMKTENGINE\Api
      */
     private $api;
-    /**
- * 3600 seconds = hour
-*/
-    const REPO_TIMER = '3600';
-    /**
- * cache namespace
-*/
-    const REPO_NAMESPACE = 'lumens';
 
+    const REPO_TIMER = '3600';
+    const REPO_NAMESPACE = 'lumens';
 
     /**
      * @param Cache $cache

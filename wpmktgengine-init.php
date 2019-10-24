@@ -71,7 +71,7 @@ class WPMKTENGINE
             define('WPMKTENGINE_CACHE',   WPMKTENGINE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
         }
         define('WPMKTENGINE_DEBUG',   get_option('WPMKTENGINEDebug'));
-        define('WPMKTENGINE_REFRESH', sha1('link-shortcode-in-place-styles'));
+        define('WPMKTENGINE_REFRESH', sha1('new-admin-styling'));
         define('WPMKTENGINE_BUILDER', 'https://genoolabs.com/simplepagebuilder/');
         define('WPMKTENGINE_LEAD_COOKIE', '_gtld');
         // wp init
