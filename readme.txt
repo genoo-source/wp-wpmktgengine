@@ -64,6 +64,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
+= 3.8.3 =
+* Reworked Landing Pages / Page Builder UI, merged into one page.
+
 = 3.7.4 =
 * Fix CSS bug introduced because of another CSS bug
 
