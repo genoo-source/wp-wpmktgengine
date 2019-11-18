@@ -41,8 +41,8 @@ define('WPMKTENGINE_PLUGIN', 'wpmktgengine/wpmktgengine.php');
  * on some outdated installation.
  */
 
-// require_once('wpmktgengine-requirements.php');
-// Requirements::check();
+require_once('wpmktgengine-requirements.php');
+Requirements::check();
 
 /**
  * 3. Activation / deactivation

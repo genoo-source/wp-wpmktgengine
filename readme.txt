@@ -2,7 +2,7 @@
 Contributors: Genoo
 Tags: email marketing automation, landing page builder, email marketing, lead generation, online marketing, CRM
 Requires at least: 4.6.0
-Tested up to: 5.2.1
+Tested up to: 5.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Stable tag: 3.8.4
@@ -63,6 +63,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 3.8.5 =
+* Bugfix a folder name parser
 
 = 3.8.3 =
 * Reworked Landing Pages / Page Builder UI, merged into one page.
