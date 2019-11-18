@@ -5,7 +5,7 @@
     Author:  Genoo, LLC
     Author URI: http://www.genoo.com/
     Author Email: info@genoo.com
-    Version: 3.8.4
+    Version: 3.8.5
     License: GPLv2
     Text Domain: wpmktgengine
 */
@@ -41,8 +41,8 @@ define('WPMKTENGINE_PLUGIN', 'wpmktgengine/wpmktgengine.php');
  * on some outdated installation.
  */
 
-// require_once('wpmktgengine-requirements.php');
-// Requirements::check();
+require_once('wpmktgengine-requirements.php');
+Requirements::check();
 
 /**
  * 3. Activation / deactivation
