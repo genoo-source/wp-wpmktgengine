@@ -64,6 +64,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
+= 3.8.6 =
+* Bugfix a field sanatizer
+
 = 3.8.5 =
 * Bugfix a folder name parser
 
