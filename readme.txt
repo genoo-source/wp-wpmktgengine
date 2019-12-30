@@ -64,6 +64,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
+= 3.8.7 =
+* Bugfix WooCommerce Stripe Integration
+
 = 3.8.6 =
 * Bugfix a field sanatizer
 
