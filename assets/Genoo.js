@@ -154,6 +154,7 @@ Api.logMessage = function(log) {
 Api.loader.load = function() {
   // let's do this
   if (Api.data.key == true && Api.data.track == true) {
+    console.log('YAY');
     // We have all data, let's do this
     Api.loader("Please wait while we set up your installation.");
     Api.logMessage("Loader loaded, API key and Tracking code recieved");
@@ -227,7 +228,6 @@ Api.refreshSurveys = function() {
  * @returns {*}
  */
 Api.listener = function(event) {
-  console.log('EVENT', event);
   if (window.location.href.indexOf("&gn-thm=") > -1) {
     return;
   }
@@ -237,7 +237,6 @@ Api.listener = function(event) {
   // Event origin
   //if(event.origin !== "https://wpmedev.odportals.com"){ console.log('Wrong origin: ' + event.origin); return; }
   //if(event.origin !== "https://wpmeapp.genoo.com"){ console.log('Wrong origin: ' + event.origin); return; }
-  console.log('ORIGIN', "https:" + GenooVars.DOMAIN);
   if (event.origin !== "https:" + GenooVars.DOMAIN) {
     console.log("Wrong origin: " + event.origin);
     return;
@@ -266,7 +265,6 @@ Api.listener = function(event) {
           Api.data.trackName = event.data.name;
           Api.data.trackData = event.data.value;
         }
-        console.log('YAY, API KEY');
         // Pass loader
         return Api.loader.load();
         break;

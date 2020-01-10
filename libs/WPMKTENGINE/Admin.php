@@ -1092,6 +1092,9 @@ class Admin
             });
         </script>
         <?php
+        echo '<div class="wrap genoWrap" id="iframeHolder">' . Helpscreen::getSupportHaderWithLogo(__('The Engine', 'wpmktengine'));
+        echo '&nbsp;';
+        echo '</div>';
     }
 
     /** ----------------------------------------------------- */
