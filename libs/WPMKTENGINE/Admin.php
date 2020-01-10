@@ -1055,10 +1055,41 @@ class Admin
         if(!WPMKTENGINE_SETUP || isset($_GET['reset'])){
             $domainFinal = Utils::addQueryParam($domainFinal, 'setup', 'true');
         }
-        //&setup=true
-        echo '<div class="wrap genoWrap" id="iframeHolder">' . Helpscreen::getSupportHaderWithLogo(__('The Engine', 'wpmktengine'));
-        echo '<iframe id="genooIframe" class="genooIframe" frameborder="0" scrolling="no" width="100%" height="900px" src="'. $domainFinal .'"></iframe>';
-        echo '</div>';
+        // &setup=true
+        ?>
+        <script type="text/javascript">
+          // Open the new window
+          var w = window.innerWidth
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+          w = w * 0.7;
+          var h = window.innerHeight
+          || document.documentElement.clientHeight
+          || document.body.clientHeight;
+          h = h * 0.8;
+
+          var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+          var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+          var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+          var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+          var systemZoom = width / window.screen.availWidth;
+          var left = (width - w) / 2 / systemZoom + dualScreenLeft;
+          var top = (height - h) / 2 / systemZoom + dualScreenTop + 40;
+          var newWindow = window.open('<?php echo $domainFinal ?>', 'WPMKTGENGINE', 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
+          // Puts focus on the newWindow
+          if (window.focus) newWindow.focus();
+          // Menu on click to focus the window.
+          document.querySelectorAll("[href='admin.php?page=WPMKTENGINELogin']")
+            .forEach(function(element){
+              element.addEventListener("click", function(event){
+                event.preventDefault();
+                if (window.focus) newWindow.focus();
+              });
+            });
+        </script>
+        <?php
     }
 
     /** ----------------------------------------------------- */
