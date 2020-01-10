@@ -1084,8 +1084,10 @@ class Admin
           document.querySelectorAll("[href='admin.php?page=WPMKTENGINELogin']")
             .forEach(function(element){
               element.addEventListener("click", function(event){
-                event.preventDefault();
-                if (window.focus) newWindow.focus();
+                if (window.focus && newWindow){
+                  event.preventDefault();
+                  newWindow.focus();
+                }
               });
             });
         </script>
