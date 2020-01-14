@@ -1079,17 +1079,19 @@ class Admin
           var top = (height - h) / 2 / systemZoom + dualScreenTop + 40;
           var newWindow = window.open('<?php echo $domainFinal ?>', 'WPMKTGENGINE', 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
           // Puts focus on the newWindow
-          if (window.focus) newWindow.focus();
-          // Menu on click to focus the window.
-          document.querySelectorAll("[href='admin.php?page=WPMKTENGINELogin']")
-            .forEach(function(element){
-              element.addEventListener("click", function(event){
-                if (window.focus && newWindow){
-                  event.preventDefault();
-                  newWindow.focus();
-                }
+          setTimeout(function(){
+            if (window.focus && newWindow.focus) newWindow.focus();
+            // Menu on click to focus the window.
+            document.querySelectorAll("[href='admin.php?page=WPMKTENGINELogin']")
+              .forEach(function(element){
+                element.addEventListener("click", function(event){
+                  if (window.focus && newWindow){
+                    event.preventDefault();
+                    newWindow.focus();
+                  }
+                });
               });
-            });
+          }, 100);
         </script>
         <?php
         echo '<div class="wrap genoWrap" id="iframeHolder">' . Helpscreen::getSupportHaderWithLogo(__('The Engine', 'wpmktengine'));
