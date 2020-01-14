@@ -659,14 +659,12 @@ class RepositorySettings extends Repository
 
         // finalize
         foreach ($roles as $key => $role) {
-            if ($key !== 'subscriber') {
-                $r[] = array(
-                    'name' => 'genooLeadUser' . $key,
-                    'label' => $role,
-                    'type' => 'select',
-                    'options' => $arr
-                );
-            }
+            $r[] = array(
+                'name' => 'genooLeadUser' . $key,
+                'label' => $role,
+                'type' => 'select',
+                'options' => $arr
+            );
         }
 
         return $r;
