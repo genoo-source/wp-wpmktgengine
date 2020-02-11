@@ -234,8 +234,6 @@ Api.listener = function(event) {
     return;
   }
   // Event origin
-  //if(event.origin !== "https://wpmedev.odportals.com"){ console.log('Wrong origin: ' + event.origin); return; }
-  //if(event.origin !== "https://wpmeapp.genoo.com"){ console.log('Wrong origin: ' + event.origin); return; }
   if (event.origin !== "https:" + GenooVars.DOMAIN) {
     console.log("Wrong origin: " + event.origin);
     return;
@@ -267,19 +265,15 @@ Api.listener = function(event) {
         return Api.loader.load();
         break;
       case "resizeiframe":
-        console.log("setting" + event.data.name);
         Api.resizeIframe(event.data.value);
         break;
       case "formsRefresh":
-        console.log("setting" + event.data.name);
         Api.refreshForms();
         break;
       case "surveysRefresh":
-        console.log("setting" + event.data.name);
         Api.refreshSurveys();
         break;
       case "changeAttribute":
-        console.log("changing attribute" + event.data);
         // Element data
         var elementId = event.data.id;
         var elementAtt = event.data.attribute;
@@ -289,7 +283,7 @@ Api.listener = function(event) {
           // Exists, changing
           element.setAttribute(elementAtt, elementVal);
         } else {
-          console.log("Element doesnt exist");
+          console.log("Element does not exist");
         }
         break;
     }
@@ -1005,7 +999,6 @@ Genoo.startImport = function(e) {
          */
 
         jQuery.post(ajaxurl, temp, function(importResponse) {
-          console.log(importResponse);
 
           if (Genoo.isArray(importResponse.messages)) {
             for (var i = 0; i < importResponse.messages.length; i++) {
