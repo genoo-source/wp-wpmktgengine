@@ -5,7 +5,7 @@
     Author:  Genoo, LLC
     Author URI: http://www.genoo.com/
     Author Email: info@genoo.com
-    Version: 3.8.11
+    Version: 3.8.12
     License: GPLv2
     Text Domain: wpmktgengine
 */
