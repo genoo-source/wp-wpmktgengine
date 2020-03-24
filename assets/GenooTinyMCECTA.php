@@ -120,7 +120,6 @@ class GenooTinyMCECTA extends TinyMCEHanlder
                 if(data){
                     var dataShort = '[' + data + ']';
                     var atts = window.parent.wp.shortcode.next('WPMKTENGINECTA', dataShort);
-                    console.log(atts);
                     if(atts.shortcode.attrs.named.id){
                         jQuery('#cta').val(atts.shortcode.attrs.named.id).change();
                     }

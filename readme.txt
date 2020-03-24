@@ -2,10 +2,10 @@
 Contributors: Genoo
 Tags: email marketing automation, landing page builder, email marketing, lead generation, online marketing, CRM
 Requires at least: 4.6.0
-Tested up to: 5.3.0
+Tested up to: 5.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 3.8.8
+Stable tag: 3.8.12
 
 
 WPMktgEngine turns your WordPress site into a marketing engine for your business.  A comprehensive online marketing platform.
@@ -63,6 +63,12 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 3.8.12 = 
+* PHP 5.6 Bug Fix
+
+= 3.8.9 = 
+* Allow Subscriber in the settings to be visible
 
 = 3.8.8 =
 * Bugfix PCRE2 regex in PHP 7.4

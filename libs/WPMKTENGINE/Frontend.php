@@ -548,11 +548,11 @@ class Frontend
                     global $WPME_CUSTOMIZER;
 
                     // Now that we have global WPME_CUSTOMIZER with sections and data,
-                    // we can use tempalte storage, to get the tempalte and it's styles.
+                    // we can use template storage, to get the template and it's styles.
                     // Let's check if we've created this object before or not.
                     global $WPME_TEMPLATE_STORAGE;
                     if(!isset($WPME_TEMPLATE_STORAGE) || (!$WPME_TEMPLATE_STORAGE instanceof \WPME\Customizer\TemplateStorage)){
-                        // If we don't have template storage, or if it's not our Tempalte storage for some reason
+                        // If we don't have template storage, or if it's not our Template storage for some reason
                         $templateStorage = new \WPME\Customizer\TemplateStorage();
                         // Set as global for next call or next CTA using a template
                         $GLOBALS['WPME_TEMPLATE_STORAGE'] = $templateStorage;
@@ -561,7 +561,7 @@ class Frontend
                     }
 
                     // We have a Customizer and we have a Template Storage, now we should be on our way
-                    // Cta is easy, pregenrated
+                    // Cta is easy, pre-generated
                     if($isCTA){
                         $template = $templateStorage->prepareTemplateForModalWindow(
                             $WPME_CUSTOMIZER,

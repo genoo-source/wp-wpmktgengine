@@ -1073,9 +1073,12 @@ class Api implements \WPME\ApiInterface
 
     private function call($action, $params = null)
     {
-        // Filters
-        $action = apply_filters('genoo_wpme_api_action', $action, $params);
-        $params = apply_filters('genoo_wpme_api_params', $params, $action);
+      if(function_exists('wpme_simple_log')){
+        wpme_simple_log('API Call: ' .  $action . var_export($params, true));
+      }
+      // Filters
+      $action = apply_filters('genoo_wpme_api_action', $action, $params);
+      $params = apply_filters('genoo_wpme_api_params', $params, $action);
 	    // Callstack
 	    $this->callstack[][$action] = $params;
         try{
@@ -1183,6 +1186,9 @@ class Api implements \WPME\ApiInterface
 
     public function callCustom($action, $method = 'GET', $params = NULL, $url = NULL)
     {
+        if(function_exists('wpme_simple_log')){
+          wpme_simple_log('API Call: ' . $url . ' ' .  $action . ' ' . ' ' . $method . ' ' . var_export($params, true));
+        }
         // Filters
         $action = apply_filters('genoo_wpme_api_action', $action, $params);
         $params = apply_filters('genoo_wpme_api_params', $params, $action);
@@ -1258,6 +1264,9 @@ class Api implements \WPME\ApiInterface
 
     public function onReturn($object)
     {
+        if(function_exists('wpme_simple_log')){
+          wpme_simple_log('API Call Response: ' . var_export($object, true));
+        }
         if(is_string($object) && $this->isApiError($object)){
             throw new ApiException($object);
         } elseif(is_object($object)){
