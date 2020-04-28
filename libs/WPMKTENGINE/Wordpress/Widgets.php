@@ -56,9 +56,9 @@ class Widgets
     {
         Action::add('wp_dashboard_setup', function(){
             // Add news widget
-            \add_meta_box('WPMKTENGINE_news', __('WPMKTENGINE News', 'wpmktengine'), array('\WPMKTENGINE\WidgetsDashboard', 'renderNews'), 'dashboard', 'side', 'high');
+            \add_meta_box('WPMKTENGINE_news', __('WPMKTGENGINE News', 'wpmktengine'), array('\WPMKTENGINE\WidgetsDashboard', 'renderNews'), 'dashboard', 'side', 'high');
             // Add new lessons
-            \add_meta_box('WPMKTENGINE_news_lessons', __('WPMKTENGINE New Lessons', 'wpmktengine'),  array('\WPMKTENGINE\WidgetsDashboard', 'renderNewLessons'), 'dashboard', 'side', 'high');
+            \add_meta_box('WPMKTENGINE_news_lessons', __('WPMKTGENGINE New Lessons', 'wpmktengine'),  array('\WPMKTENGINE\WidgetsDashboard', 'renderNewLessons'), 'dashboard', 'side', 'high');
         });
     }
 
