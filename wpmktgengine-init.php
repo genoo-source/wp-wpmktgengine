@@ -167,6 +167,8 @@ class WPMKTENGINE
                 $post_types[] = 'wpme-landing-pages';
                 return $post_types;
             }, 10, 1);
+            // Elementor
+            // \WPME\Extensions\ElementorShortcodes\ElementorShortcodes::register();
         }
 
         /**

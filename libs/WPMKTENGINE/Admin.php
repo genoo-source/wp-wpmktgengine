@@ -108,6 +108,7 @@ class Admin
         Action::add('init', array($this, 'adminPostTypes'));
         Action::add('admin_notices', array ($this, 'adminNotices'));
         Action::add('admin_enqueue_scripts', array($this, 'adminEnqueueScripts'), 10, 1);
+        Action::add('elementor/editor/before_enqueue_scripts', array($this, 'adminEnqueueScripts'), 10);
         Action::add('admin_head', array($this, 'adminHead'), 10);
         Action::add('do_meta_boxes', array($this, 'removeMetaboxes'), 10000); // remove metaboxes
         Action::add('wp_print_scripts', array($this, 'removeDequeue'), 10000); // remove hooks colliding
