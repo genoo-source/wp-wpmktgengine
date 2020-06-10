@@ -313,7 +313,6 @@ class Frontend
             $isDivi = $isDivi && (array_key_exists('et_bfb', $_GET) || array_key_exists('et_fb', $_GET));
             $isElementor = array_key_exists('elementor-preview', $_GET);
             if($redirects->has() && !wp_doing_ajax() && !$isDivi && !$isElementor){
-                return;
                 $does = $redirects->fitsUrl(Utils::getRealUrl());
                 if($does !== FALSE){
                     // OK, it seems like we have a winner
