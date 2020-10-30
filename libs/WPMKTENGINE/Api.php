@@ -897,16 +897,20 @@ class Api implements \WPME\ApiInterface
     {
         // check first, trust later
         if(empty($id)){
-            throw new \InvalidArgumentException(__('Invalid ID provided for Genoo activity stream.', 'wpmktengine'));
+            return;
+            // throw new \InvalidArgumentException(__('Invalid ID provided for Genoo activity stream.', 'wpmktengine'));
         }
         if(empty($date)){
-            throw new \InvalidArgumentException(__('Date is a required activity field!', 'wpmktengine'));
+            return;
+            // throw new \InvalidArgumentException(__('Date is a required activity field!', 'wpmktengine'));
         }
         if(empty($type)){
-            throw new \InvalidArgumentException(__('Type is a required activity field!', 'wpmktengine'));
+            return;
+            // throw new \InvalidArgumentException(__('Type is a required activity field!', 'wpmktengine'));
         }
         if(empty($name)){
-            throw new \InvalidArgumentException(__('Name is a required activity field!', 'wpmktengine'));
+            return;
+            // throw new \InvalidArgumentException(__('Name is a required activity field!', 'wpmktengine'));
         }
 
         // prep
