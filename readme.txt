@@ -64,6 +64,10 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
+= 3.9.8 = 
+* Refactor naming to use URLs instead of Landing Pages
+* Add redirect, and dynamic pop-over ability to landing pages
+
 = 3.9.3 = 
 * Fix /ref urls for landing pages
 
