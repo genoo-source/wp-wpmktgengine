@@ -788,63 +788,6 @@ class Admin
                     $this->repositarySettings->getLumensDropdown($this->repositaryLumens)
                 ), 'normal', 'high'
             );
-            new MetaboxCTA('WPMKTGENGINE Dynamic CTA', $this->repositarySettings->getCTAPostTypes(), array(), $this->repositarySettings->getCTAs());
-            // Dynamic PopOver
-            new Metabox('WPMKTGENGINE Dynamic Pop-Over', $this->repositarySettings->getCTAPostTypes(),
-                array(
-                    array(
-                        'type' => 'select',
-                        'label' => __('Enable Pop-Over to open automatically', 'wpmktengine'),
-                        'options' => array('Disable', 'Enable')
-                    ),
-                    array(
-                        'type' => 'select',
-                        'label' => __('CTA', 'wpmktengine'),
-                        'id' => 'pop_over_cta_id',
-                        'options' => $this->repositaryCTAs->getArray()
-                    ),
-                    array(
-                        'type' => 'number',
-                        'label' => __('Open Pop-Up after delay (seconds)', 'wpmktengine'),
-                        'id' => 'number_of_seconds_to_open_the_pop_up_after'
-                    ),
-                    array(
-                        'type' => 'checkbox',
-                        'label' => __('Only display to unknown leads?', 'wpmktengine'),
-                        'id' => 'pop_over_only_for_unknown'
-                    ),
-                )
-            );
-            // Referer URL redirect
-            new Metabox('WPMKTGENGINE Referer URL Redirect', array('post', 'page'),
-                array(
-                    array(
-                        'type' => 'select',
-                        'label' => __('Enable Referer Redirect', 'wpmktengine'),
-                        'options' => array('Disable', 'Enable'),
-                        'id' => 'wpmktengine_referer_redirect'
-                    ),
-                    array(
-                        'type' => 'select',
-                        'label' => __('Enable when', 'wpmktengine'),
-                        'options' => array(
-                            'referer_not' => __('user has not come from referer', 'wpmktengine'),
-                            'referer_yes' => __('user has come from referer', 'wpmktengine'),
-                        ),
-                        'id' => 'wpmktengine_referer_redirect_when'
-                    ),
-                    array(
-                        'type' => 'text',
-                        'label' => __('Referer URL', 'wpmktengine'),
-                        'id' => 'wpmktengine_referer_redirect_from_url'
-                    ),
-                    array(
-                        'type' => 'text',
-                        'label' => __('Redirect to URL', 'wpmktengine'),
-                        'id' => 'wpmktengine_referer_redirect_url'
-                    )
-                )
-            );
             // Landing pages UI //
             $affiArrayYes = function_exists('affiliate_wp');
             $affiArrayYesVal = $affiArrayYes ? affiliate_wp()->settings->get('referral_var', 'ref') : false;
@@ -852,6 +795,7 @@ class Admin
                 'type' => 'html',
                 'label' => '<span style="color: white; background: orangered">' . __('WARNING! The variable "' . $affiArrayYesVal . '" is reserved by AffiliateWP.', 'wpmktengine') . '</span>'
             ) : null;
+            new MetaboxCTA('WPMKTGENGINE Dynamic CTA', $this->repositarySettings->getCTAPostTypes(), array(), $this->repositarySettings->getCTAs());
             new Metabox('Settings', array('wpme-landing-pages'),
                 array(
                     array(
@@ -898,6 +842,66 @@ class Admin
                         'type' => 'textarea',
                         'label' => __('Additional footer data', 'wpmktengine'),
                         'id' => 'wpmktengine_data_footer'
+                    )
+                )
+            );
+            // Dynamic PopOver
+            new Metabox(
+                'WPMKTGENGINE Dynamic Pop-Over',
+                array_merge($this->repositarySettings->getCTAPostTypes(), array('wpme-landing-pages')),
+                array(
+                    array(
+                        'type' => 'select',
+                        'label' => __('Enable Pop-Over to open automatically', 'wpmktengine'),
+                        'options' => array('Disable', 'Enable')
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => __('CTA', 'wpmktengine'),
+                        'id' => 'pop_over_cta_id',
+                        'options' => $this->repositaryCTAs->getArray()
+                    ),
+                    array(
+                        'type' => 'number',
+                        'label' => __('Open Pop-Up after delay (seconds)', 'wpmktengine'),
+                        'id' => 'number_of_seconds_to_open_the_pop_up_after'
+                    ),
+                    array(
+                        'type' => 'checkbox',
+                        'label' => __('Only display to unknown leads?', 'wpmktengine'),
+                        'id' => 'pop_over_only_for_unknown'
+                    ),
+                )
+            );
+            // Referer URL redirect
+            new Metabox(
+                'WPMKTGENGINE Referer URL Redirect',
+                array('post', 'page', 'wpme-landing-pages'),
+                array(
+                    array(
+                        'type' => 'select',
+                        'label' => __('Enable Referer Redirect', 'wpmktengine'),
+                        'options' => array('Disable', 'Enable'),
+                        'id' => 'wpmktengine_referer_redirect'
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => __('Enable when', 'wpmktengine'),
+                        'options' => array(
+                            'referer_not' => __('user has not come from referer', 'wpmktengine'),
+                            'referer_yes' => __('user has come from referer', 'wpmktengine'),
+                        ),
+                        'id' => 'wpmktengine_referer_redirect_when'
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => __('Referer URL', 'wpmktengine'),
+                        'id' => 'wpmktengine_referer_redirect_from_url'
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => __('Redirect to URL', 'wpmktengine'),
+                        'id' => 'wpmktengine_referer_redirect_url'
                     )
                 )
             );

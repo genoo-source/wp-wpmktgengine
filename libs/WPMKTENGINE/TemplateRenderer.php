@@ -1123,6 +1123,7 @@ class TemplateRenderer
      */
     public function beforeRenderer()
     {
+        $globalPost = $GLOBALS['post'];
         // Initiate HTML
         // prep
         $this->dom->loadHTML('<?xml encoding="utf-8" ?><!DOCTYPE html>' . $this->buffer);
@@ -1133,7 +1134,9 @@ class TemplateRenderer
         global $post;
         $postPrep = new \stdClass();
         $postPrep->ID = 1;
-        $post = new \WP_Post($postPrep);
+        $post = $globalPost instanceof \WP_Post ? $globalPost : new \WP_Post($postPrep);
+        // Template redirect?
+        do_action('template_redirect_wpme');
         // This is needed for Frontend class to react and append modal windows
         $post->post_type = 'wpme-landing-pages';
         $post->post_content = '';
