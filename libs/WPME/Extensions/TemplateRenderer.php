@@ -61,6 +61,8 @@ class TemplateRenderer extends \WPMKTENGINE\TemplateRenderer
         // This is needed for Frontend class to react and append modal windows
         $post->post_type = 'wpme-landing-pages';
         $post->post_content = '';
+        // Template redirect?
+        do_action('template_redirect_wpme');
         // Image sources
         $this->appendGlobalImageSources();
         // Just the body please
