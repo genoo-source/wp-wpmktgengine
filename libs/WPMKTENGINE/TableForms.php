@@ -173,9 +173,7 @@ class TableForms extends Table
         } catch (\Exception $e){
             $this->addNotice('error', $e->getMessage());
         }
-
     }
-
 
     /**
      * Process it!

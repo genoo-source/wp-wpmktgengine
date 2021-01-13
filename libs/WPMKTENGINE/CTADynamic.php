@@ -83,7 +83,6 @@ class CTADynamic extends CTA
 
     public function hasMultiple()
     {
-
         return !empty($this->ctas);
     }
 
