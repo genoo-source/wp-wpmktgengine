@@ -154,6 +154,114 @@ class Plugins
     public function generateInstallMessage($pluginDefinition)
     {
         $pluginOwner = apply_filters('genoo_wpme_clever_plugins_owner', '<strong>WPMKTGENGINE: </strong>');
+          if(isset($_POST['submit']))
+          {
+          if($pluginDefinition['slug']=='wp-gravity-forms-extension-master' && $_POST['slug']=='wp-gravity-forms-extension-master') :
+          $file_name='https://github.com/genoo-source/wp-gravity-forms-extension/archive/master.zip';
+          $this->extraction($file_name);
+          endif;
+          if($pluginDefinition['slug']=='wp-genoo-elementor-addon-master' && $_POST['slug']=='wp-genoo-elementor-addon-master'):
+          $file_name='https://github.com/genoo-source/wp-genoo-elementor-addon/archive/master.zip';
+          $this->extraction($file_name);
+        endif;
+          if($pluginDefinition['slug']=='wp-genoo-auto-segmentation-main' && $_POST['slug']=='wp-genoo-auto-segmentation-main'):
+          $file_name='https://github.com/genoo-source/wp-genoo-auto-segmentation/archive/main.zip';
+          $this->extraction($file_name);
+        endif;
+      
+        } 
+        ?>
+    <div id="myModal" class="modal_slug" style="diplay:none;">
+<!-- Modal content -->
+  <div class="modal-content">
+      <form method="POST">
+    <span class="modal_close">&times;</span>
+  </br>
+<div class="form-group">
+     <input type="hidden" class="slug" name="slug" value="" />
+  <input type="submit" class="btn btn-default" name="submit" value="InstallNow"/>
+   </div>
+    </form>
+  </div>
+</div>
+  
+<style>
+
+/* The Modal (background) */
+.modal_slug {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+/* The Close Button */
+.modal_close{
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.modal_close:hover,
+.modal_close:focus{
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<script>
+jQuery( document ).ready(function() {
+ jQuery(".testpopup").each(function(index) {
+    jQuery(this).on("click", function(){
+        // For the boolean value
+        var attri = jQuery(this).attr('dataattribute');
+        jQuery(".slug").val(attri);
+       jQuery(".modal_slug").show();
+       
+    });
+});
+ jQuery(".modal_close").on('click',function(event){
+           event.preventDefault();
+          jQuery(".modal_slug").hide();
+      });
+});
+</script>
+        
+        <?php
+             if($pluginDefinition['slug']=='wp-genoo-elementor-addon-master' || $pluginDefinition['slug']=='wp-gravity-forms-extension-master' || $pluginDefinition['slug']=='wp-genoo-auto-segmentation-main'){
+              
+                     return "
+            <div class='wpme-plugin-notice plugin-card-{$pluginDefinition['slug']}'>
+            
+                <div class='notice-right tester'>
+                   <a href='#' 
+                    class='install-now button button-primary open-plugin-details-modal testpopup' dataattribute='{$pluginDefinition['slug']}'>Check it out!</a>
+                </div>
+                <div class='notice-left'><p>{$pluginOwner}{$pluginDefinition['message']}</p></div>
+                <div class='clear cls cf'></div>
+            </div>
+        "; 
+              
+          }
+       
+      else
+          {
         return "
             <div class='wpme-plugin-notice plugin-card-{$pluginDefinition['slug']}'>
                 <div class='notice-right'>
@@ -256,6 +364,29 @@ class Plugins
             'name' => '',
             'file' => 'wpmktgengine-extension-woocommerce/wpmktgengine-woocommerce.php'
         );
+        
+       
+            $plugins['gravityforms/gravityforms.php'] = array(
+            'connection' => '',
+            'slug' => 'wp-gravity-forms-extension-master',
+            'message' => 'Hey there, I see that you are using Gravityforms. We have an integration with Gravityforms and can get that working by installing our plugin extension.',
+            'name' => '',
+            'file' => 'wp-gravity-forms-extension-master/wp-starter.php'
+        );
+          $plugins['elementor-pro/elementor-pro.php'] = array(
+            'connection' => '',
+            'slug' => 'wp-genoo-elementor-addon-master',
+            'message' => 'Hey there, I see that you are using Elementor. We have an integration with Elementor and can get that working by installing our plugin extension.',
+            'name' => '',
+            'file' => 'wp-genoo-elementor-addon-master/Genno_Elementor_Extension.php'
+        );
+           $plugins['wpmktgengine/wpmktgengine.php'] = array(
+            'connection' => '',
+            'slug' => 'wp-genoo-auto-segmentation-main',
+            'message' => 'Hey there, I see that you are using Wpmktgengine. We have an integration with Wpmktgengine and can get that working by installing our plugin extension.',
+            'name' => '',
+            'file' => 'wp-genoo-auto-segmentation-main/wp-genoo-auto-segmentation.php'
+        );
         /*
         $plugins['woocommerce-subscriptions/woocommerce-subscriptions.php'] = array(
             'connection' => '',
@@ -317,4 +448,35 @@ class Plugins
     {
         $this->notifications[] = $notification;
     }
+    
+    public function extraction($file_name)
+    {
+
+            $ch = curl_init();
+			$headers = array();
+			$headers[] = 'Authorization: token d94b82591aa67cedac19a2e24a53d033df07fb17';
+			curl_setopt($ch, CURLOPT_URL, $file_name);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST,"GET");
+			curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+			Curl_setopt($ch,CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+			curl_setopt($ch,CURLOPT_BINARYTRANSFER, true);
+			$result = curl_exec($ch);
+			$down_url=curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+          include_once(ABSPATH . 'wp-admin/includes/file.php');
+        include_once(ABSPATH . 'wp-admin/includes/misc.php');
+       include_once(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php');
+       $upgrader = new \Plugin_Upgrader(
+            new \Plugin_Installer_Skin(
+                compact('title', 'url', 'nonce', 'plugin', 'api')
+            )
+        );
+        $upgrader->install($down_url);
+ }
+
+
+
+
+    
 }
