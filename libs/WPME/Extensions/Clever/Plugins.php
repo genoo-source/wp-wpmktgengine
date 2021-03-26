@@ -48,6 +48,10 @@ class Plugins
         }
         $this->installedPlugins = \get_plugins();
         $this->nag = new Nag();
+       
+        add_action('wp_ajax_extraction', array( $this, 'extraction' ));
+     
+        add_action('wp_ajax_activation_check', array($this, 'activation_check' ));
     }
 
     /**
@@ -154,6 +158,200 @@ class Plugins
     public function generateInstallMessage($pluginDefinition)
     {
         $pluginOwner = apply_filters('genoo_wpme_clever_plugins_owner', '<strong>WPMKTGENGINE: </strong>');
+ 
+        ?>
+        <div id="myModal" class="modal_slug" style="diplay:none;">
+        <!-- Modal content -->
+          <div class="modal-content">
+              <form method="POST">
+             <span class="modal_close">&times;</span>
+          </br>
+          <div class="form-group">
+            <p class="textforinstall"></p>  
+          </div>
+        <div class="form-group">
+          <input type="hidden" class="slug" name="slug" value="" />
+          <button type="button" class="btn btn-default installation" name="submit" value="InstallNow">InstallNow</button>
+          <img src="https://tribe.growrevenues.biz/images/1_9EBHIOzhE1XfMYoKz1JcsQ.gif" class="loader" style="display:none;width:50px;height:50px" />
+           </div>
+            </form>
+          </div>
+        </div>
+  
+<style>
+
+/* The Modal (background) */
+.modal_slug {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+/* The Close Button */
+.modal_close{
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.modal_close:hover,
+.modal_close:focus{
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<script>
+jQuery( document ).ready(function() {
+        jQuery(".testpopup").each(function(index) {
+        jQuery(this).on("click", function(){
+                // For the boolean value
+            var attri = jQuery(this).attr('dataattribute');
+            jQuery(".slug").val(attri);
+            jQuery(".modal_slug").show();
+            if(attri=='wp-genoo-elementor-addon-master')
+                 {
+                    var message = "To have CTAs, Genoo Forms, and Surveys easily appear on Elementor pages, install this plugin.  Or if you want to integrate Genoo/WPMktgEngine into Elementor Forms, this adds those customizations to Elementor.";
+                 }
+                else if(attri=='wp-gravity-forms-extension-master')
+                 {
+                     var message = "Integrate your Gravity Forms directly into Genoo/WPMktgEngine - and place into Lead Type, specify which email to sent upon submit, or register the lead into a webinar automatically."
+                 }
+                  else
+                  {
+                     var message = "";   
+                  }
+             
+              jQuery('.textforinstall').html('<b>'+message+'</b>');
+              
+               
+               
+            });
+        });
+ jQuery(".modal_close").on('click',function(event){
+           event.preventDefault();
+          jQuery(".modal_slug").hide();
+      });
+      
+        jQuery(".installation").each(function(index) {
+            jQuery(this).on("click", function(){
+            jQuery(".loader").show();
+                var slug =  jQuery(".slug").val();
+                if(slug=='wp-gravity-forms-extension-master')
+                {
+                    var filename = 'https://github.com/genoo-source/wp-gravity-forms-extension/archive/master.zip';
+                    var mainfile = 'wp-gravity-forms-extension-master/wp-starter.php';
+                }
+                 if(slug=='wp-genoo-elementor-addon-master')
+                {
+                    var filename = 'https://github.com/genoo-source/wp-genoo-elementor-addon/archive/master.zip';
+                      var mainfile = 'wp-genoo-elementor-addon-master/Genno_Elementor_Extension.php';
+                }
+                 if(slug=='wp-genoo-auto-segmentation-master')
+                {
+                   var filename = 'https://genoolabs.com/plugins/wp-genoo-auto-segmentation/main.zip';
+                var mainfile = 'wp-genoo-auto-segmentation-master/wp-genoo-auto-segmentation.php';
+                }
+                     jQuery.ajax({
+                     url: '<?php echo admin_url("admin-ajax.php") ?>',
+                     type: "POST",
+                     cache: false,
+                     data:{ 
+                        'action':'extraction',
+                        filename:filename
+                            },
+                success:function(data){
+                    jQuery(".modal_slug").hide();
+                    jQuery('.plugin-card-'+slug).empty();
+                    var url = ajaxurl.replace(/[^\/]*$/, '');
+                    jQuery('.plugin-card-'+slug).append("<div class='notice-right tester'><a class='button button-primary activate' href='#' data-attribute="+slug+">Activate it here!</a></div><div class='notice-left'><p>Plugin installed successfully, you can proceed to activate it here.<img src='https://tribe.growrevenues.biz/images/1_9EBHIOzhE1XfMYoKz1JcsQ.gif' class='loader' style='display:none;width:50px;height:50px;' /></p></div><div class='clear cls cf'></div></div>");
+                    jQuery(".activate").click(function(e){
+                        e.preventDefault();
+                       jQuery(".loader").show();
+                    myajaxFunction(mainfile);
+             
+            });           
+             
+                   
+            },
+               error: function(errorThrown){
+                console.log(errorThrown);
+                         }
+              
+                       
+                                  }); 
+             
+            });
+                
+        });
+
+       
+  function myajaxFunction(mainfile)
+  {
+      var mainfile = mainfile;
+      jQuery.ajax({
+         url: '<?php echo admin_url("admin-ajax.php") ?>',
+         type: "POST",
+         cache: false,
+         data:{ 
+            'action':'activation_check',
+             mainfile:mainfile
+                },
+    success:function(data){
+     location.reload();   
+ 
+       
+},
+   error: function(errorThrown){
+    console.log(errorThrown);
+             }
+  
+           
+                      }); 
+     
+  }
+
+});
+</script>
+
+
+     <?php 
+     
+       if($pluginDefinition['slug']=='wp-genoo-elementor-addon-master' || $pluginDefinition['slug']=='wp-gravity-forms-extension-master' || $pluginDefinition['slug']=='wp-genoo-auto-segmentation-master'){
+              
+                   return "
+            <div class='wpme-plugin-notice plugin-card-{$pluginDefinition['slug']}'>
+            
+                <div class='notice-right tester'>
+                   <a href='#' 
+                    class='install-now button button-primary open-plugin-details-modal testpopup' dataattribute='{$pluginDefinition['slug']}'>Check it out!</a>
+                </div>
+                <div class='notice-left'><p>{$pluginOwner}{$pluginDefinition['message']}</p></div>
+                <div class='clear cls cf'></div>
+            </div>
+        "; 
+              
+          }
+       
+      else
+          {
         return "
             <div class='wpme-plugin-notice plugin-card-{$pluginDefinition['slug']}'>
                 <div class='notice-right'>
@@ -168,7 +366,8 @@ class Plugins
             </div>
         ";
     }
-
+   
+}
     /**
      * @param $plugin
      * @return string
@@ -256,6 +455,29 @@ class Plugins
             'name' => '',
             'file' => 'wpmktgengine-extension-woocommerce/wpmktgengine-woocommerce.php'
         );
+        
+       
+            $plugins['gravityforms/gravityforms.php'] = array(
+            'connection' => '',
+            'slug' => 'wp-gravity-forms-extension-master',
+            'message' => 'Hey there, I see that you are using Gravityforms. We have an integration with Gravityforms and can get that working by installing our plugin extension.',
+            'name' => '',
+            'file' => 'wp-gravity-forms-extension-master/wp-starter.php'
+        );
+          $plugins['elementor/elementor.php'] = array(
+            'connection' => '',
+            'slug' => 'wp-genoo-elementor-addon-master',
+            'message' => 'Hey there, I see that you are using Elementor. We have an integration with Elementor and can get that working by installing our plugin extension.',
+            'name' => '',
+            'file' => 'wp-genoo-elementor-addon-master/Genno_Elementor_Extension.php'
+        );
+           $plugins['wpmktgengine/wpmktgengine.php'] = array(
+            'connection' => '',
+            'slug' => 'wp-genoo-auto-segmentation-master',
+            'message' => 'Hey there, I see that you are using Wpmktgengine. We have an integration with Wpmktgengine and can get that working by installing our plugin extension.',
+            'name' => '',
+            'file' => 'wp-genoo-auto-segmentation-master/wp-genoo-auto-segmentation.php'
+        );
         /*
         $plugins['woocommerce-subscriptions/woocommerce-subscriptions.php'] = array(
             'connection' => '',
@@ -282,7 +504,8 @@ class Plugins
      */
     public function installPlugin($plugin)
     {
-        $api = plugins_api( 'plugin_information', array(
+        
+        $api = plugins_api('plugin_information', array(
             'slug' => $plugin,
             'fields' => array(
                 'short_description' => false,
@@ -299,6 +522,7 @@ class Plugins
                 'donate_link' => false,
             ),
         ));
+      
         include_once(ABSPATH . 'wp-admin/includes/file.php');
         include_once(ABSPATH . 'wp-admin/includes/misc.php');
         include_once(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php');
@@ -317,4 +541,40 @@ class Plugins
     {
         $this->notifications[] = $notification;
     }
+    
+    public function extraction()
+    {
+        
+       $file_name = $_REQUEST['filename']; 
+     
+        include_once(ABSPATH . 'wp-admin/includes/file.php');
+        include_once(ABSPATH . 'wp-admin/includes/misc.php');
+        include_once(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php');
+           
+      $upgrader = new \Plugin_Upgrader(
+            new \Plugin_Installer_Skin(
+                compact('title', 'url', 'nonce', 'plugin', 'api')
+            )
+        );
+        
+$insalled  = $upgrader->install($file_name);
+}
+
+public function activation_check(){
+    $plugin= $_REQUEST['mainfile'];
+   if( ! function_exists('activate_plugin') ) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+
+    if( ! is_plugin_active( $plugin ) ) {
+        activate_plugin( $plugin );
+    }
+     
+}
+       
+ 
+ 
+
+
+    
 }
