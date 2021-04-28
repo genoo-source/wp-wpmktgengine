@@ -1221,7 +1221,31 @@ class Api implements \WPME\ApiInterface
         }
         return $this->onReturn(Json::isJson($this->http->getBody()) ? Json::decode($this->http->getBody()) : $this->http->getBody());
     }
+    public function getapicall($params,$apkey)
+    {
+      $url = 'https:' . apply_filters('genoo_wpme_api_domain', WPMKTENGINE_API_DOMAIN) . self::URL;
+ 
+     $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url.'/getSmartRuleByName?X-API-KEY='.$apkey,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => '',
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => 'GET',
+      CURLOPT_POSTFIELDS => $params,
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: text/plain'
+      ),
+));
 
+$response = curl_exec($curl);
+curl_close($curl);
+$value = json_decode($response);
+return $value;
+    }
 
     /**
      * Builds query out of param(s) in their order in array,
