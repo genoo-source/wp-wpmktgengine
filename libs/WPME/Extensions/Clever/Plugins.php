@@ -20,7 +20,6 @@
 namespace WPME\Extensions\Clever;
 
 use WPME\Nag\Nag;
-use WPMKTENGINE\Utils\Strings;
 
 /**
  * Class Plugins
@@ -37,6 +36,13 @@ class Plugins
 
     /** @var array  */
     var $installedPlugins = array();
+
+    /** @var array */
+    var $remotePlugins = array(
+      'wp-gravity-forms-extension-master',
+      'wp-genoo-elementor-addon-master',
+      'wp-genoo-auto-segmentation-master'
+    );
 
     /**
      * Plugins constructor.
@@ -100,7 +106,7 @@ class Plugins
     public function remotePluginInfo($res, $action, $args){
       // If it's a plugin, that is not our own, and remote
       // one hosted in a repo, return regular response.
-      if(!\WPMKTENGINE\Utils\Strings::startsWith($args->slug, 'wpme_remote_')){
+      if(!in_array($args->slug, $this->remotePlugins)){
         return $res;
       }
       // Find plugin data
@@ -295,7 +301,7 @@ class Plugins
         );
         $plugins['gravityforms/gravityforms.php'] = array(
             'connection' => '',
-            'slug' => 'wpme_remote_wp-gravity-forms-extension-master',
+            'slug' => 'wp-gravity-forms-extension-master',
             'message' => 'Hey there, I see that you are using Gravityforms. We have an integration with Gravityforms and can get that working by installing our plugin extension.',
             'desc' => 'Integrate your Gravity Forms directly into Genoo/WPMktgEngine - and place into Lead Type, specify which email to sent upon submit, or register the lead into a webinar automatically.',
             'name' => '',
@@ -305,7 +311,7 @@ class Plugins
         );
         $plugins['elementor/elementor.php'] = array(
             'connection' => '',
-            'slug' => 'wpme_remote_wp-genoo-elementor-addon-master',
+            'slug' => 'wp-genoo-elementor-addon-master',
             'message' => 'Hey there, I see that you are using Elementor. We have an integration with Elementor and can get that working by installing our plugin extension.',
             'desc' => 'To have CTAs, Genoo Forms, and Surveys easily appear on Elementor pages, install this plugin.  Or if you want to integrate Genoo/WPMktgEngine into Elementor Forms, this adds those customizations to Elementor.',
             'name' => '',
@@ -315,7 +321,7 @@ class Plugins
         );
         $plugins['wpmktgengine/wpmktgengine.php'] = array(
             'connection' => '',
-            'slug' => 'wpme_remote_wp-genoo-auto-segmentation-master',
+            'slug' => 'wp-genoo-auto-segmentation-master',
             'message' => 'Since you are using Genoo/WPMktgEngine plugin, we have an extension that will automatically segment your leads based upon their views of your blog posts.  You set a lead type by category and everything else is taken care of.',
             'desc' => 'Easily segment your leads by their behavior.  This plugin allows you to identify Lead Types associated with Blog Categories, so as leads visit your blog pages, automatically segment them.',
             'name' => '',
