@@ -12,3 +12,6 @@ excluded_files:
 excluded_words:
   - Genoo
   - WPMKTENGINE
+  - WPMktgEngine
+  - wpmktgengine
+  - genoo
