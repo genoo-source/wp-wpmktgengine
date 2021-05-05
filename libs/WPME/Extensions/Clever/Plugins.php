@@ -341,7 +341,7 @@ class Plugins
     /**
      * @return mixed
      */
-    public function getActivePlugins(){ return get_option ('active_plugins', array()); }
+    public function getActivePlugins(){ return get_option('active_plugins', array()); }
 
     /**
      * Install plugin
@@ -349,7 +349,7 @@ class Plugins
      */
     public function installPlugin($plugin)
     {
-        $api = plugins_api( 'plugin_information', array(
+        $api = plugins_api('plugin_information', array(
             'slug' => $plugin,
             'fields' => array(
                 'short_description' => false,
