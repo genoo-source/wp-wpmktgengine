@@ -168,7 +168,7 @@ class CTAs
                     }
                     break;
                 case 'owner':
-                    $owner = \WPME\ApiExtension\CTA::getOwner($post_id)
+                    $owner = \WPME\ApiExtension\CTA::getOwner($post_id);
                     $owner = is_string($owner) && !empty($owner) ? $owner : false;
                     if($owner){
                         echo $owner;

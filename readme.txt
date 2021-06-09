@@ -5,7 +5,7 @@ Requires at least: 4.6.0
 Tested up to: 5.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 4.0.4
+Stable tag: 4.0.5
 
 
 WPMktgEngine turns your WordPress site into a marketing engine for your business.  A comprehensive online marketing platform.
@@ -64,7 +64,7 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
-= 4.0.4 =
+= 4.0.5 =
 * CTA ownership allowing top domain, to own subdomains.
 
 = 4.0.3 =
