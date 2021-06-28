@@ -5,7 +5,7 @@ Requires at least: 4.6.0
 Tested up to: 5.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 4.0.11
+Stable tag: 4.0.12
 
 
 WPMktgEngine turns your WordPress site into a marketing engine for your business.  A comprehensive online marketing platform.
@@ -63,6 +63,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 4.0.12 = 
+* Fix CSS button resizing
 
 = 4.0.11 = 
 * Firefox Fix for Overlay CSS
