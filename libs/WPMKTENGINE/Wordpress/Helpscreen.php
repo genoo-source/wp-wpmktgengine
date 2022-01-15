@@ -56,7 +56,7 @@ class Helpscreen
     public static function getSupportText()
     {
         return '<p>
-                    If you need any help with WPMKTGENGINE please <a target="_blank" href="http://wpmktgengine.com/members/">visit our support forum.</a>
+                    If you need any help with WPMKTGENGINE please <a target="_blank" href="https://cs.genoo.com">visit our support forum.</a>
                 </p>';
     }
 
