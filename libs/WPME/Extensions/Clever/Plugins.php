@@ -73,8 +73,7 @@ class Plugins
                 jQuery(function() {
                     // On install
                     jQuery(document).on('wp-plugin-install-success', function(event, data){
-                        if (data.slug.indexOf("wpmktgengine") !== -1) {
-                            // Get container
+                        // Get container
                             var url = ajaxurl.replace(/[^\/]*$/, '');
                             var append = jQuery('.wpme-plugin-notice.plugin-card-' + data.slug);
                             // Append activate message
@@ -87,7 +86,7 @@ class Plugins
                                     .attr('href', '')
                                     .removeClass('thickbox')
                                     .removeClass('open-plugin-details-modal');
-                        }
+                       
                         return;
                     });
                 });
