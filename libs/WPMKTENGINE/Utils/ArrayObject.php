@@ -110,7 +110,7 @@ class ArrayObject extends \ArrayObject
         } elseif (is_null($position)){
             $array[] = $element;
 
-        } elseif (!$position && !isset($array[$position])){
+        } elseif (!isset($array[$position])){
 
             $array[$position] = $element;
         }

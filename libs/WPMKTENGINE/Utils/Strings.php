@@ -209,7 +209,7 @@ class Strings
 		}
 		$charlist = isset($charlist) ? $charlist : '';
 		$s = preg_replace('#[^a-z0-9' . preg_quote($charlist, '#') . ']+#i', '-', $s);
-	    $s = trim($s, '-');
+		$s = trim($s, '-');
 		return $s;
 	}
 
@@ -591,6 +591,7 @@ class Strings
 			restore_error_handler();
 			throw new RegexpException("$message in pattern: " . implode(' or ', (array) $pattern));
 		});
+		$subject = isset($subject) ? $subject : '';
 		$res = preg_replace($pattern, $replacement, $subject, $limit);
 		restore_error_handler();
 		if (preg_last_error()) { // run-time error

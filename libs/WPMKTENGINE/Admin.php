@@ -1,20 +1,37 @@
 <?php
+
 /**
+
  * This file is part of the WPMKTGENGINE plugin.
+
  *
+
  * Copyright 2016 Genoo, LLC. All rights reserved worldwide.  (web: http://www.wpmktgengine.com/)
+
  * GPL Version 2 Licensing:
+
  *  PHP code is licensed under the GNU General Public License Ver. 2 (GPL)
+
  *  Licensed "As-Is"; all warranties are disclaimed.
+
  *  HTML: http://www.gnu.org/copyleft/gpl.html
+
  *  Text: http://www.gnu.org/copyleft/gpl.txt
+
  *
+
  * Proprietary Licensing:
+
  *  Remaining code elements, including without limitation:
+
  *  images, cascading style sheets, and JavaScript elements
+
  *  are licensed under restricted license.
+
  *  http://www.wpmktgengine.com/terms-of-service
+
  *  Copyright 2016 Genoo LLC. All rights reserved worldwide.
+
  */
 
 namespace WPMKTENGINE;
@@ -31,22 +48,39 @@ use WPMKTENGINE\Wordpress\Settings;
 use WPMKTENGINE\Wordpress\Page;
 use WPMKTENGINE\Wordpress\Notice;
 use WPMKTENGINE\Wordpress\Nag;
+
 use WPMKTENGINE\Wordpress\Metabox;
+
 use WPMKTENGINE\Wordpress\PostType;
+
 use WPMKTENGINE\Wordpress\Action;
+
 use WPMKTENGINE\Wordpress\Filter;
+
 use WPMKTENGINE\Utils\Strings;
+
 use WPMKTENGINE\Wordpress\MetaboxCTA;
 
 
+
+
+
 class Admin
+
 {
+
     /** @var bool */
+
     private static $instance = false;
+
     /** @var array Admin Messages */
+
     var $notices = array();
+
     /** @var \WPMKTENGINE\RepositorySettings */
+
     var $repositarySettings;
+
     /** @var \WPMKTENGINE\RepositoryForms */
     var $repositaryForms;
     /** @var \WPMKTENGINE\RepositoryPages */
@@ -477,7 +511,9 @@ class Admin
                 // Moving Page Builder
                 $wpmkteMenu = $submenu['WPMKTENGINELogin'][4];
                 unset($submenu['WPMKTENGINELogin'][4]);
-                $submenu['WPMKTENGINELogin'] = \WPMKTENGINE\Utils\ArrayObject::appendTo($submenu['WPMKTENGINELogin'], 2, $wpmkteMenu);
+
+                $submenu['WPMKTENGINELogin'] = \WPMKTENGINE\Utils\ArrayObject::appendTo($submenu['WPMKTENGINELogin'],  $wpmkteMenu, 2);
+
             }
             // Last menu movement
             if(WPMKTENGINE_SETUP){
@@ -671,22 +707,39 @@ class Admin
                     }
                     if(array_key_exists('genooDisableLandingHomepage', $_GET) && is_numeric($_GET['genooDisableLandingHomepage'])){
                         RepositoryLandingPages::removeHomepages();
+
                         Action::add('admin_notices', function(){ echo Notice::type('updated')->text('Default homepage turned off.'); }, 10, 1);
+
                     }
+
                 }
+
                 return;
+
             }, 10, 1);
+
         }
+
     }
 
 
+
+
+
     /**
+
      * Metaboxes
+
      */
 
+
+
     public function adminUI()
+
     {
+
         if(WPMKTENGINE_SETUP){
+
             // Metaboxes
             new Metabox('WPMKTGENGINE CTA Info', 'cta',
                 array(
