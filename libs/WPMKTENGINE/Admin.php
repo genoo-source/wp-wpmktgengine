@@ -48,17 +48,11 @@ use WPMKTENGINE\Wordpress\Settings;
 use WPMKTENGINE\Wordpress\Page;
 use WPMKTENGINE\Wordpress\Notice;
 use WPMKTENGINE\Wordpress\Nag;
-
 use WPMKTENGINE\Wordpress\Metabox;
-
 use WPMKTENGINE\Wordpress\PostType;
-
 use WPMKTENGINE\Wordpress\Action;
-
 use WPMKTENGINE\Wordpress\Filter;
-
 use WPMKTENGINE\Utils\Strings;
-
 use WPMKTENGINE\Wordpress\MetaboxCTA;
 
 
@@ -66,7 +60,6 @@ use WPMKTENGINE\Wordpress\MetaboxCTA;
 
 
 class Admin
-
 {
 
     /** @var bool */
@@ -511,10 +504,8 @@ class Admin
                 // Moving Page Builder
                 $wpmkteMenu = $submenu['WPMKTENGINELogin'][4];
                 unset($submenu['WPMKTENGINELogin'][4]);
-
-                $submenu['WPMKTENGINELogin'] = \WPMKTENGINE\Utils\ArrayObject::appendTo($submenu['WPMKTENGINELogin'],  $wpmkteMenu, 2);
-
-            }
+               $submenu['WPMKTENGINELogin'] = \WPMKTENGINE\Utils\ArrayObject::appendTo($submenu['WPMKTENGINELogin'],  $wpmkteMenu, 2);
+                }
             // Last menu movement
             if(WPMKTENGINE_SETUP){
                 \WPMKTENGINE\Utils\ArrayObject::moveFromPositionToPosition($submenu['WPMKTENGINELogin'], 2, 1);
