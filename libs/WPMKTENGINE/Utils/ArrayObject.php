@@ -88,7 +88,6 @@ class ArrayObject extends \ArrayObject
 
 
     public static function appendTo(&$array, $element, $position=null)
-
     {
         if(count($array) == 0){
             $array[] = $element;
