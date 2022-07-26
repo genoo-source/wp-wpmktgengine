@@ -85,7 +85,9 @@ class ArrayObject extends \ArrayObject
      * @return array
      */
 
-    public static function appendTo(&$array, $position=null, $element)
+
+
+    public static function appendTo(&$array, $element, $position=null)
     {
         if(count($array) == 0){
             $array[] = $element;
@@ -106,7 +108,9 @@ class ArrayObject extends \ArrayObject
             }
         } elseif (is_null($position)){
             $array[] = $element;
+
         } elseif (!isset($array[$position])){
+
             $array[$position] = $element;
         }
         $array = array_merge($array);
