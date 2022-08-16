@@ -486,31 +486,31 @@ class CustomizerExtension
 
         // Go through each style and remove if not ours
         // or wordpress
-         if(is_array($wp_styles->queue) || is_object($wp_styles->queue))
+        if(is_array($wp_styles->queue) || is_object($wp_styles->queue))
         {
-        foreach($wp_styles->queue as $style){
-            // /wp-admin/
-            // /wp-includes/
-            $src = $wp_styles->registered[$style]->src;
-            if (strpos($src, '/wp-admin/') !== false) {
-                // All good
-            } else if(strpos($src, '/wp-includes/') !== false) {
-                // All good
-            } else if(strpos($src, $themeDirecotryParent) !== false && $this->isCustomizerDefaultTheme()) {
-                // All good, if it's default theme, we need the styles
-            } else if(strpos($src, $themeDirecotryCurrent) !== false && $this->isCustomizerDefaultTheme()) {
-                // All good, if it's default theme, we need the styles
-            } else if($style !== 'genooFrontend'){
-                // Here comes trouble
-                $wp_styles->dequeue($style);
-                $wp_styles->remove($style);
+            foreach($wp_styles->queue as $style){
+                // /wp-admin/
+                // /wp-includes/
+                $src = $wp_styles->registered[$style]->src;
+                if (strpos($src, '/wp-admin/') !== false) {
+                    // All good
+                } else if(strpos($src, '/wp-includes/') !== false) {
+                    // All good
+                } else if(strpos($src, $themeDirecotryParent) !== false && $this->isCustomizerDefaultTheme()) {
+                    // All good, if it's default theme, we need the styles
+                } else if(strpos($src, $themeDirecotryCurrent) !== false && $this->isCustomizerDefaultTheme()) {
+                    // All good, if it's default theme, we need the styles
+                } else if($style !== 'genooFrontend'){
+                    // Here comes trouble
+                    $wp_styles->dequeue($style);
+                    $wp_styles->remove($style);
+                }
             }
-        }
         }
         // Go through each script
         // and remove if not wordpress
-         if(is_array($wp_scripts->queue) || is_object($wp_scripts->queue))
-        {
+    if(is_array($wp_scripts->queue) || is_object($wp_scripts->queue))
+    {
         foreach($wp_scripts->queue as $scripts){
             // /wp-admin/
             // /wp-includes/
@@ -536,7 +536,7 @@ class CustomizerExtension
                 $wp_scripts->remove($scripts);
             }
         }
-        }
+    }
     }
 
     /**

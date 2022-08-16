@@ -1306,8 +1306,8 @@ class TemplateRenderer
             global $wp_scripts;
             global $wp_styles;
             // Remove not allowed
-            if(is_array($wp_styles->queue) || is_object($wp_styles->queue))
-            {
+        if(is_array($wp_styles->queue) || is_object($wp_styles->queue))
+        {
             foreach($wp_styles->queue as $style){
                 if(!in_array($style, $allowedStyles)){
                     // Here comes trouble
@@ -1316,8 +1316,8 @@ class TemplateRenderer
                 }
             }
             }
-            if(is_array($wp_scripts->queue) || is_object($wp_scripts->queue))
-            {
+        if(is_array($wp_scripts->queue) || is_object($wp_scripts->queue))
+        {
             // Remove not allowed
             foreach($wp_scripts->queue as $scripts){
                 if(!in_array($scripts, $allowedScripts)){
