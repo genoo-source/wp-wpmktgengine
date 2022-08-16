@@ -486,6 +486,8 @@ class CustomizerExtension
 
         // Go through each style and remove if not ours
         // or wordpress
+         if(is_array($wp_styles->queue) || is_object($wp_styles->queue))
+        {
         foreach($wp_styles->queue as $style){
             // /wp-admin/
             // /wp-includes/
@@ -504,8 +506,11 @@ class CustomizerExtension
                 $wp_styles->remove($style);
             }
         }
+        }
         // Go through each script
         // and remove if not wordpress
+         if(is_array($wp_scripts->queue) || is_object($wp_scripts->queue))
+        {
         foreach($wp_scripts->queue as $scripts){
             // /wp-admin/
             // /wp-includes/
@@ -530,6 +535,7 @@ class CustomizerExtension
                 $wp_scripts->dequeue($scripts);
                 $wp_scripts->remove($scripts);
             }
+        }
         }
     }
 
