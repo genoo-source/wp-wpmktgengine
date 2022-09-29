@@ -1,14 +1,13 @@
 <?php
 /*
-    Plugin Name: WPMKTGENGINE
-    Description: Genoo, LLC
-    Author:  Genoo, LLC
-    Author URI: http://www.genoo.com/
-    Author Email: info@genoo.com
-    Version: 4.0.17
-    License: GPLv2
-    Text Domain: wpmktgengine
-*/
+ Plugin Name: WPMKTGENGINE
+ Description: Genoo, LLC
+ Author:  Genoo, LLC
+ Author URI: http://www.genoo.com/
+ Author Email: info@genoo.com
+ Version: 4.0.18
+ License: GPLv2
+ Text Domain: wpmktgengine */
 /**
  * This file is part of the WPMKTGENGINE plugin.
  *
@@ -31,7 +30,9 @@
  * 1. If no WordPress, go home
  */
 
-if (!defined('ABSPATH')) { exit; }
+if (!defined('ABSPATH')) {
+    exit;
+}
 define('WPMKTENGINE_PLUGIN', 'wpmktgengine/wpmktgengine.php');
 
 /**
