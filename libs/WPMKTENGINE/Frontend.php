@@ -714,6 +714,10 @@ class Frontend
         // Turn off errors
         @error_reporting(0);
         @ini_set('error_reporting', 0);
+        // Render tracking in header instead of footer?
+        $pageRenderTrackingInHead = 
+          isset($landingPost->meta->wpmktengine_tracking_data_head)
+          && $landingPost->meta->wpmktengine_tracking_data_head == 'true';
         // This might hold output buffer
         $headerAdditional = $header;
         // Set title so we can manipulate it later on
@@ -787,8 +791,9 @@ class Frontend
             }
             $renderer->render(
                 $title,
-                $headerAdditional . $header,
-                $footer
+                $headerAdditional,
+                $footer,
+                $pageRenderTrackingInHead
             );
         } catch (\Exception $e){
             echo $e->getMessage();
