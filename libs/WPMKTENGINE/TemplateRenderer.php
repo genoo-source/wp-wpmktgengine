@@ -1459,8 +1459,8 @@ class TemplateRenderer
                 '. $css .'
                 </style>
                 '. $this->css .'
-                '. $additionalHeader .'
                 '. \WPME\RepositorySettingsFactory::getLandingPagesGlobal('header') .'
+                '. $additionalHeader .'
                 '. \WPMKTENGINE\Utils\CSS::START . $cssStyles . \WPMKTENGINE\Utils\CSS::END .'
             </head>
             <body id="body" class="'. $this->bodyClass .'" style="'. $this->getBodyStyle() .'">

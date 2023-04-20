@@ -175,8 +175,8 @@ class TemplateRenderer extends \WPMKTENGINE\TemplateRenderer
                 '. $css .'
                 </style>
                 '. $this->css .'
-                '. $additionalHeader .'
                 '. \WPME\RepositorySettingsFactory::getLandingPagesGlobal('header') .'
+                '. $additionalHeader .'
                 '. \WPMKTENGINE\Utils\CSS::START . $cssStyles . \WPMKTENGINE\Utils\CSS::END .'
         ';
         // Footer
