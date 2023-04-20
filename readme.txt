@@ -64,6 +64,10 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 
 == Changelog ==
 
+= 4.0.19 = 
+* Ability to set tracking code in Landing Pages to be in header / footer
+* Minor changes to rendering order
+
 = 4.0.12 = 
 * Fix CSS button resizing
 

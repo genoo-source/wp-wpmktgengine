@@ -374,6 +374,33 @@ class RepositorySettings extends Repository
         return $this->getOption('apiExternalTrackingCode', self::KEY_SETTINGS);
     }
 
+    /**
+     * Get full tracking generated code
+     */
+    public function getTrackingCodeBlock()
+    {
+        $domain = '//wpmeresource.genoo.com';
+        $code = $this->getTrackingCode();
+        return '
+          <script>
+            var gTrackURL = "'. $domain .'";
+            (function(o, n, l, m, k, t, g) {
+              o["GtrackObject"] = k;
+              o[k] = o[k] || function() {
+                (o[k].q = o[k].q || []).push(arguments)
+              },
+              o[k].v = 1 * new Date;
+              t = n.createElement(l),
+              g = n.getElementsByTagName(l)[0];
+              t.async = l;
+              t.src = m;
+              g.parentNode.insertBefore(t, g)
+            })(window, document, "script", gTrackURL + "/js/gtrack.v2.js", "gnt");
+            gnt("load", "'. $code . '");
+            gnt("track", "page");
+          </script>
+        ';
+    }
 
     /**
      * Get lead type
