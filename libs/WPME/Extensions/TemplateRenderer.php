@@ -137,7 +137,7 @@ class TemplateRenderer extends \WPMKTENGINE\TemplateRenderer
           \add_filter('genoo_tracking_in_header', '__return_true');
           // If not, we add to header.
           $repositorySettings = new \WPME\RepositorySettingsFactory();
-          $trackingScript = $repositorySettings->getTrackingCode();
+          $trackingScript = $repositorySettings->getTrackingCodeBlock();
         }
         // Header
         $header = '

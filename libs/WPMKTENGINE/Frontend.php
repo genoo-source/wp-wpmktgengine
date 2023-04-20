@@ -419,25 +419,7 @@ class Frontend
                 $settings = new RepositorySettings();
                 $code = $settings->getTrackingCode();
                 if(!empty($code)){
-                ?>
-                <script>
-                  var gTrackURL = '<?php echo $domain; ?>';
-                  (function(o, n, l, m, k, t, g) {
-                      o["GtrackObject"] = k;
-                      o[k] = o[k] || function() {
-                          (o[k].q = o[k].q || []).push(arguments)
-                      },
-                      o[k].v = 1 * new Date;
-                      t = n.createElement(l),
-                      g = n.getElementsByTagName(l)[0];
-                      t.async = l;
-                      t.src = m;
-                      g.parentNode.insertBefore(t, g)
-                  })(window, document, "script", gTrackURL + "/js/gtrack.v2.js", "gnt");
-                  gnt('load', '<?php echo $code; ?>');
-                  gnt('track', 'page');
-                </script>
-                <?php
+                    echo $settings->getTrackingCodeBlock();
                 }
             }
             // Get header styles
@@ -464,25 +446,7 @@ class Frontend
                 $settings = new RepositorySettings();
                 $code = $settings->getTrackingCode();
                 if(!empty($code)){
-                ?>
-                <script>
-                  var gTrackURL = '<?php echo $domain; ?>';
-                  (function(o, n, l, m, k, t, g) {
-                      o["GtrackObject"] = k;
-                      o[k] = o[k] || function() {
-                          (o[k].q = o[k].q || []).push(arguments)
-                      },
-                      o[k].v = 1 * new Date;
-                      t = n.createElement(l),
-                      g = n.getElementsByTagName(l)[0];
-                      t.async = l;
-                      t.src = m;
-                      g.parentNode.insertBefore(t, g)
-                  })(window, document, "script", gTrackURL + "/js/gtrack.v2.js", "gnt");
-                  gnt('load', '<?php echo $code; ?>');
-                  gnt('track', 'page');
-                </script>
-                <?php
+                    echo $settings->getTrackingCodeBlock();
                 }
             }
             global $GENOO_STYLES;
