@@ -1403,7 +1403,7 @@ class TemplateRenderer
         // Tracking script manually tracked
         \add_filter('genoo_tracking_is_manually_tracking', '__return_true');
         $repositorySettings = new \WPME\RepositorySettingsFactory();
-        $trackingScript = $repositorySettings->getTrackingCode();
+        $trackingScript = $repositorySettings->getTrackingCodeBlock();
         // Tracking script locations
         $trackingScriptHeader = '';
         $trackingScriptFooter = '';
