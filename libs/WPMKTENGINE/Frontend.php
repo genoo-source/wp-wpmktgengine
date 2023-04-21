@@ -415,7 +415,8 @@ class Frontend
         $domain = '//wpmeresource.genoo.com';
         if(WPMKTENGINE_SETUP){
             $inHeader = apply_filters('genoo_tracking_in_header', FALSE);
-            if($inHeader == TRUE){
+            $isManuallyRendered = apply_filters('genoo_tracking_is_manually_tracking', FALSE);
+            if($inHeader == TRUE && !$isManuallyRendered){
                 $settings = new RepositorySettings();
                 $code = $settings->getTrackingCode();
                 if(!empty($code)){
@@ -442,7 +443,8 @@ class Frontend
         $domain = '//wpmeresource.genoo.com';
         if(WPMKTENGINE_SETUP){
             $inHeader = apply_filters('genoo_tracking_in_header', FALSE);
-            if($inHeader == FALSE){
+            $isManuallyRendered = apply_filters('genoo_tracking_is_manually_tracking', FALSE);
+            if($inHeader == FALSE && !$isManuallyRendered){
                 $settings = new RepositorySettings();
                 $code = $settings->getTrackingCode();
                 if(!empty($code)){
