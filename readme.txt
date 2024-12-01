@@ -63,6 +63,11 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+= 4.0.26 =
+* Fixed ability to view PageBuilder list
+* Fixed Phone number field format on CTA Pop Ups
+* Fixed confirmation msg display when Follow Return URL disabled on CTAs
+
 = 4.0.21 =
 Fixed xss vulnerability issue.
 
