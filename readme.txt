@@ -63,6 +63,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+= 4.0.27 =
+* Fixed dynamic CTA bug that wasn't inserting into middle of sidebar at specified position.
+
 = 4.0.26 =
 * Fixed ability to view PageBuilder list
 * Fixed Phone number field format on CTA Pop Ups
