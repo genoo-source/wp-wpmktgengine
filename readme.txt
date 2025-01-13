@@ -5,7 +5,7 @@ Requires at least: 4.6.0
 Tested up to: 6.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 4.0.26
+Stable tag: 4.0.27
 
 
 WPMktgEngine turns your WordPress site into a marketing engine for your business.  A comprehensive online marketing platform.
