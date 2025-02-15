@@ -63,6 +63,9 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+= 4.0.29 =
+* Fixed issue with PageBuilder pages (templates) being cleared from cache prior to being refreshed, and pages not able to display.
+
 = 4.0.27 =
 * Fixed dynamic CTA bug that wasn't inserting into middle of sidebar at specified position.
 
