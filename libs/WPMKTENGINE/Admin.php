@@ -83,7 +83,7 @@ class Admin
     /** @var \WPMKTENGINE\RepositoryCTA  */
     var $repositaryCTAs;
     /** @var \WPME\Extensions\RepositorySurveys */
-    var $repositorySurveys;
+    var $repositarySurveys;
     /** @var \WPMKTENGINE\RepositoryUser */
     var $user;
     /** @var \WPMKTENGINE\Api */

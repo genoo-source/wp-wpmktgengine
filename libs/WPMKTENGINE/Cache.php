@@ -42,6 +42,8 @@ class Cache
     private $disableCacheName = array();
     /** @var array */
     private $userConfig = array();
+    /** @var int Cache time for dynamic property (legacy support) */
+    private $_cache_time = 6000;
 
 
     /**
@@ -319,7 +321,7 @@ class Cache
         $this->enable     = $data['enable'];
         $this->cacheDir   = $data['cacheDir'];
         $this->cacheName  = $data['cacheName'];
-        $this->_cache_tinme = $data['cacheTime'];
+        $this->_cache_time = $data['cacheTime'];
         $this->hardFind   = $data['hardFind'];
         return $this;
     }

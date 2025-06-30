@@ -37,6 +37,10 @@ class MetaboxCTA extends Metabox
     var $nonceKey;
     /** @var  */
     var $ctas;
+    /** @var array */
+    var $fields;
+    /** @var array */
+    var $fieldsSanatized;
 
 
     /**
