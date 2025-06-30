@@ -96,6 +96,34 @@ class TableLite {
     protected $modes = array();
 
     /**
+     * Screen ID for dynamic property support
+     *
+     * @var string
+     */
+    public $screenId;
+
+    /**
+     * Screen options for dynamic property support
+     *
+     * @var array
+     */
+    public $screenOptions;
+
+    /**
+     * User per page setting for dynamic property support
+     *
+     * @var int
+     */
+    public $userPerpage;
+
+    /**
+     * Per page setting for dynamic property support
+     *
+     * @var int
+     */
+    public $perPage;
+
+    /**
      * Constructor.
      *
      * The child class should call this constructor from its own constructor to override

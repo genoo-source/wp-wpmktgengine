@@ -98,6 +98,8 @@ class Admin
     var $tableLumens;
     /** @var \WPMKTENGINE\TablePages */
     var $tablePages;
+    /** @var \WPME\Extensions\TableSurveys */
+    var $tableSurveys;
 
 
     /**
