@@ -145,7 +145,7 @@ class Admin
         Action::add('wp_ajax_update_option_api', function(){
             // Check
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             $option = sanitize_text_field($_POST['option']);
             $value = sanitize_text_field($_POST['value']);
@@ -167,7 +167,7 @@ class Admin
         Action::add('wp_ajax_update_leads', function(){
             // Check
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             try {
                 $settingsRepo = new \WPME\RepositorySettingsFactory();
@@ -187,7 +187,7 @@ class Admin
         Action::add('wp_ajax_refresh_forms', function(){
             // Check
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             try {
                 $cache = new \WPMKTENGINE\Cache(WPMKTENGINE_CACHE);
@@ -306,7 +306,7 @@ class Admin
                 ),
                 'DOMAIN' => WPMKTENGINE_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
-                'AJAX_NONCE' => wp_create_nonce('Genoo'),
+                'AJAX_NONCE' => wp_create_nonce('wpmktgengine'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),
@@ -336,7 +336,7 @@ class Admin
                 ),
                 'DOMAIN' => WPMKTENGINE_DOMAIN,
                 'AJAX' => admin_url('admin-ajax.php'),
-                'AJAX_NONCE' => wp_create_nonce('Genoo'),
+                'AJAX_NONCE' => wp_create_nonce('wpmktgengine'),
                 'GenooPluginUrl' => WPMKTENGINE_ASSETS,
                 'GenooMessages'  => array(
                     'importing'  => __('Importing...', 'wpmktengine'),

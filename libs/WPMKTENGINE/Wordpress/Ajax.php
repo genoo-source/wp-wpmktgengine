@@ -142,11 +142,20 @@ class Ajax
 
     public static function onReturn($data)
     {
-        @error_reporting(0); // don't break json
+        // Only suppress error reporting for production, allow debugging in development
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            @error_reporting(0);
+        }
         header('Content-type: application/json');
         try{
             die(Json::encode($data));
-        } catch (\Exception $e){} // as of this moment, we don't do anything with exceptions, it's ajax call
-                                  // they would just break the thang
+        } catch (\Exception $e){
+            // Log the exception for debugging but don't expose it to the client
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('WPMKTGENGINE AJAX Error: ' . $e->getMessage());
+            }
+            // Return a generic error response
+            die(Json::encode(array('error' => 'Internal server error')));
+        }
     }
 }

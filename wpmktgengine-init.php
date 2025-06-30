@@ -288,7 +288,10 @@ if(!function_exists('genoo_wpme_on_return')){
 
     function genoo_wpme_on_return($data)
     {
-        @error_reporting(0); // don't break json
+        // Only suppress error reporting for production, allow debugging in development
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            @error_reporting(0);
+        }
         header('Content-type: application/json');
         die(json_encode($data));
     }
