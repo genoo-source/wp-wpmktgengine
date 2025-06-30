@@ -162,8 +162,10 @@ class Utils
 
     public static function underscoreToCamelCase($string, $firstCaps = true)
     {
-        if($firstCaps == true){$string[0] = strtoupper($string[0]); } $func = create_function('$c', 'return strtoupper($c[1]);');
-        return preg_replace_callback('/_([a-z])/', $func, $string);
+        if($firstCaps == true){$string[0] = strtoupper($string[0]); }
+        return preg_replace_callback('/_([a-z])/', function($c) {
+            return strtoupper($c[1]);
+        }, $string);
     }
 
 

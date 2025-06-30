@@ -56,9 +56,13 @@ class Import
     public function importComments($comments)
     {
         $restoreReporting = error_reporting();
-        // don't break us down lad
-        @error_reporting(0);
-        @ini_set('display_errors', 0);
+        
+        // Only suppress errors in production, allow debugging in development
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            error_reporting(0);
+            ini_set('display_errors', 0);
+        }
+        
         // return arra\`
         $arr = array();
         // emails array, for no double entries
@@ -113,7 +117,13 @@ class Import
                     // return info
                     return $arr;
                 } catch(\Exception $e){
-                    return array(__('Error while importing lead: ', 'wpmktengine'). $e->getMessage());
+                    // Log error in production, show in development
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        return array(__('Error while importing lead: ', 'wpmktengine'). $e->getMessage());
+                    } else {
+                        error_log('WPMKTGENGINE Import Error: ' . $e->getMessage());
+                        return array(__('Error while importing lead. Check error logs for details.', 'wpmktengine'));
+                    }
                 }
             } else {
                 if(empty($comment->comment_author_email)){
@@ -122,6 +132,8 @@ class Import
                 return array(__('Error while importing lead, no lead type set. Your account <a href="'. admin_url('admin.php?page=WPMKTENGINELogin&reset=true') .'">may need resetting.</a>', 'wpmktengine'));
             }
         }
+        
+        // Restore error reporting
         error_reporting($restoreReporting);
         ini_restore('display_errors');
         return array(__('No comments provided.', 'wpmktengine'));
@@ -137,8 +149,13 @@ class Import
 
     public function importSubscribers($subscribers, $leadType)
     {
-        @error_reporting(0);
-        @ini_set('display_errors', 0);
+        // Only suppress errors in production, allow debugging in development
+        $restoreReporting = error_reporting();
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            error_reporting(0);
+            ini_set('display_errors', 0);
+        }
+        
         // return array
         $arr = array();
         // leads to post
@@ -172,9 +189,19 @@ class Import
                 // return info
                 return $arr;
             } catch(\Exception $e){
-                return array(__('Error while importing lead: ', 'wpmktengine'). $e->getMessage());
+                // Log error in production, show in development
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    return array(__('Error while importing lead: ', 'wpmktengine'). $e->getMessage());
+                } else {
+                    error_log('WPMKTGENGINE Subscriber Import Error: ' . $e->getMessage());
+                    return array(__('Error while importing lead. Check error logs for details.', 'wpmktengine'));
+                }
             }
         }
+        
+        // Restore error reporting
+        error_reporting($restoreReporting);
+        ini_restore('display_errors');
         return array(__('No subscribers provided.', 'wpmktengine'));
     }
 

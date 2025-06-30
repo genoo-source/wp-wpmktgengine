@@ -15,6 +15,11 @@
  *  are licensed under restricted license.
  *  http://www.wpmktgengine.com/terms-of-service
  *  Copyright 2016 Genoo LLC. All rights reserved worldwide.
+ *
+ * SECURITY NOTE:
+ * SSL verification is enabled by default for security. To disable SSL verification
+ * (only for development/testing), use the filter: add_filter('wpmktgengine_ssl_verify', '__return_false');
+ * WARNING: Disabling SSL verification in production is a security risk.
  */
 
 namespace WPMKTENGINE\Wordpress;
@@ -27,7 +32,7 @@ class Http
     /** @var  */
     var $response;
     /** @var array */
-    var $args = array('sslverify' => false, 'timeout' => 120);
+    var $args = array('sslverify' => true, 'timeout' => 120);
     /** @var  */
     var $url;
     var $requestBody;
@@ -44,6 +49,9 @@ class Http
     {
         $this->url = $url;
         $this->apikeySetup();
+        // Allow SSL verification to be configured via filter
+        $sslVerify = apply_filters('wpmktgengine_ssl_verify', true);
+        $this->args['sslverify'] = $sslVerify;
         return $this;
     }
 
@@ -148,6 +156,18 @@ class Http
     }
 
     /**
+     * Configure SSL verification for cURL operations
+     *
+     * @param resource $ch cURL handle
+     */
+    private function configureCurlSSL($ch)
+    {
+        $sslVerify = apply_filters('wpmktgengine_ssl_verify', true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $sslVerify);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $sslVerify ? 2 : 0);
+    }
+
+    /**
      * Couldn't get working with WP_Http,
      * so changed to work with curl
      *
@@ -169,6 +189,8 @@ class Http
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headersNew);
+        // Configure SSL verification
+        $this->configureCurlSSL($ch);
         // Set body
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);

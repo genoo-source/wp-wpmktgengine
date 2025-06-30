@@ -29,20 +29,19 @@ use WPME\Nag\Nag;
 class Plugins
 {
     /** @var array */
-    var $notifications = array();
-
-    /** @var array|mixed */
-    var $supportedPlugins = array();
-
-    /** @var array  */
-    var $installedPlugins = array();
-
+    private $supportedPlugins;
     /** @var array */
-    var $remotePlugins = array(
+    private $installedPlugins;
+    /** @var array */
+    private $notifications = array();
+    /** @var array */
+    private $remotePlugins = array(
       'wp-gravity-forms-extension-master',
       'wp-genoo-elementor-addon-master',
       'wp-genoo-auto-segmentation-master'
     );
+    /** @var \WPME\Nag\Nag */
+    private $nag;
 
     /**
      * Plugins constructor.
@@ -322,8 +321,8 @@ class Plugins
         $plugins['wpmktgengine/wpmktgengine.php'] = array(
             'connection' => '',
             'slug' => 'wp-genoo-auto-segmentation-master',
-            'message' => 'Since you are using Genoo/WPMktgEngine plugin, we have an extension that will automatically segment your leads based upon their views of your blog posts.  You set a lead type by category and everything else is taken care of.',
-            'desc' => 'Easily segment your leads by their behavior.  This plugin allows you to identify Lead Types associated with Blog Categories, so as leads visit your blog pages, automatically segment them.',
+            'message' => 'Since you are using Genoo/WPMktgEngine plugin, we have an extension that will automatically segment your leads based upon their views of your blog posts.  You set a lead type by category and everything else is taken care of.',
+            'desc' => 'Easily segment your leads by their behavior.  This plugin allows you to identify Lead Types associated with Blog Categories, so as leads visit your blog pages, automatically segment them.',
             'name' => '',
             'file' => 'wp-genoo-auto-segmentation-master/wp-genoo-auto-segmentation.php',
             'url'  => 'https://genoolabs.com/plugins/wp-genoo-auto-segmentation/wp-genoo-auto-segmentation-master.zip',

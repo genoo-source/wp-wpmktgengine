@@ -5,9 +5,13 @@
     Author:  Genoo, LLC
     Author URI: http://www.genoo.com/
     Author Email: info@genoo.com
-    Version: 4.0.29
+    Version: 4.0.30
     License: GPLv2
     Text Domain: wpmktgengine
+    Requires at least: 4.5
+    Tested up to: 6.8.1
+    Requires PHP: 7.4
+    Tested up to PHP: 8.3
 */
 /**
  * This file is part of the WPMKTGENGINE plugin.

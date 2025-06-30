@@ -370,7 +370,13 @@ class Strings
 
 	public static function length($s)
 	{
-		return strlen(utf8_decode($s)); // fastest way
+		// Replace deprecated utf8_decode with modern alternative
+		if (function_exists('mb_strlen')) {
+			return mb_strlen($s, 'UTF-8');
+		} else {
+			// Fallback for systems without mbstring
+			return strlen($s);
+		}
 	}
 
 

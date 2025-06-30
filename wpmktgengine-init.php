@@ -87,6 +87,7 @@ class WPMKTENGINE
     {
         // Dropins
         require_once WPMKTENGINE_ROOT .  '/extensions/dropins.php';
+        
         // initialize
         $this->repositarySettings = new \WPME\RepositorySettingsFactory();
         $this->api = new \WPME\ApiFactory($this->repositarySettings);
@@ -288,9 +289,32 @@ if(!function_exists('genoo_wpme_on_return')){
 
     function genoo_wpme_on_return($data)
     {
-        @error_reporting(0); // don't break json
+        // Only suppress error reporting for production, allow debugging in development
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            // In production, suppress errors but log them
+            $error_reporting_level = error_reporting();
+            error_reporting(0);
+            
+            // Log any errors that might occur during JSON encoding
+            $json_data = json_encode($data);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                error_log('WPMKTGENGINE JSON encoding error: ' . json_last_error_msg());
+                $data = array('error' => 'Data encoding failed');
+                $json_data = json_encode($data);
+            }
+            
+            // Restore error reporting level
+            error_reporting($error_reporting_level);
+        } else {
+            // In development, let errors show but ensure clean JSON output
+            $json_data = json_encode($data);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                wp_die('JSON encoding error: ' . json_last_error_msg());
+            }
+        }
+        
         header('Content-type: application/json');
-        die(json_encode($data));
+        die($json_data);
     }
 }
 
