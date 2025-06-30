@@ -13,10 +13,23 @@ if (!defined('ABSPATH')) {
 
 class WPMKTGENGINE_Priority1_Test {
     
+    private static $instance = null;
     private $test_results = array();
+    private $menu_added = false;
     
-    public function __construct() {
-        add_action('admin_menu', array($this, 'add_test_page'));
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    private function __construct() {
+        // Only add the menu once
+        if (!$this->menu_added) {
+            add_action('admin_menu', array($this, 'add_test_page'));
+            $this->menu_added = true;
+        }
     }
     
     /**
@@ -24,7 +37,7 @@ class WPMKTGENGINE_Priority1_Test {
      */
     public function add_test_page() {
         add_submenu_page(
-            'WPMKTENGINELogin',
+            'tools.php', // Use tools.php as parent - it always exists
             'Priority 1 Test',
             'Priority 1 Test',
             'manage_options',
@@ -208,4 +221,4 @@ class WPMKTGENGINE_Priority1_Test {
 }
 
 // Initialize test class
-new WPMKTGENGINE_Priority1_Test(); 
+WPMKTGENGINE_Priority1_Test::getInstance(); 
