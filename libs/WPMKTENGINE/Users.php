@@ -125,11 +125,11 @@ class Users
     public static function getFirstNameFromRequest()
     {
         if(isset($_POST)){
-            @$first = isset($_POST['billing_first_name']) ? $_POST['billing_first_name'] : null;
+            @$first = isset($_POST['billing_first_name']) ? sanitize_text_field($_POST['billing_first_name']) : null;
             if($first === null){
-                @$first = isset($_POST['shipping_first_name']) ? $_POST['shipping_first_name'] : null;
+                @$first = isset($_POST['shipping_first_name']) ? sanitize_text_field($_POST['shipping_first_name']) : null;
                 if($first === null){
-                    @$first = isset($_POST['first_name']) ? $_POST['first_name'] : null;
+                    @$first = isset($_POST['first_name']) ? sanitize_text_field($_POST['first_name']) : null;
                 }
             }
             return $first === null ? '' : $first;
@@ -145,11 +145,11 @@ class Users
     public static function getLastNameFromRequest()
     {
         if(isset($_POST)){
-            @$first = isset($_POST['billing_last_name']) ? $_POST['billing_last_name'] : null;
+            @$first = isset($_POST['billing_last_name']) ? sanitize_text_field($_POST['billing_last_name']) : null;
             if($first === null){
-                @$first = isset($_POST['shipping_last_name']) ? $_POST['shipping_last_name'] : null;
+                @$first = isset($_POST['shipping_last_name']) ? sanitize_text_field($_POST['shipping_last_name']) : null;
                 if($first === null){
-                    @$first = isset($_POST['last_name']) ? $_POST['last_name'] : null;
+                    @$first = isset($_POST['last_name']) ? sanitize_text_field($_POST['last_name']) : null;
                 }
             }
             return $first === null ? '' : $first;

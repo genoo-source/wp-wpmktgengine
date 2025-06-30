@@ -262,7 +262,8 @@ class Frontend
                 // This workaround needs id and script source to dispaly the script
                 if((isset($_GET['genooIframeLumenSrc']) && !empty($_GET['genooIframeLumenSrc'])) && (!empty($wp->query_vars['genooIframeLumen']))){
                     // Seems like a winner, display content
-                    Frontend::renderPreviewLumenIframe($wp->query_vars['genooIframeLumen'], $_GET['genooIframeLumenSrc']);
+                    $src = sanitize_text_field($_GET['genooIframeLumenSrc']);
+                    Frontend::renderPreviewLumenIframe($wp->query_vars['genooIframeLumen'], $src);
                 }
             }
             // WPMKTENGINE preview iframe for CTA
@@ -270,8 +271,13 @@ class Frontend
                 // This workaround needs id and script source to dispaly the script
                 // Only when query parsed do this
                 try {
-                    error_reporting(0);
-                    ini_set('error_reporting', 0);
+                    // Only suppress error reporting for production, allow debugging in development
+                    if (!defined('WP_DEBUG') || !WP_DEBUG) {
+                        $error_reporting_level = error_reporting();
+                        error_reporting(0);
+                        ini_set('error_reporting', 0);
+                    }
+                    
                     // Set through widget
                     $widget = new WidgetCTA(false);
                     $widget->setThroughShortcode(1, $wp->query_vars['genooIframeCTA'], array());
@@ -295,6 +301,11 @@ class Frontend
                     // Filter::removeFrom('wp_head')->everythingExceptLike(array('style', 'script'));
                     // TODO: Discover what's causing issue with the above line
                     Frontend::renderMobileWindow('Preview', $r, 'genooPreviewModal');
+                    
+                    // Restore error reporting if it was suppressed
+                    if (!defined('WP_DEBUG') || !WP_DEBUG) {
+                        error_reporting($error_reporting_level);
+                    }
                 } catch (\Exception $e){
                     echo $e->getMessage();
                 }

@@ -812,7 +812,7 @@ class TableLite {
         else
             $current_orderby = '';
 
-        if ( isset( $_GET['order'] ) && 'desc' == $_GET['order'] )
+        if ( isset( $_GET['order'] ) && 'desc' == sanitize_text_field($_GET['order']) )
             $current_order = 'desc';
         else
             $current_order = 'asc';

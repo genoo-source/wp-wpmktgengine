@@ -116,7 +116,13 @@ class Cron
     public static function unscheduleCronEvents($hookName)
     {
         $events = self::getEvents();
-        error_reporting(0);
+        
+        // Only suppress error reporting for production, allow debugging in development
+        $restoreReporting = error_reporting();
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            error_reporting(0);
+        }
+        
         if(!empty($events)){
             foreach($events as $time => $cron){
                 if(!empty($cron)){
@@ -130,6 +136,9 @@ class Cron
                 }
             }
         }
+        
+        // Restore error reporting
+        error_reporting($restoreReporting);
     }
 
 

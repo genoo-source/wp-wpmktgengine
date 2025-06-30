@@ -204,11 +204,10 @@ class Admin
             }
             die;
         });
-        // Update option api
-        Action::add('wp_ajax_refresh_surveys', function(){
-            // Check
+        // Flush surveys cache
+        Action::add('wp_ajax_flush_surveys_cache', function(){
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             try {
                 $cache = new \WPMKTENGINE\Cache(WPMKTENGINE_CACHE);
@@ -227,7 +226,7 @@ class Admin
         Action::add('wp_ajax_check_url', function(){
             // Check
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             $url = esc_url($_POST['url']);
             $exists = get_page_by_path(ltrim($url, '/'));
@@ -359,7 +358,8 @@ class Admin
     {
         global $wp_version;
         if(isset($_REQUEST['page'])){
-            if(Strings::contains($_REQUEST['page'], 'WPMKTENGINE')){
+            $page = sanitize_text_field($_REQUEST['page']);
+            if(Strings::contains($page, 'WPMKTENGINE')){
                 $classes .= ' WPMKTENGINE ';
             }
         }
@@ -412,7 +412,7 @@ class Admin
         if(!WPMKTENGINE_SETUP && !Nag::visible('hideGenooNag')){
             $msgPluginLink = ' ' . Nag::adminLink(__('WPMKTGENGINE Login Page.', 'wpmktengine'), 'WPMKTENGINELogin&reset=true') . ' | ';
             $msgHideLink = Nag::hideLink(__('Hide this warning.', 'wpmktengine'), 'hideGenooNag');
-            if(!isset($_GET['page']) && (isset($_GET['page']) && $_GET['page'] !== 'WPMKTENGINELogin')){
+            if(!isset($_GET['page']) && (isset($_GET['page']) && sanitize_text_field($_GET['page']) !== 'WPMKTENGINELogin')){
                 $this->addNotice('error', sprintf(__('WPMKTGENGINE plugin requires setting up. To finish your setup please login to your account.', 'wpmktengine')) . $msgPluginLink . $msgHideLink);
             }
         }
