@@ -37,6 +37,10 @@ class MetaboxCTA extends Metabox
     var $nonceKey;
     /** @var  */
     var $ctas;
+    /** @var array */
+    var $fields;
+    /** @var array */
+    var $fieldsSanatized;
 
 
     /**
@@ -234,6 +238,9 @@ class MetaboxCTA extends Metabox
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         $r = array();
         if(isset($_POST[$this->id]) && is_array($_POST[$this->id])){
+            foreach($_POST[$this->id] as $key => $value){
+                $_POST[$this->id][$key] = sanitize_text_field($value);
+            }
             foreach($_POST[$this->id] as $key => $value){
                 $current = $key;
                 if(is_array($value)){

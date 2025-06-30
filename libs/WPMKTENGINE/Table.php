@@ -76,7 +76,7 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
     {
         if(isset($_POST['wp_screen_options'])){
             if(isset($_POST['wp_screen_options']['option']) && $_POST['wp_screen_options']['option'] == 'genoo_per_page'){
-                return $_POST['wp_screen_options']['value'];
+                return sanitize_text_field($_POST['wp_screen_options']['value']);
             }
         }
         return $this->perPage;

@@ -109,7 +109,7 @@ class Metabox
         // check if our nonce is set.
         if (!isset($_POST[$this->nonceKey])){ return $post_id; }
         // nonce key
-        $nonce = $_POST[$this->nonceKey];
+        $nonce = sanitize_text_field($_POST[$this->nonceKey]);
         // verify that the nonce is valid.
         if (!wp_verify_nonce($nonce, $this->id)){ return $post_id; }
         // if this is an autosave, our form has not been submitted, so we don't want to do anything.
@@ -124,7 +124,7 @@ class Metabox
                     if(in_array($fieldId, array('wpmktengine_data_header', 'wpmktengine_data_footer'))){
                       update_post_meta($post_id, $fieldId, $_POST[$fieldId]);
                     } else {
-                      update_post_meta($post_id, $fieldId, (sanitize_text_field($_POST[$fieldId])));
+                      update_post_meta($post_id, $fieldId, sanitize_text_field($_POST[$fieldId]));
                     }
                 } elseif(empty($_POST[$fieldId])) {
                     delete_post_meta($post_id, $fieldId);

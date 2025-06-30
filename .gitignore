@@ -8,3 +8,9 @@ cache/settings/*
 !cache/settings/.gitkeep
 cache/surveys/*
 !cache/surveys/.gitkeep
+
+# Testing and documentation files that shouldn't be committed
+*-TESTING-*.md
+*-TESTING-*.txt
+test-*.php
+verify-*.php

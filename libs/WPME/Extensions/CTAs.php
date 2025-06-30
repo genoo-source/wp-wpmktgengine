@@ -441,7 +441,7 @@ class CTAs
         add_action('wp_ajax_wpme_import_cta_count', function(){
             // Check
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             $count = \WPME\Extensions\CTAs::getCTAsNotInWordPress();
             if(count($count) > 0){
@@ -456,7 +456,7 @@ class CTAs
         add_action('wp_ajax_wpme_import_ctas', function(){
             // Check
             if (!current_user_can('edit_posts')) return;
-            check_ajax_referer('Genoo');
+            check_ajax_referer('wpmktgengine');
             // Code
             // Things
             global $WPME_API;

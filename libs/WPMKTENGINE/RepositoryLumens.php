@@ -50,6 +50,10 @@ class RepositoryLumens extends Repository
      * @var \WPMKTENGINE\Api
      */
     private $api;
+    /**
+     * @var bool
+     */
+    private $empty = false;
 
     const REPO_TIMER = '3600';
     const REPO_NAMESPACE = 'lumens';
