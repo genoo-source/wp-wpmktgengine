@@ -88,10 +88,6 @@ class WPMKTENGINE
         // Dropins
         require_once WPMKTENGINE_ROOT .  '/extensions/dropins.php';
         
-        // Priority 1 Test file (only in development)
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            require_once WPMKTENGINE_ROOT . '/test-priority-1-fixes.php';
-        }
         // initialize
         $this->repositarySettings = new \WPME\RepositorySettingsFactory();
         $this->api = new \WPME\ApiFactory($this->repositarySettings);
