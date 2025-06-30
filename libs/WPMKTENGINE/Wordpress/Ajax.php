@@ -143,19 +143,31 @@ class Ajax
     public static function onReturn($data)
     {
         // Only suppress error reporting for production, allow debugging in development
+        $restoreReporting = error_reporting();
         if (!defined('WP_DEBUG') || !WP_DEBUG) {
-            @error_reporting(0);
+            error_reporting(0);
         }
+        
         header('Content-type: application/json');
         try{
-            die(Json::encode($data));
+            $json_data = Json::encode($data);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('JSON encoding error: ' . json_last_error_msg());
+            }
+            die($json_data);
         } catch (\Exception $e){
             // Log the exception for debugging but don't expose it to the client
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('WPMKTGENGINE AJAX Error: ' . $e->getMessage());
-            }
+            error_log('WPMKTGENGINE AJAX Error: ' . $e->getMessage());
+            
             // Return a generic error response
-            die(Json::encode(array('error' => 'Internal server error')));
+            $error_response = array('error' => 'Internal server error');
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                $error_response['debug_message'] = $e->getMessage();
+            }
+            die(Json::encode($error_response));
+        } finally {
+            // Restore error reporting
+            error_reporting($restoreReporting);
         }
     }
 }

@@ -677,9 +677,13 @@ class Frontend
     {
         // Please wp.org reviewers although nothing runs after this method, as it exits
         $restoreReporting = error_reporting();
-        // Turn off errors
-        @error_reporting(0);
-        @ini_set('error_reporting', 0);
+        
+        // Only suppress errors in production, allow debugging in development
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            error_reporting(0);
+            ini_set('error_reporting', 0);
+        }
+        
         // Render tracking in header instead of footer?
         $pageRenderTrackingInHead = 
           isset($landingPost->meta->wpmktengine_tracking_data_head)
@@ -762,9 +766,15 @@ class Frontend
                 $pageRenderTrackingInHead
             );
         } catch (\Exception $e){
-            echo $e->getMessage();
+            // Log error in production, show in development
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                echo $e->getMessage();
+            } else {
+                error_log('WPMKTGENGINE Landing Page Error: ' . $e->getMessage());
+                echo 'An error occurred while rendering the landing page.';
+            }
         }
-        // Yup, makes no sense :)
+        // Restore error reporting
         error_reporting($restoreReporting);
         ini_restore('error_reporting');
         exit();
@@ -778,10 +788,15 @@ class Frontend
     public function renderPageTemplate($id)
     {
         header('Content-Type: text/html; charset=utf-8');
-        try {
-            // Error reporting
+        
+        // Only suppress errors in production, allow debugging in development
+        $restoreReporting = error_reporting();
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
             error_reporting(0);
             ini_set('error_reporting', 0);
+        }
+        
+        try {
             $pages = new RepositoryPages($this->cache, $this->api);
             $page = $pages->getPage($id);
             $page = (array)$page;
@@ -813,8 +828,18 @@ class Frontend
                 $renderer->render($pageName);
             }
         } catch (\Exception $e){
-            echo $e->getMessage();
+            // Log error in production, show in development
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                echo $e->getMessage();
+            } else {
+                error_log('WPMKTGENGINE Page Template Error: ' . $e->getMessage());
+                echo 'An error occurred while rendering the page template.';
+            }
         }
+        
+        // Restore error reporting
+        error_reporting($restoreReporting);
+        ini_restore('error_reporting');
     }
 
 
