@@ -34,6 +34,9 @@ class Nag
 {
     /** @var \WPMKTENGINE\Wordpress\Nag  */
     public $dummyNag;
+    
+    /** @var \WPMKTENGINE\RepositoryUser  */
+    public $userRepository;
 
     /**
      * Nag constructor.
