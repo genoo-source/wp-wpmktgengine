@@ -101,13 +101,21 @@ class RepositorySettings extends Repository
      * @param  string $default default text if it's not found
      * @return string
      */
-
     public static function getOption($option, $section, $default = '')
     {
         $options = get_option($section);
-        if (isset($options[$option])) {
-            return $options[$option];
+        
+        // Ensure $options is an array and not null/false
+        if (!is_array($options)) {
+            return $default;
         }
+        
+        if (isset($options[$option])) {
+            // Ensure we return a string, never null
+            $value = $options[$option];
+            return is_string($value) ? $value : (string)$value;
+        }
+        
         return $default;
     }
 
@@ -169,7 +177,9 @@ class RepositorySettings extends Repository
      */
     public function getApiKey()
     {
-        return $this->getOption('apiKey', self::KEY_SETTINGS);
+        $apiKey = $this->getOption('apiKey', self::KEY_SETTINGS);
+        // Ensure we always return a string, never null
+        return is_string($apiKey) ? $apiKey : '';
     }
 
 

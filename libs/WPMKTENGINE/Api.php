@@ -129,11 +129,12 @@ class Api implements \WPME\ApiInterface
      *
      * @param RepositorySettings $settings
      */
-
     public function __construct(RepositorySettingsFactory $settingsRepo)
     {
-        // assign API key
-        $this->key = $settingsRepo->getApiKey();
+        // assign API key - ensure it's always a string
+        $apiKey = $settingsRepo->getApiKey();
+        $this->key = is_string($apiKey) ? $apiKey : '';
+        
         // settings repository
         $this->settingsRepo = $settingsRepo;
         // http wrapper

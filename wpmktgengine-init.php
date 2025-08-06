@@ -58,7 +58,7 @@ class WPMKTENGINE
         // Cosntants define
         define('WPMKTENGINE_KEY',     'WPMKTENGINE');
         define('WPMKTENGINE_FILE',    WPMKTENGINE_PLUGIN);
-        define('WPMKTENGINE_HOME_URL',get_option('siteurl'));
+        define('WPMKTENGINE_HOME_URL', get_option('siteurl') ?: '');
         define('WPMKTENGINE_FOLDER',  plugins_url(NULL, __FILE__));
         define('WPMKTENGINE_ROOT',    dirname(__FILE__) . DIRECTORY_SEPARATOR);
         define('WPMKTENGINE_ASSETS',  WPMKTENGINE_FOLDER . '/assets/');
@@ -70,7 +70,7 @@ class WPMKTENGINE
         } else {
             define('WPMKTENGINE_CACHE',   WPMKTENGINE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
         }
-        define('WPMKTENGINE_DEBUG',   get_option('WPMKTENGINEDebug'));
+        define('WPMKTENGINE_DEBUG',   get_option('WPMKTENGINEDebug') ?: false);
         define('WPMKTENGINE_REFRESH', sha1('new-admin-styling'));
         define('WPMKTENGINE_BUILDER', 'https://genoolabs.com/simplepagebuilder/');
         define('WPMKTENGINE_LEAD_COOKIE', '_gtld');
@@ -214,8 +214,20 @@ class WPMKTENGINE
      */
     public static function activate()
     {
-        // Save first post types
-        RepositorySettings::saveFirstSettings();
+        // Suppress deprecation warnings during activation to prevent "headers already sent" error
+        $error_reporting_level = error_reporting();
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        
+        try {
+            // Save first post types
+            RepositorySettings::saveFirstSettings();
+        } catch (\Exception $e) {
+            // Log activation errors but don't display them
+            error_log('WPMKTGENGINE Activation Error: ' . $e->getMessage());
+        } finally {
+            // Restore error reporting level
+            error_reporting($error_reporting_level);
+        }
     }
 
     /**
