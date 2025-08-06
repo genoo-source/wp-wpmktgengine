@@ -48,12 +48,24 @@ class Plugins
      */
     public function __construct()
     {
-        $this->supportedPlugins = $this->getSupportedPlugins();
-        if (!function_exists( 'get_plugins')){
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        // Suppress deprecation warnings during initialization
+        $error_reporting_level = error_reporting();
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        
+        try {
+            $this->supportedPlugins = $this->getSupportedPlugins();
+            if (!function_exists( 'get_plugins')){
+                require_once ABSPATH . 'wp-admin/includes/plugin.php';
+            }
+            $this->installedPlugins = \get_plugins();
+            $this->nag = new Nag();
+        } catch (\Exception $e) {
+            // Log initialization errors but don't display them
+            error_log('WPMKTGENGINE Clever Plugins Error: ' . $e->getMessage());
+        } finally {
+            // Restore error reporting level
+            error_reporting($error_reporting_level);
         }
-        $this->installedPlugins = \get_plugins();
-        $this->nag = new Nag();
     }
 
     /**
@@ -105,17 +117,17 @@ class Plugins
     public function remotePluginInfo($res, $action, $args){
       // If it's a plugin, that is not our own, and remote
       // one hosted in a repo, return regular response.
-      if(!in_array($args->slug, $this->remotePlugins)){
+      if(!$args || !is_object($args) || !isset($args->slug) || !in_array($args->slug, $this->remotePlugins)){
         return $res;
       }
       // Find plugin data
       $plugins = $this->getSupportedPlugins();
       $plugin = array_filter($plugins, function($name) use($args){
-        return $name['slug'] == $args->slug;
+        return isset($name['slug']) && $name['slug'] == $args->slug;
       });
       $plugin = current($plugin);
       // If no plugin found, return original response
-      if (!array_key_exists('slug', $plugin)) {
+      if (!$plugin || !array_key_exists('slug', $plugin)) {
           return $res;
       }
       // Populate modal window
@@ -126,7 +138,7 @@ class Plugins
       $resClone->num_ratings = rand(123, 132);
       $resClone->homepage = 'https://wpmktgengine.com/';
       $resClone->author_profile = 'https://wpmktgengine.com/';
-      $resClone->requires = $args->wp_version;
+      $resClone->requires = isset($args->wp_version) ? $args->wp_version : '';
       $resClone->slug = $args->slug;
       $resClone->sections = ["description" => $plugin['desc']];
       $resClone->download_link = $plugin['url'];
@@ -155,15 +167,27 @@ class Plugins
      */
     public function pluginsLoaded()
     {
-        // Search for plugins
-        $plugins = $this->getActivePlugins();
-        if($plugins && !empty($plugins)){
-            foreach($plugins as $plugin){
-                // Check if we support plugin
-                if($this->isSupportedPlugin($plugin) && !$this->isExtensionInstalled($plugin)){
-                    $this->addNotificationFor($plugin);
+        // Suppress deprecation warnings during plugin loading
+        $error_reporting_level = error_reporting();
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        
+        try {
+            // Search for plugins
+            $plugins = $this->getActivePlugins();
+            if($plugins && !empty($plugins)){
+                foreach($plugins as $plugin){
+                    // Check if we support plugin
+                    if($this->isSupportedPlugin($plugin) && !$this->isExtensionInstalled($plugin)){
+                        $this->addNotificationFor($plugin);
+                    }
                 }
             }
+        } catch (\Exception $e) {
+            // Log plugin loading errors but don't display them
+            error_log('WPMKTGENGINE Clever Plugins Load Error: ' . $e->getMessage());
+        } finally {
+            // Restore error reporting level
+            error_reporting($error_reporting_level);
         }
     }
 
@@ -172,19 +196,31 @@ class Plugins
      */
     public function pluginNotices()
     {
-        // Add modal
-        add_thickbox();
-        // Render notices
-        foreach($this->notifications as $notification){
-            // Plugin definition
-            $pluginDefinition = $this->supportedPlugins[$notification];
-            // Get plugin message
-            // Render message
-            $this->nag->renderNotice(
-                $this->generateInstallMessage($pluginDefinition),
-                crc32($notification),
-                true
-            );
+        // Suppress deprecation warnings during notice rendering
+        $error_reporting_level = error_reporting();
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        
+        try {
+            // Add modal
+            add_thickbox();
+            // Render notices
+            foreach($this->notifications as $notification){
+                // Plugin definition
+                $pluginDefinition = $this->supportedPlugins[$notification];
+                // Get plugin message
+                // Render message
+                $this->nag->renderNotice(
+                    $this->generateInstallMessage($pluginDefinition),
+                    crc32($notification),
+                    true
+                );
+            }
+        } catch (\Exception $e) {
+            // Log notice rendering errors but don't display them
+            error_log('WPMKTGENGINE Clever Plugins Notice Error: ' . $e->getMessage());
+        } finally {
+            // Restore error reporting level
+            error_reporting($error_reporting_level);
         }
     }
 
