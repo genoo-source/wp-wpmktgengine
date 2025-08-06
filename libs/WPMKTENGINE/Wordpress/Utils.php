@@ -43,8 +43,12 @@ class Utils
      * @param $value
      * @return mixed
      */
-
-    public static function addQueryParam($url, $key, $value = null){ return add_query_arg($key, $value, $url); }
+    public static function addQueryParam($url, $key, $value = null)
+    { 
+        // Ensure value is never null to prevent deprecation warnings
+        $safeValue = $value !== null ? $value : '';
+        return add_query_arg($key, $safeValue, $url); 
+    }
 
 
     /**

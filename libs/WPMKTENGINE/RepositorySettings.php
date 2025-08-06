@@ -98,16 +98,23 @@ class RepositorySettings extends Repository
      *
      * @param  string $option  settings field name
      * @param  string $section the section name this field belongs to
-     * @param  string $default default text if it's not found
-     * @return string
+     * @param  mixed  $default default value if it's not found
+     * @return mixed
      */
-
     public static function getOption($option, $section, $default = '')
     {
         $options = get_option($section);
+        
+        // Ensure $options is an array and not null/false
+        if (!is_array($options)) {
+            return $default;
+        }
+        
         if (isset($options[$option])) {
+            // Return the original value, preserving its type (array, string, etc.)
             return $options[$option];
         }
+        
         return $default;
     }
 
@@ -169,7 +176,15 @@ class RepositorySettings extends Repository
      */
     public function getApiKey()
     {
-        return $this->getOption('apiKey', self::KEY_SETTINGS);
+        $apiKey = $this->getOption('apiKey', self::KEY_SETTINGS);
+        // Ensure we always return a string, never null
+        if (is_string($apiKey)) {
+            return $apiKey;
+        } elseif (is_array($apiKey)) {
+            return '';
+        } else {
+            return (string)$apiKey;
+        }
     }
 
 
@@ -617,7 +632,7 @@ class RepositorySettings extends Repository
     public function getCTAPostTypes()
     {
         $postTypes = $this->getOption('genooCTAPostTypes', self::KEY_CTA);
-        if (!empty($postTypes)) {
+        if (!empty($postTypes) && is_array($postTypes)) {
             return array_keys($postTypes);
         } else {
             return array(
