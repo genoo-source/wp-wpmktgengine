@@ -13,6 +13,18 @@
     Requires PHP: 7.4
     Tested up to PHP: 8.3
 */
+
+// Comprehensive error suppression during plugin loading to prevent "headers already sent" errors
+if (!defined('WP_DEBUG') || !WP_DEBUG) {
+    // Suppress all deprecation warnings in production
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED & ~E_WARNING);
+    // Also suppress display of errors
+    ini_set('display_errors', 0);
+} else {
+    // In debug mode, still suppress deprecation warnings but allow other errors
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+}
+
 /**
  * This file is part of the WPMKTGENGINE plugin.
  *

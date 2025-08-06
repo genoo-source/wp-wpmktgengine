@@ -104,9 +104,12 @@ class Strings
 	 * @param  string
 	 * @return bool
 	 */
-
 	public static function contains($haystack, $needle)
 	{
+		// Ensure both parameters are strings to prevent deprecation warnings
+		if (!is_string($haystack) || !is_string($needle)) {
+			return false;
+		}
 		return strpos($haystack, $needle) !== FALSE;
 	}
 

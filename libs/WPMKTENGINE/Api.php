@@ -129,11 +129,12 @@ class Api implements \WPME\ApiInterface
      *
      * @param RepositorySettings $settings
      */
-
     public function __construct(RepositorySettingsFactory $settingsRepo)
     {
-        // assign API key
-        $this->key = $settingsRepo->getApiKey();
+        // assign API key - ensure it's always a string
+        $apiKey = $settingsRepo->getApiKey();
+        $this->key = is_string($apiKey) ? $apiKey : '';
+        
         // settings repository
         $this->settingsRepo = $settingsRepo;
         // http wrapper
@@ -1231,7 +1232,6 @@ class Api implements \WPME\ApiInterface
      * @param null $params
      * @return mixed|null
      */
-
     public function buildQuery($action, $params = null)
     {
         if(!empty($action)){
@@ -1243,17 +1243,20 @@ class Api implements \WPME\ApiInterface
             // build query arguments
             if(Strings::endsWith($prepAction, "[S]") || Strings::endsWith($prepAction, "[D]") || Strings::endsWith($prepAction, "[P]")){
                 // GET STRING
-                if(!is_array($params)){
+                if(!is_array($params) && $params !== null){
                     $prepUrl .= '/' . $params;
                 }
             } elseif(Strings::endsWith($prepAction, "[A]") && is_array($params)){
                 // GET ARRAY
                 foreach($params as $param){
-                    $prepUrl .= '/' . $param;
+                    if($param !== null){
+                        $prepUrl .= '/' . $param;
+                    }
                 }
             }
-            // lastQuery
-            return $this->lastQuery = Utils::addQueryParam($prepUrl, 'api_key', $this->key);
+            // lastQuery - ensure API key is never null
+            $apiKey = $this->key ?: '';
+            return $this->lastQuery = Utils::addQueryParam($prepUrl, 'api_key', $apiKey);
         }
         return null;
     }
