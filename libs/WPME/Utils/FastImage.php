@@ -32,7 +32,7 @@ namespace WPME\Utils;
 class FastImage
 {
     private $strpos = 0;
-    private $str;
+    private $str = '';
     private $type;
     private $handle;
 
@@ -53,7 +53,7 @@ class FastImage
             fclose($this->handle);
             $this->handle = null;
             $this->type = null;
-            $this->str = null;
+            $this->str = '';
         }
     }
     public function getSize()
