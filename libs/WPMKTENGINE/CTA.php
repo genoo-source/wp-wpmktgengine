@@ -32,6 +32,8 @@ class CTA
     public $postObject;
     /** @var array post types */
     public $postTypes;
+    /** @var int|string|null CTA ID */
+    public $id = null;
     /** @var bool */
     public $has = false;
     /** @var bool */

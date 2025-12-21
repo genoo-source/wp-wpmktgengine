@@ -40,6 +40,16 @@ abstract class Table extends \WPMKTENGINE\Wordpress\TableLite
     var $screen;
     /** @var string */
     var $searchQuery;
+    /** @var string Screen ID */
+    var $screenId;
+    /** @var bool Screen options flag */
+    var $screenOptions;
+    /** @var int|bool User per page setting */
+    var $userPerpage;
+    /** @var int Items per page */
+    var $perPage;
+    /** @var array Found data for pagination */
+    var $found_data = array();
 
     /**
      * Constructor

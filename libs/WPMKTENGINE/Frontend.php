@@ -44,6 +44,8 @@ class Frontend
     var $api;
     /** @var Cache */
     var $cache;
+    /** @var bool Whether the current post has multiple CTAs */
+    var $hasMultipleCTAs = false;
 
     /**
      * Construct Frontend

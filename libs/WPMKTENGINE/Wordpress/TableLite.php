@@ -87,6 +87,15 @@ class TableLite {
     private $_pagination;
 
     /**
+     * Cached column headers
+     *
+     * @since 3.1.0
+     * @var array
+     * @access protected
+     */
+    protected $_column_headers;
+
+    /**
      * The view switcher modes.
      *
      * @since 4.1.0

@@ -28,17 +28,19 @@ class HtmlForm
     private $html;
     /** @var \DOMDocument */
     private $dom;
-    /** @var */
+    /** @var \DOMElement|null */
     private $form;
-    /** @var */
+    /** @var \DOMElement|null */
+    private $msg;
+    /** @var string|null */
     private $form_key;
-    /** @var  */
+    /** @var string|null */
     private $form_return = NULL;
-    /** @var */
+    /** @var string|null */
     private $form_id;
     /** @var string */
     private $unique;
-    /** @var string */
+    /** @var string|null */
     private $validator;
     /** @var int */
     static $count = 1;
