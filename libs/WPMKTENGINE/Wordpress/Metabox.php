@@ -148,14 +148,16 @@ class Metabox
         // go through fields
         if(is_array($this->fields) && !empty($this->fields)){
             foreach($this->fields as $field){
-                $fieldId = isset($field['id']) ? $field['id'] : str_replace('-', '_', Strings::lower(Strings::webalize($field['label'])));
-                if(isset($field['type']) && (isset($field['label']))){
-                    $fieldRow = '<tr class="themeMetaboxRow" id="themeMetaboxRow'. $fieldId .'" >';
-                    $fieldValue = get_post_meta($post->ID, $fieldId, true);
-                    $fieldLabel = '<td class="genooLabel"><label for="' . $fieldId . '">' . $field['label'] . '</label></td><td>';
-                    $fieldOptions = isset($field['options']) ? $field['options'] : array();
-                    $fieldAtts = '';
+                // Skip fields without required type and label
+                if(!isset($field['type']) || !isset($field['label'])){
+                    continue;
                 }
+                $fieldId = isset($field['id']) ? $field['id'] : str_replace('-', '_', Strings::lower(Strings::webalize($field['label'])));
+                $fieldRow = '<tr class="themeMetaboxRow" id="themeMetaboxRow'. $fieldId .'" >';
+                $fieldValue = get_post_meta($post->ID, $fieldId, true);
+                $fieldLabel = '<td class="genooLabel"><label for="' . $fieldId . '">' . $field['label'] . '</label></td><td>';
+                $fieldOptions = isset($field['options']) ? $field['options'] : array();
+                $fieldAtts = '';
                 $fieldDesc = '';
                 if(isset($field['desc'])){
                     $fieldDesc = $field['desc'];

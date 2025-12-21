@@ -177,6 +177,10 @@ class Strings
 
 	public static function toAscii($s)
 	{
+		// Handle null input to avoid PHP 8.1+ deprecation warning
+		if ($s === null) {
+			return '';
+		}
 		$s = \preg_replace('#[^\x09\x0A\x0D\x20-\x7E\xA0-\x{2FF}\x{370}-\x{10FFFF}]#u', '', $s);
 		$s = \strtr($s, '`\'"^~', "\x01\x02\x03\x04\x05");
 		if (defined('ICONV_IMPL') && function_exists('iconv')) {
