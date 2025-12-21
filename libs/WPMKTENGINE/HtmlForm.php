@@ -28,17 +28,19 @@ class HtmlForm
     private $html;
     /** @var \DOMDocument */
     private $dom;
-    /** @var */
+    /** @var \DOMElement|null */
     private $form;
-    /** @var */
+    /** @var \DOMElement|null */
+    private $msg;
+    /** @var string|null */
     private $form_key;
-    /** @var  */
+    /** @var string|null */
     private $form_return = NULL;
-    /** @var */
+    /** @var string|null */
     private $form_id;
     /** @var string */
     private $unique;
-    /** @var string */
+    /** @var string|null */
     private $validator;
     /** @var int */
     static $count = 1;
@@ -288,7 +290,8 @@ class HtmlForm
     public function getUniqueId()
     {
         static $counter = 1;
-        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $this->dom->saveHTML());
+        $html = $this->dom->saveHTML();
+        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $html !== false ? $html : '');
         $unique_id = '_' . $counter . '_' . sha1($data);
         $counter++;
         return $unique_id;
@@ -303,7 +306,8 @@ class HtmlForm
     public function __toString()
     {
         // Get data
-        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $this->dom->saveHTML());
+        $html = $this->dom->saveHTML();
+        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $html !== false ? $html : '');
         // Add uniqe form identificator
         if(isset($this->form_key) && !empty($this->form_key) && (isset($this->form_id) && (!empty($this->form_id)))){
             // Okay, we have a form key, lets get unique number

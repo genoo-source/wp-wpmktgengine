@@ -33,6 +33,11 @@ use WPMKTENGINE\Wordpress\Post;
 
 class WidgetCTAVisible extends \WPMKTENGINE\WidgetCTA
 {
+    /** @var array List of available CTAs */
+    var $ctas = array();
+    /** @var array Selected CTA IDs */
+    var $selected = array();
+
     /**
      * Constructor registers widget in WordPress
      */
