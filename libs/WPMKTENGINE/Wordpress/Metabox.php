@@ -119,6 +119,10 @@ class Metabox
         // Update the meta fields
         if(is_array($this->fields) && !empty($this->fields)){
             foreach($this->fields as $field){
+                // Skip fields without required label (needed to generate fieldId)
+                if(!isset($field['id']) && !isset($field['label'])){
+                    continue;
+                }
                 $fieldId = isset($field['id']) ? $field['id'] : str_replace('-', '_', Strings::lower(Strings::webalize($field['label'])));
                 if(!empty($_POST[$fieldId])){
                     if(in_array($fieldId, array('wpmktengine_data_header', 'wpmktengine_data_footer'))){
