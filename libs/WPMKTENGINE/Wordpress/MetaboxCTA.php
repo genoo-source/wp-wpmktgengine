@@ -238,15 +238,16 @@ class MetaboxCTA extends Metabox
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         $r = array();
         if(isset($_POST[$this->id]) && is_array($_POST[$this->id])){
-            foreach($_POST[$this->id] as $key => $value){
-                $_POST[$this->id][$key] = sanitize_text_field($value);
-            }
+            // Process and sanitize the nested array structure
+            // $_POST[$this->id] structure: ['cta' => [...], 'sidebar' => [...], 'position' => [...]]
             foreach($_POST[$this->id] as $key => $value){
                 $current = $key;
                 if(is_array($value)){
                     foreach($value as $row => $field){
-                        if(!empty($field)){
-                            $r[$row][$current] = $field;
+                        // Sanitize each individual field value
+                        $sanitized_field = sanitize_text_field($field);
+                        if(!empty($sanitized_field)){
+                            $r[$row][$current] = $sanitized_field;
                         }
                     }
                 }
