@@ -290,7 +290,8 @@ class HtmlForm
     public function getUniqueId()
     {
         static $counter = 1;
-        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $this->dom->saveHTML());
+        $html = $this->dom->saveHTML();
+        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $html !== false ? $html : '');
         $unique_id = '_' . $counter . '_' . sha1($data);
         $counter++;
         return $unique_id;
@@ -305,7 +306,8 @@ class HtmlForm
     public function __toString()
     {
         // Get data
-        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $this->dom->saveHTML());
+        $html = $this->dom->saveHTML();
+        $data = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $html !== false ? $html : '');
         // Add uniqe form identificator
         if(isset($this->form_key) && !empty($this->form_key) && (isset($this->form_id) && (!empty($this->form_id)))){
             // Okay, we have a form key, lets get unique number

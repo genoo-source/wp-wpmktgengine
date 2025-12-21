@@ -337,6 +337,11 @@ class TemplateStorage
 
     public function removeSpecificStyleAttributes(&$form)
     {
+        // Handle null input to prevent PHP 8.1+ deprecation warnings
+        if ($form === null) {
+            $form = '';
+            return $form;
+        }
         // $form = preg_replace('%style="[^"]+"%i', '', $form, -1);
         $form = preg_replace('/background-color:[ ]{0,1}(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))[;]{0,1}/m', '', $form);
         $form = preg_replace('/color:[ ]{0,1}(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))[;]{0,1}/m', '', $form);
@@ -376,6 +381,10 @@ class TemplateStorage
      */
     public function __cleanUpForCustomizer($html, $blockElements = true)
     {
+        // Handle null input to prevent PHP 8.1+ deprecation warnings
+        if ($html === null) {
+            $html = '';
+        }
         $html = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $html);
         if($blockElements){
             $html = str_replace(
