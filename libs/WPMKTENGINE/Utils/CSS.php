@@ -27,7 +27,7 @@ namespace WPMKTENGINE\Utils;
 class CSS
 {
     /** String beginning */
-    const START = "<style type='text/css' scoped>";
+    const START = "<style>";
     /** String End */
     const END = "</style>\n";
     /** @var array Rules */
@@ -88,12 +88,10 @@ class CSS
             $GENOO_STYLES = $cssScoped;
         }
 
-        // Append JS fallback
-        $cssJs = '<script type="text/javascript">if(typeof GenooCSS != "undefined"){ GenooCSS.add(' . Json::encode($r) . '); }</script>';
-        $cssFinal = $cssScoped . $cssJs;
-
-        // Return
-        return $cssFinal;
+        // GenooCSS.add() intentionally omitted: $GENOO_STYLES is already
+        // echoed in wp_footer via Frontend::footerFirst(), so JS injection
+        // would deliver the same CSS a second time.
+        return $cssScoped;
     }
 
     /**
@@ -101,12 +99,8 @@ class CSS
      */
     public function appendToGlobalStyles()
     {
-        // Styles
         $r = $this->getStylesWithoutTags();
-        // Generate CSS
         $cssScoped = self::START . $r . self::END;
-        // Append
-        // Add CSS to global generator
         global $GENOO_STYLES;
         if(!empty($GENOO_STYLES)){
             $GENOO_STYLES .= $cssScoped;

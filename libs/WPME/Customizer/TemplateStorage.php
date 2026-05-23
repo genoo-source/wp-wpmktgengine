@@ -191,14 +191,13 @@ class TemplateStorage
                 ),
                 $themeCss
             );
-            // Append global styles
+            // Append global styles (consumed by RepositoryThemes::getAllThemesStyles in wp_head)
             global $WPME_STYLES;
             $WPME_STYLES .= $themeCss;
-            // Add scoped CSS
-            $themeJustCss = $themeCss;
-            $themeCss = '<style scoped>' . $themeJustCss . '</style>';
-            // Add javascript version to it
-            $themeCss .= '<script type="text/javascript">if(typeof GenooCSS != "undefined"){ GenooCSS.add(' . json_encode($themeJustCss) . '); }</script>';
+            // Emit a single inline <style> block in the footer.
+            // GenooCSS.add() is intentionally omitted here to avoid delivering
+            // the same CSS twice (once as inline <style>, once via JS injection).
+            $themeCss = '<style>' . $themeCss . '</style>';
         }
         // Return template
         if($themeId !== null){
@@ -247,14 +246,13 @@ class TemplateStorage
                 ),
                 $themeCss
             );
-            // Append global styles
+            // Append global styles (consumed by RepositoryThemes::getAllThemesStyles in wp_head)
             global $WPME_STYLES;
             $WPME_STYLES .= $themeCss;
-            // Add scoped CSS
-            $themeJustCss = $themeCss;
-            $themeCss = '<style scoped>' . $themeJustCss . '</style>';
-            // Add javascript version to it
-            $themeCss .= '<script type="text/javascript">if(typeof GenooCSS != "undefined"){ GenooCSS.add(' . json_encode($themeJustCss) . '); }</script>';
+            // Emit a single inline <style> block in the footer.
+            // GenooCSS.add() is intentionally omitted here to avoid delivering
+            // the same CSS twice (once as inline <style>, once via JS injection).
+            $themeCss = '<style>' . $themeCss . '</style>';
         }
         // Return template
         if($themeId !== null){
@@ -432,11 +430,10 @@ class TemplateStorage
     public function appendFormStyles($styles)
     {
         if(!empty($styles)){
-            $stylesCss = '<style scoped>' . $styles . '</style>';
-            $stylesCss .= '<script type="text/javascript">if(typeof GenooCSS != "undefined"){ GenooCSS.add(' . json_encode($styles) . '); }</script>';
             global $WPME_STYLES;
             $WPME_STYLES .= $styles;
-            return $stylesCss;
+            // Single inline <style> block; GenooCSS.add() omitted to avoid CSS duplication.
+            return '<style>' . $styles . '</style>';
         }
         return '';
     }

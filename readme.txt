@@ -63,6 +63,11 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+= 4.0.33 =
+* Replace modal popup title element from h2 to p with matching CSS class for correct SEO heading hierarchy
+* Remove duplicate CSS delivery in modal templates (eliminated redundant style scoped and GenooCSS.add JavaScript injection)
+* Update GitHub Actions workflows to actions/checkout@v5 (Node.js 24) ahead of GitHub's Node.js 20 deprecation on June 16, 2026
+
 = 4.0.29 =
 * Fixed issue with PageBuilder pages (templates) being cleared from cache prior to being refreshed, and pages not able to display.
 

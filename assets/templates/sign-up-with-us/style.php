@@ -133,7 +133,8 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
         padding: 8px;
         font-weight: 900;
     }
-    <?= $id ?>.gn-custom-modal h2 {
+    <?= $id ?>.gn-custom-modal h2,
+    <?= $id ?>.gn-custom-modal .gn-modal-title {
         font-size: 25px;
         font-weight: 100;
         padding: 0 20px;
@@ -187,7 +188,8 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
             padding: 0 !important;
         }
         <?= $id ?> .gn-description,
-        <?= $id ?> h2 {
+        <?= $id ?> h2,
+        <?= $id ?> .gn-modal-title {
             padding: 0 5px !important;
         }
     }

@@ -29,7 +29,7 @@ jobs:
       SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
         with:
           ref: master
       - name: Install Subversion
@@ -55,7 +55,7 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:

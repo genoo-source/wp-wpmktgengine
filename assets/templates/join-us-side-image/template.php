@@ -21,7 +21,7 @@ $class = ($view->getValueOf('gn-modal-image') != '') ? 'gn-has-image' : 'gn-no-i
                 &nbsp;
             </div><!--
             --><div class="gn-modal-right">
-                <h2 id="gn-modal-title" class="hide-on-success"><?= $view->getValueOf('gn-post-title') ?></h2>
+                <p id="gn-modal-title" class="gn-modal-title hide-on-success"><?= $view->getValueOf('gn-post-title') ?></p>
                 <p id="gn-modal-description" class="gn-description hide-on-success"><?= $view->getValueOf('description') ?></p>
                 <div id="genooMsg"></div>
                 <div class="gn-form-inner hide-on-success">

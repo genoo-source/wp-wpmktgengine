@@ -210,6 +210,7 @@ body .themeResetDefault h3,
 body .themeResetDefault h4,
 body .themeResetDefault h5,
 body .themeResetDefault h6,
+body .themeResetDefault .gn-modal-title,
 body .themeResetDefault ul,
 body .themeResetDefault ol,
 body .themeResetDefault li,
@@ -217,6 +218,15 @@ body .themeResetDefault b,
 body .themeResetDefault strong,
 body .themeResetDefault i,
 body .themeResetDefault em { color: #000; background: none; border: 0; }
+
+/* Modal title: <p> rendered with h2-level visual weight */
+.gn-modal-title {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0.83em 0;
+    line-height: 1.2;
+}
 
 /*
 	Themes
