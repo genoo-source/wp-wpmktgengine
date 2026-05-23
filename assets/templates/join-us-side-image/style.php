@@ -104,7 +104,8 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
         font-family: Avenir, Dosis, Arial, sans-serif;
         border-radius: 4px;
     }
-    <?= $id ?> h2 {
+    <?= $id ?> h2,
+    <?= $id ?> .gn-modal-title {
         font-size: 22px;
         font-weight: 100;
         padding-top: 10px;
@@ -263,7 +264,8 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
                    padding: 0 !important;
         }
         <?= $id ?>.gn-custom-modal-join-us-side-image .gn-description,
-        <?= $id ?>.gn-custom-modal-join-us-side-image h2 {
+        <?= $id ?>.gn-custom-modal-join-us-side-image h2,
+        <?= $id ?>.gn-custom-modal-join-us-side-image .gn-modal-title {
                    padding: 0 5px !important;
                }
         <?= $id ?>.gn-custom-modal-join-us-side-image .gn-no-image .gn-modal-left-image,

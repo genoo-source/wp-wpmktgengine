@@ -13,7 +13,7 @@ $view = $WPME_CUSTOMIZER->getView(basename(dirname(__FILE__)));
         <div class="clear"></div>
         <div class="genooPop">
             <div id="genooMsg"></div>
-            <h2 id="gn-modal-title" class="hide-on-success"><?= $view->getValueOf('gn-post-title') ?></h2>
+            <p id="gn-modal-title" class="gn-modal-title hide-on-success"><?= $view->getValueOf('gn-post-title') ?></p>
             <p id="gn-modal-description" class="gn-description hide-on-success"><?= $view->getValueOf('description') ?></p>
             <div class="genooPopFull hide-on-success">
                 <?= $WPME_CUSTOMIZER->getPartial('form'); ?>

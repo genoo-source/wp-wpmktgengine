@@ -151,7 +151,8 @@ $textColor = $view->getValueOf('gn-modal-text-color');
                padding: 0 !important;
              }
   <?= $id ?> .gn-description,
-             <?= $id ?> h2 {
+             <?= $id ?> h2,
+             <?= $id ?> .gn-modal-title {
                padding: 0 5px !important;
              }
 
@@ -174,7 +175,8 @@ $textColor = $view->getValueOf('gn-modal-text-color');
                padding: 8px;
                font-weight: 900;
              }
-  <?= $id ?> h2 {
+  <?= $id ?> h2,
+  <?= $id ?> .gn-modal-title {
                color: #000000 !important;
                font-size: 24px;
                font-weight: 500;
@@ -210,7 +212,8 @@ $textColor = $view->getValueOf('gn-modal-text-color');
                box-sizing: border-box;
              }
 
-  <?= $id ?> h2{
+  <?= $id ?> h2,
+  <?= $id ?> .gn-modal-title {
                padding: 20px 0 0 !important;
              }
   <?= $id ?> p {

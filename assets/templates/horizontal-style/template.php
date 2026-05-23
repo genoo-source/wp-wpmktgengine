@@ -8,8 +8,8 @@ $view = $WPME_CUSTOMIZER->getView(basename(dirname(__FILE__)));
 ?>
 
 <div class="genooForm__text">
-  <h2 id="gn-modal-title" class="hide-on-success hide-on-fail">
-    <?= $view->getValueOf('gn-post-title') ?></h2>
+  <p id="gn-modal-title" class="gn-modal-title hide-on-success hide-on-fail">
+    <?= $view->getValueOf('gn-post-title') ?></p>
   <p id="gn-modal-description" class="gn-description hide-on-success hide-on-fail"><?= $view->getValueOf('description') ?></p>
 </div>
 <div class="genooForm themeResetDefault themeDefault">
