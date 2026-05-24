@@ -220,5 +220,4 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
     float: left;
   }
 
-  [id^="on-step-2"]{display: none;}[id^="on-step-2"]:not(:checked) ~ .gn-tier-0 {display: none !important;}[id^="on-step-2"]:checked ~ .gn-step-1-overlay {display: none !important;}[for="on-step-2"] {width: 100%;}
 </style>

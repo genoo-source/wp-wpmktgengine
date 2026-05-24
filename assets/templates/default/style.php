@@ -28,7 +28,6 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
     form .checkbox-control {
       padding: 10px 0 !important;;
     }
-    [id^="on-step-2"] { display: none; }
     .gn-btn {
       padding: 10px !important;
       text-align: center !important;

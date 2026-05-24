@@ -220,7 +220,6 @@ $textColor = $view->getValueOf('gn-modal-text-color');
                padding: 0 20px !important;
              }
 
-  [id^="on-step-2"]:not(:checked) ~ .gn-tier-0 {display: none !important;}[id^="on-step-2"]:checked ~ .gn-step-1-overlay {display: none !important;}[for="on-step-2"] {width: 100%;}
 
 
 </style>

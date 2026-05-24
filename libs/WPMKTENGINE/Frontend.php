@@ -411,6 +411,45 @@ class Frontend
     {
         // Frontend css
         wp_enqueue_style('genooFrontend', WPMKTENGINE_ASSETS . 'GenooFrontend.css', NULL, WPMKTENGINE_REFRESH);
+        // Enqueue pre-generated form-themes CSS if available; generate it
+        // lazily on the first request if the file does not yet exist.
+        if (!\WPME\Css\Generator::formThemesExists()) {
+            \WPME\Css\Generator::generateFormThemes();
+        }
+        if (\WPME\Css\Generator::formThemesExists()) {
+            wp_enqueue_style(
+                'genooFormThemes',
+                \WPME\Css\Generator::formThemesUrl(),
+                array('genooFrontend'),
+                \WPME\Css\Generator::formThemesVersion()
+            );
+        }
+        // Enqueue pre-generated per-CTA CSS for post-bound CTAs known at this
+        // hook (populated by Frontend::wp() at priority 999).
+        // Shortcode-based CTAs are handled later in footerFirst().
+        foreach ($this->footerCTAModals as $sidebar) {
+            if (!is_array($sidebar)) {
+                continue;
+            }
+            foreach ($sidebar as $widgetData) {
+                if (
+                    empty($widgetData->widgetIsForm) ||
+                    !isset($widgetData->widgetInstance) ||
+                    !isset($widgetData->widgetInstance->preCta->id)
+                ) {
+                    continue;
+                }
+                $ctaId = (int) $widgetData->widgetInstance->preCta->id;
+                if ($ctaId > 0 && \WPME\Css\Generator::ctaCssExists($ctaId)) {
+                    wp_enqueue_style(
+                        'genoo-cta-' . $ctaId,
+                        \WPME\Css\Generator::ctaCssUrl($ctaId),
+                        array('genooFrontend'),
+                        \WPME\Css\Generator::ctaCssVersion($ctaId)
+                    );
+                }
+            }
+        }
         // Frontend js, if not a mobile window
         if(!isset($_GET['genooMobileWindow'])){
             wp_register_script('genooFrontendJs', WPMKTENGINE_ASSETS . "GenooFrontend.js", FALSE, WPMKTENGINE_REFRESH, FALSE);
@@ -436,7 +475,13 @@ class Frontend
                     echo $settings->getTrackingCodeBlock();
                 }
             }
-            // Get header styles
+            // Form-theme CSS: skip inline output when the external static file
+            // was successfully enqueued by enqueue() — the browser will load it
+            // from cache instead of parsing an inline <style> block.
+            if (\WPME\Css\Generator::formThemesExists()) {
+                return;
+            }
+            // Fallback: no static file (upload dir not writable) — inline output.
             $repositoryThemes = new RepositoryThemes();
             $css = $repositoryThemes->getAllThemesStyles();
             if(!empty($css)){
@@ -469,6 +514,38 @@ class Frontend
             // Prints JS if needed
             $repositoryThemes = new RepositoryThemes();
             $repositoryThemes->getAllThemesJavascript();
+        }
+        // Enqueue and immediately print pre-generated CSS for shortcode-based
+        // CTAs. $GLOBALS['WPME_MODALS'] is populated during the_content
+        // rendering (before wp_footer fires), so all shortcode CTAs are known
+        // here at priority 1 — before footerLast() renders the modal HTML at
+        // priority 999.
+        if (!empty($GLOBALS['WPME_MODALS'])) {
+            foreach ($GLOBALS['WPME_MODALS'] as $widget) {
+                if (!isset($widget->widget->cta->id)) {
+                    continue;
+                }
+                $ctaId = (int) $widget->widget->cta->id;
+                if ($ctaId <= 0) {
+                    continue;
+                }
+                $handle = 'genoo-cta-' . $ctaId;
+                // Skip if already enqueued in the head (post-bound path) or printed.
+                if (wp_style_is($handle, 'done') || wp_style_is($handle, 'enqueued')) {
+                    continue;
+                }
+                if (\WPME\Css\Generator::ctaCssExists($ctaId)) {
+                    wp_enqueue_style(
+                        $handle,
+                        \WPME\Css\Generator::ctaCssUrl($ctaId),
+                        array('genooFrontend'),
+                        \WPME\Css\Generator::ctaCssVersion($ctaId)
+                    );
+                    // Print immediately so the <link> tag lands in the footer
+                    // before the modal HTML is rendered at priority 999.
+                    wp_print_styles(array($handle));
+                }
+            }
         }
     }
 
