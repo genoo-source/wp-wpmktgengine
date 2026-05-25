@@ -139,6 +139,10 @@ class WPMKTENGINE
             $WPME_STYLES_JS = '';
             $WPME_MODALS = array();
 
+            // Register CSS file generation and invalidation hooks unconditionally
+            // so they fire even when WPMKTENGINE_SETUP is false.
+            \WPME\Css\Generator::registerHooks();
+
             /**
              * 0. Text-domain
              */

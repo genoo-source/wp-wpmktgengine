@@ -700,3 +700,12 @@ body.genooModalOpen::after {display: none;}
 .iti--allow-dropdown input[type=tel] {
     padding-left: 52px !important;
 }
+
+/* Multi-step form — step-2 checkbox is a hidden state toggle */
+[id^="on-step-2"] { display: none; }
+/* Hide step-2 content when step-2 checkbox is unchecked (i.e. on step 1) */
+[id^="on-step-2"]:not(:checked) ~ .gn-tier-0 { display: none !important; }
+/* Hide step-1 overlay when step-2 is active */
+[id^="on-step-2"]:checked ~ .gn-step-1-overlay { display: none !important; }
+/* Make the step-2 trigger label full-width */
+[for="on-step-2"] { width: 100%; }

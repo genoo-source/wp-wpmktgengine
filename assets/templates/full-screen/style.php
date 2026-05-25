@@ -230,10 +230,6 @@ $id = isset($WPME_MODAL_ID) ? $WPME_MODAL_ID : '';
       padding: 6px 12px;
     }
 
-    <?= $id ?> [id^="on-step-2"] {
-      display: none;
-    }
-
     /**
      * Mobile
     */

@@ -63,6 +63,12 @@ Not a WPMktgEngine customer yet? Try us out!  It’s easy to create an account. 
 == Upgrade Notice ==
 
 == Changelog ==
+= 4.0.34 =
+* Performance: Form-theme CSS (wpme-styles) is now pre-generated to a static file in wp-content/uploads/genoo-css/ and served as a cacheable stylesheet instead of an inline style block in wp_head
+* Performance: Per-CTA modal template CSS is now written to a static cta-{id}.css file on first page load and served as an external stylesheet on all subsequent requests, eliminating large inline style blocks from wp_footer
+* Performance: Multi-step form visibility rules moved from per-template inline output to GenooFrontend.css, reducing repeated inline CSS across all modal templates
+* Cache invalidation: Saving or trashing a CTA post automatically deletes its cached CSS file so updated styles are picked up on the next page load
+
 = 4.0.33 =
 * Replace modal popup title element from h2 to p with matching CSS class for correct SEO heading hierarchy
 * Remove duplicate CSS delivery in modal templates (eliminated redundant style scoped and GenooCSS.add JavaScript injection)

@@ -194,10 +194,25 @@ class TemplateStorage
             // Append global styles (consumed by RepositoryThemes::getAllThemesStyles in wp_head)
             global $WPME_STYLES;
             $WPME_STYLES .= $themeCss;
-            // Emit a single inline <style> block in the footer.
-            // GenooCSS.add() is intentionally omitted here to avoid delivering
-            // the same CSS twice (once as inline <style>, once via JS injection).
-            $themeCss = '<style>' . $themeCss . '</style>';
+            // Persist raw CSS to a per-CTA static file on first render.
+            // On subsequent page loads the file is served as an external
+            // stylesheet (enqueued before this method runs), eliminating
+            // this inline <style> block from the body entirely.
+            \WPME\Css\Generator::writeCtaCss($post->ID, $themeCss);
+            // Skip inline output when the Customizer live-preview isn't active
+            // and the stylesheet was already enqueued / printed for this request.
+            $ctaHandle = 'genoo-cta-' . $post->ID;
+            if (
+                !is_customize_preview() &&
+                (wp_style_is($ctaHandle, 'enqueued') || wp_style_is($ctaHandle, 'done'))
+            ) {
+                // External file handles delivery — no inline output needed.
+                $themeCss = '';
+            } else {
+                // Emit a single inline <style> block in the footer.
+                // GenooCSS.add() is intentionally omitted to avoid CSS duplication.
+                $themeCss = '<style>' . $themeCss . '</style>';
+            }
         }
         // Return template
         if($themeId !== null){
@@ -314,20 +329,12 @@ class TemplateStorage
             );
             // Get form
             $form = $formsRepository->getForm((string)$ctaFormId);
-            $formStyle = $formsRepository->getFormStyle((string)$ctaFormId);
-            if($this->isMultiStepForm($formStyle)){
-                $formPrefix = isset($GLOBALS['WPME_MODAL_ID']) ? $GLOBALS['WPME_MODAL_ID'] : '';
-                $formStyle = $this->generateMultiStepCss($formPrefix);
-            } else {
-                $formStyle = '';
-            }
-            $formStyle = $this->appendFormStyles($formStyle);
             // Remove inline styling
             $this->removeSpecificStyleAttributes($form);
             if(isset($form) && $blockElements){
-                return $this->__cleanUpForCustomizer($form) . $formStyle;
+                return $this->__cleanUpForCustomizer($form);
             }
-            return $form . $formStyle;
+            return $form;
         } else {
             throw new \InvalidArgumentException('No form set.');
         }
